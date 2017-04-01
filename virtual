@@ -1,0 +1,14 @@
+#A. Mapping is done using /etc/postfix/virtual file.
+# vi /etc/postfix/virtual
+
+@binarystorm.net dhill
+@binarystorm.org dhill
+
+#Save and close the file. Run following command:
+## postmap /etc/postfix/virtual
+
+#Also make sure you have following line in /etc/postfix/main.cf file:
+#virtual_alias_maps = hash:/etc/postfix/virtual
+
+#If you just added above, line reload postfix:
+# service postfix reload
