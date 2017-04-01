@@ -1,0 +1,7 @@
+myhostname = mail.binarystorm.nte
+mydomain = binarystorm.net
+myorigin = $mydomain
+inet_interfaces = all
+mydestination = $myhostname, localhost.$mydomain, localhost, $mydomain
+mynetworks = 192.168.0.0/24, 127.0.0.0/8
+relay_domains = binarystorm.net, binarystorm.org
