@@ -489,7 +489,7 @@ alias_database = hash:/etc/aliases
 #
 # Cyrus IMAP via command line. Uncomment the "cyrus...pipe" and
 # subsequent line in master.cf.
-#mailbox_transport = cyrus
+mailbox_transport = cyrus
 
 # The fallback_transport specifies the optional transport in master.cf
 # to use for recipients that are not found in the UNIX passwd database.
