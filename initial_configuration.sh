@@ -14,6 +14,10 @@ systemctl start saslauthd
 saslpasswd2 -c cyrus
 passwd cyrus
 
+cyradm -u cyrus localhost 
+# cm user.dhill
+
+
 firewall-cmd --permanent --zone=public --add-port=25/tcp
 firewall-cmd --permanent --zone=public --add-port=53/tcp
 firewall-cmd --permanent --zone=public --add-port=53/udp
