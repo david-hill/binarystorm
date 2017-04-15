@@ -1,5 +1,6 @@
 #!/bin/bash
 
+sed -i 's/hostname: .*/hostname: binarystorm.net/' /etc/cloud/cloud.cfg
 hostnamectl set-hostname binarystorm.net
 
 
