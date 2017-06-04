@@ -4,7 +4,7 @@ sed -i 's/hostname: .*/hostname: binarystorm.net/' /etc/cloud/cloud.cfg
 hostnamectl set-hostname binarystorm.net
 
 
-yum install -y postfix bind cyrus-imapd cyrus-sasl vim bind-utils telnet httpd ntp wget net-snmp net-snmp-utils
+yum install -y postfix bind cyrus-imapd cyrus-sasl vim bind-utils telnet httpd ntp wget net-snmp net-snmp-utils squirrelmail
 systemctl enable cyrus-imapd
 systemctl enable httpd
 systemctl enable postfix
