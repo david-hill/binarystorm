@@ -1,8 +1,13 @@
 #!/bin/bash
 
-sed -i 's/hostname: .*/hostname: binarystorm.net/' /etc/cloud/cloud.cfg
-hostnamectl set-hostname binarystorm.net
-
+ifconfig eth0 | grep inet | grep -q 158.69.192.170
+if [ $? -eq 0 ]; then
+  sed -i 's/hostname: .*/hostname: dns1.binarystorm.net/' /etc/cloud/cloud.cfg
+  hostnamectl set-hostname dns1.binarystorm.net
+else
+  sed -i 's/hostname: .*/hostname: dns2.binarystorm.net/' /etc/cloud/cloud.cfg
+  hostnamectl set-hostname dns2.binarystorm.net
+fi
 
 yum install -y postfix bind cyrus-imapd cyrus-sasl vim bind-utils telnet httpd ntp wget net-snmp net-snmp-utils squirrelmail
 systemctl enable cyrus-imapd
@@ -25,7 +30,6 @@ passwd cyrus
 
 cyradm -u cyrus localhost 
 # cm user.dhill
-
 
 firewall-cmd --permanent --zone=public --add-port=25/tcp
 firewall-cmd --permanent --zone=public --add-port=53/tcp
