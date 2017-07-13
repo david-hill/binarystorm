@@ -292,6 +292,9 @@
 #        Yorktown Heights, NY 10598, USA
 # 
 #                                                                   TRANSPORT(5)
+binarystorm.net smtp:smtp01.binarystorm.net
+binarystorm.org smtp:smtp01.binarystorm.net
+davidchill.ca smtp:smtp01.binarystorm.net
 .binarystorm.net smtp:smtp01.binarystorm.net
 .binarystorm.org smtp:smtp01.binarystorm.net
 .davidchill.ca smtp:smtp01.binarystorm.net

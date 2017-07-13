@@ -1,8 +1,13 @@
 #!/bin/bash
 
-sed -i 's/hostname: .*/hostname: binarystorm.net/' /etc/cloud/cloud.cfg
-hostnamectl set-hostname binarystorm.net
-
+ifconfig eth0 | grep inet | grep -q 158.69.192.170
+if [ $? -eq 0 ]; then
+  sed -i 's/hostname: .*/hostname: dns1.binarystorm.net/' /etc/cloud/cloud.cfg
+  hostnamectl set-hostname dns1.binarystorm.net
+else
+  sed -i 's/hostname: .*/hostname: dns2.binarystorm.net/' /etc/cloud/cloud.cfg
+  hostnamectl set-hostname dns2.binarystorm.net
+fi
 
 yum install -y postfix bind cyrus-imapd cyrus-sasl vim bind-utils telnet httpd ntp wget net-snmp net-snmp-utils squirrelmail
 systemctl enable cyrus-imapd
@@ -26,7 +31,6 @@ passwd cyrus
 cyradm -u cyrus localhost 
 # cm user.dhill
 
-
 firewall-cmd --permanent --zone=public --add-port=25/tcp
 firewall-cmd --permanent --zone=public --add-port=53/tcp
 firewall-cmd --permanent --zone=public --add-port=53/udp
@@ -38,3 +42,22 @@ wget https://copr-be.cloud.fedoraproject.org/results/vrusinov/vrusinov/epel-7-x8
 rpm -i uptimed*
 systemctl enable uptimed
 systemctl start uptimed
+
+if [[ "$HOSTNAME" =~ dns1 ]]; then
+  cp postfix/* /etc/postfix 
+elif [[ "$HOSTNAME" =~ dns2 ]]; then
+  cp postfix/backup_mx/* /etc/postfix 
+fi
+if [ -e /etc/postfix/virtual ]; then
+  postmap /etc/postfix/virtual
+elif [ -e /etc/postfix/transport ]; then
+  postmap /etc/postfix/transport
+fi
+systemctl restart postfix
+
+cp named/named.conf /etc/named
+if [ ! -d /etc/named/named ]; then
+  mkdir -p /etc/named/named
+fi
+cp named/named/* /etc/named/named
+systemctl restart named
