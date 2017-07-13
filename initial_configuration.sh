@@ -45,6 +45,12 @@ systemctl start uptimed
 
 if [[ "$HOSTNAME" =~ dns1 ]]; then
   cp postfix/* /etc/postfix 
+  cp httpd/conf/httpd.conf /etc/httpd/conf/httpd.conf
+  cp httpd/conf.d/* /etc/httpd/conf.d/
+  systemctl restart httpd
+  cp cyrus/imapd.conf /etc
+  cp cyrus/cyrus.conf /etc
+  systemctl restart cyrus-imapd
 elif [[ "$HOSTNAME" =~ dns2 ]]; then
   cp postfix/backup_mx/* /etc/postfix 
 fi
@@ -64,7 +70,3 @@ systemctl restart named
 
 cp snmp/snmpd.conf /etc/snmp/snmpd.conf
 systemctl restart snmpd
-
-cp httpd/conf/httpd.conf /etc/httpd/conf/httpd.conf
-cp httpd/conf.d/* /etc/httpd/conf.d/
-systemctl restart httpd
