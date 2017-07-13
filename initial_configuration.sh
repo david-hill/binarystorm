@@ -9,6 +9,7 @@ else
   hostnamectl set-hostname dns2.binarystorm.net
 fi
 
+yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
 yum install -y postfix bind cyrus-imapd cyrus-sasl vim bind-utils telnet httpd ntp wget net-snmp net-snmp-utils squirrelmail
 systemctl enable cyrus-imapd
 systemctl enable httpd
@@ -37,6 +38,7 @@ firewall-cmd --permanent --zone=public --add-port=53/udp
 firewall-cmd --permanent --zone=public --add-port=80/tcp
 firewall-cmd --permanent --zone=public --add-port=110/tcp
 firewall-cmd --reload
+
 
 wget https://copr-be.cloud.fedoraproject.org/results/vrusinov/vrusinov/epel-7-x86_64/uptimed-0.4.0-1.fc21/uptimed-0.4.0-1.el7.centos.x86_64.rpm
 rpm -i uptimed*
