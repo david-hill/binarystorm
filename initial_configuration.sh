@@ -64,3 +64,7 @@ systemctl restart named
 
 cp snmp/snmpd.conf /etc/snmp/snmpd.conf
 systemctl restart snmpd
+
+cp httpd/conf/httpd.conf /etc/httpd/conf/httpd.conf
+cp httpd/conf.d/* /etc/httpd/conf.d/
+systemctl restart httpd
