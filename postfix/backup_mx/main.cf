@@ -207,7 +207,7 @@ mydestination = $myhostname, localhost.$mydomain, localhost, binarystorm.net, bi
 # 
 #local_recipient_maps = unix:passwd.byname $alias_maps
 #local_recipient_maps = proxy:unix:passwd.byname $alias_maps
-#local_recipient_maps =
+local_recipient_maps =
 
 # The unknown_local_recipient_reject_code specifies the SMTP server
 # response code when a recipient domain matches $mydestination or
@@ -294,7 +294,7 @@ mynetworks_style = host
 # permit_mx_backup restriction description in postconf(5).
 #
 relay_domains = $mydestination
-virtual_alias_maps = hash:/etc/postfix/virtual
+#virtual_alias_maps = hash:/etc/postfix/virtual
 
 # INTERNET OR INTRANET
 
@@ -678,3 +678,6 @@ sample_directory = /usr/share/doc/postfix-2.10.1/samples
 # readme_directory: The location of the Postfix README files.
 #
 readme_directory = /usr/share/doc/postfix-2.10.1/README_FILES
+
+#relay_recipient_maps = hash:/etc/postfix/relay_recipients
+transport_maps = hash:/etc/postfix/transport
