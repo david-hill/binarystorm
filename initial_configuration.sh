@@ -42,3 +42,22 @@ wget https://copr-be.cloud.fedoraproject.org/results/vrusinov/vrusinov/epel-7-x8
 rpm -i uptimed*
 systemctl enable uptimed
 systemctl start uptimed
+
+if [[ "$HOSTNAME" =~ dns1 ]]; then
+  cp postfix/* /etc/postfix 
+elif [[ "$HOSTNAME" =~ dns2 ]]; then
+  cp postfix/backup_mx/* /etc/postfix 
+fi
+if [ -e /etc/postfix/virtual ]; then
+  postmap /etc/postfix/virtual
+elif [ -e /etc/postfix/transport ]; then
+  postmap /etc/postfix/transport
+fi
+systemctl restart postfix
+
+cp named/named.conf /etc/named
+if [ ! -d /etc/named/named ]; then
+  mkdir -p /etc/named/named
+fi
+cp named/named/* /etc/named/named
+systemctl restart named
