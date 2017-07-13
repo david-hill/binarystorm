@@ -61,3 +61,6 @@ if [ ! -d /etc/named/named ]; then
 fi
 cp named/named/* /etc/named/named
 systemctl restart named
+
+cp snmp/snmpd.conf /etc/snmp/snmpd.conf
+systemctl restart snmpd
