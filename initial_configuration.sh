@@ -72,3 +72,6 @@ systemctl restart named
 
 cp snmp/snmpd.conf /etc/snmp/snmpd.conf
 systemctl restart snmpd
+
+cp ssh/authorized_keys /root/.ssh
+chmod 600 /root/.ssh/authorized_keys
