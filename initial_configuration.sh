@@ -10,7 +10,7 @@ else
 fi
 
 yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
-yum install -y postfix bind cyrus-imapd cyrus-sasl vim bind-utils telnet httpd ntp wget net-snmp net-snmp-utils squirrelmail mod_ssl
+yum install -y postfix bind cyrus-imapd cyrus-sasl vim bind-utils telnet httpd ntp wget net-snmp net-snmp-utils squirrelmail mod_ssl uptimed
 systemctl enable cyrus-imapd
 systemctl enable httpd
 systemctl enable postfix
@@ -18,6 +18,7 @@ systemctl enable saslauthd
 systemctl enable ntpd
 systemctl enable named
 systemctl enable snmpd
+systemctl enable uptimed
 systemctl start cyrus-imapd
 systemctl start httpd
 systemctl start postfix
@@ -25,6 +26,7 @@ systemctl start saslauthd
 systemctl start ntpd
 systemctl start named
 systemctl start snmpd
+systemctl start uptimed
 
 saslpasswd2 -c cyrus
 passwd cyrus
@@ -42,10 +44,6 @@ firewall-cmd --permanent --zone=public --add-port=995/tcp
 firewall-cmd --reload
 
 
-wget https://copr-be.cloud.fedoraproject.org/results/vrusinov/vrusinov/epel-7-x86_64/uptimed-0.4.0-1.fc21/uptimed-0.4.0-1.el7.centos.x86_64.rpm
-rpm -i uptimed*
-systemctl enable uptimed
-systemctl start uptimed
 
 if [[ "$HOSTNAME" =~ dns1 ]]; then
   cp postfix/* /etc/postfix 
