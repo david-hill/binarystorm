@@ -51,6 +51,7 @@ if [[ "$HOSTNAME" =~ dns1 ]]; then
   cp postfix/* /etc/postfix 
   cp httpd/conf/httpd.conf /etc/httpd/conf/httpd.conf
   cp httpd/conf.d/* /etc/httpd/conf.d/
+  cp squirrelmail/* /etc/squirrelmail/
   systemctl restart httpd
   cp cyrus/imapd.conf /etc
   cp cyrus/cyrus.conf /etc
