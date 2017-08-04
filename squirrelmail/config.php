@@ -161,7 +161,7 @@ $prefs_val_field = 'prefval';
 $no_list_for_subscribe = false;
 $smtp_auth_mech = 'none';
 $imap_auth_mech = 'login';
-$use_imap_tls = true;
+$use_imap_tls = false;
 $use_smtp_tls = false;
 $session_name = 'SQMSESSID';
 
