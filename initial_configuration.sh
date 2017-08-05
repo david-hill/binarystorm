@@ -88,4 +88,4 @@ for module in $(modules); do
 done
 
 cp yum/* /etc/yum.repos.d/
-
+cp etc/* /etc/
