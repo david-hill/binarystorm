@@ -10,7 +10,7 @@ else
 fi
 
 yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
-yum install -y postfix bind cyrus-imapd cyrus-sasl vim bind-utils telnet httpd ntp wget net-snmp net-snmp-utils squirrelmail mod_ssl uptimed yum-utils
+yum install -y postfix bind cyrus-imapd cyrus-sasl vim bind-utils telnet httpd ntp wget net-snmp net-snmp-utils squirrelmail mod_ssl uptimed yum-utils selinux-policy-devel
 systemctl enable cyrus-imapd
 systemctl enable httpd
 systemctl enable postfix
@@ -67,6 +67,7 @@ elif [ -e /etc/postfix/transport ]; then
 fi
 systemctl restart postfix
 
+
 cp named/named.conf /etc/named
 if [ ! -d /etc/named/named ]; then
   mkdir -p /etc/named/named
@@ -79,3 +80,9 @@ systemctl restart snmpd
 
 cp ssh/authorized_keys /root/.ssh
 chmod 600 /root/.ssh/authorized_keys
+
+cp selinux/* /usr/share/selinux/devel
+modules=$(find /usr/share/selinux/devel -name \*.pp)
+for module in $(modules); do
+  semodule -i $module
+done

@@ -1,0 +1,12 @@
+
+policy_module(l_logrotate,0.0.1)
+
+require {
+	type logrotate_t;
+	type init_t;
+	class service reload;
+}
+
+#============= logrotate_t ==============
+allow logrotate_t init_t:service reload;
+

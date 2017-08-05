@@ -1,0 +1,10 @@
+
+policy_module(l_httpd,0.0.1)
+
+require {
+	type httpd_t;
+}
+
+#============= httpd_t ==============
+corenet_tcp_connect_pop_port(httpd_t)
+
