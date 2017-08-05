@@ -86,3 +86,6 @@ modules=$(find /usr/share/selinux/devel -name \*.pp)
 for module in $(modules); do
   semodule -i $module
 done
+
+cp yum/* /etc/yum.repos.d/
+
