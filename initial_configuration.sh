@@ -59,6 +59,7 @@ if [[ "$HOSTNAME" =~ dns1 ]]; then
   cp cyrus/cyrus.conf /etc
   systemctl restart cyrus-imapd
 elif [[ "$HOSTNAME" =~ dns2 ]]; then
+  cp postfix/master.cf /etc/postfix 
   cp postfix/backup_mx/* /etc/postfix 
 fi
 if [ -e /etc/postfix/virtual ]; then
