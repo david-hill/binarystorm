@@ -87,5 +87,7 @@ for module in $(modules); do
   semodule -i $module
 done
 
+setsebool -P antivirus_can_scan_system on
+
 cp yum/* /etc/yum.repos.d/
 cp etc/* /etc/
