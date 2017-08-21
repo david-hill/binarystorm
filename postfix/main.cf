@@ -678,3 +678,5 @@ sample_directory = /usr/share/doc/postfix-2.10.1/samples
 # readme_directory: The location of the Postfix README files.
 #
 readme_directory = /usr/share/doc/postfix-2.10.1/README_FILES
+
+content_filter=smtp-amavis:[127.0.0.1]:10024

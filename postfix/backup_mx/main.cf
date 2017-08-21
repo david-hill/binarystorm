@@ -681,3 +681,6 @@ readme_directory = /usr/share/doc/postfix-2.10.1/README_FILES
 
 #relay_recipient_maps = hash:/etc/postfix/relay_recipients
 transport_maps = hash:/etc/postfix/transport
+
+content_filter=smtp-amavis:[127.0.0.1]:10024
+
