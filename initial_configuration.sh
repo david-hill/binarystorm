@@ -92,3 +92,14 @@ setsebool -P antivirus_can_scan_system on
 
 cp yum/* /etc/yum.repos.d/
 cp etc/* /etc/
+
+cp etc/clamd.d/* /etc/clamd.d
+cp etc/amavisd/* /etc/amavisd
+
+systemctl start amavisd
+systemctl start spamassassin 
+systemctl start clamd@scan 
+
+systemctl enable amavisd
+systemctl enable spamassassin 
+systemctl enable clamd@scan 
