@@ -96,6 +96,10 @@ cp etc/* /etc/
 cp etc/clamd.d/* /etc/clamd.d
 cp etc/amavisd/* /etc/amavisd
 
+touch /var/log/clamd.scan
+chown clamscan. /var/log/clamd.scan 
+restorecon -v /var/log/clamd.scan 
+
 systemctl start amavisd
 systemctl start spamassassin 
 systemctl start clamd@scan 
