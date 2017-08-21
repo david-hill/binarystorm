@@ -10,7 +10,7 @@ else
 fi
 
 yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
-yum install -y postfix bind cyrus-imapd cyrus-sasl vim bind-utils telnet httpd ntp wget net-snmp net-snmp-utils squirrelmail mod_ssl uptimed yum-utils selinux-policy-devel clamav
+yum install -y postfix bind cyrus-imapd cyrus-sasl vim bind-utils telnet httpd ntp wget net-snmp net-snmp-utils squirrelmail mod_ssl uptimed yum-utils selinux-policy-devel clamav amavisd-new
 systemctl enable cyrus-imapd
 systemctl enable httpd
 systemctl enable postfix
