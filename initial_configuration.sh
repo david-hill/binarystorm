@@ -102,6 +102,7 @@ chmod 770 /var/run/clamd.scan
 chgrp virusgroup /var/run/clamd.scan
 chown clamscan. /var/log/clamd.scan 
 restorecon -v /var/log/clamd.scan 
+usermod -G virusgroup amavis
 
 systemctl start amavisd
 systemctl start spamassassin 
