@@ -106,10 +106,14 @@ chown clamscan. /var/log/clamd.scan
 restorecon -v /var/log/clamd.scan 
 usermod -G virusgroup amavis
 
+
 systemctl start amavisd
 systemctl start spamassassin 
 systemctl start clamd@scan 
-
 systemctl enable amavisd
 systemctl enable spamassassin 
 systemctl enable clamd@scan 
+
+cp usr/lib/systemd/system/* /usr/lib/systemd/system 
+systemctl daemon-reload
+systemctl restart amavisd
