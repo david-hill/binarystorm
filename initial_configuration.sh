@@ -98,7 +98,7 @@ cp etc/clamd.d/* /etc/clamd.d
 cp etc/amavisd/* /etc/amavisd
 
 touch /var/log/clamd.scan
-chmod 770 /var/run/clamd.scan
+chmod 777 /var/run/clamd.scan
 chgrp virusgroup /var/run/clamd.scan
 chown clamscan. /var/log/clamd.scan 
 restorecon -v /var/log/clamd.scan 
