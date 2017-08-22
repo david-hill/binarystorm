@@ -117,3 +117,6 @@ systemctl enable clamd@scan
 cp usr/lib/systemd/system/* /usr/lib/systemd/system 
 systemctl daemon-reload
 systemctl restart amavisd
+
+cp etc/mail/spamassassin/* /etc/mail/spamassassin
+systemctl restart spamassassin
