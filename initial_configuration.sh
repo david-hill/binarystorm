@@ -100,6 +100,8 @@ cp etc/amavisd/* /etc/amavisd
 touch /var/log/clamd.scan
 chmod 777 /var/run/clamd.scan
 chgrp virusgroup /var/run/clamd.scan
+chgrp -R virusgroup /var/spool/amavisd
+chmod 775 /var/spool/amavisd/tmp
 chown clamscan. /var/log/clamd.scan 
 restorecon -v /var/log/clamd.scan 
 usermod -G virusgroup amavis
