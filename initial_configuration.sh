@@ -107,12 +107,12 @@ restorecon -v /var/log/clamd.scan
 usermod -G virusgroup amavis
 
 
-systemctl start amavisd
-systemctl start spamassassin 
-systemctl start clamd@scan 
 systemctl enable amavisd
+systemctl start amavisd
 systemctl enable spamassassin 
+systemctl start spamassassin 
 systemctl enable clamd@scan 
+systemctl start clamd@scan 
 
 cp usr/lib/systemd/system/* /usr/lib/systemd/system 
 systemctl daemon-reload
