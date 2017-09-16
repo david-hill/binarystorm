@@ -1,5 +1,5 @@
 
-policy_module(l_dccproc,0.0.2)
+policy_module(l_dccproc,0.0.3)
 
 require {
 	type antivirus_t;
@@ -13,6 +13,7 @@ require {
 auth_var_filetrans_cache(antivirus_t)
 files_manage_var_files(antivirus_t)
 files_rw_var_files(spamd_t)
+files_rw_var_files(antivirus_t)
 allow antivirus_t dcc_client_map_t:file write;
 allow antivirus_t dcc_var_t:dir write;
 allow antivirus_t dcc_var_t:file write;
