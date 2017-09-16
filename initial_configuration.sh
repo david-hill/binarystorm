@@ -91,6 +91,7 @@ for module in $(modules); do
   semodule -i $module
 done
 
+
 setsebool -P antivirus_can_scan_system on
 
 cp yum/* /etc/yum.repos.d/
@@ -130,3 +131,11 @@ chmod 600 /swapfile
 
 echo "/swapfile          swap            swap    defaults        0 0" >> /etc/fstab
 
+cp etc/selinux/config /etc/selinux
+
+cat /etc/selinux/config | grep ^SELINUX=enforcing
+if [ $? -eq 0 ]; then
+  setenforce 1
+else
+  setenforce 0
+fi
