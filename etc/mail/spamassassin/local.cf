@@ -1,0 +1,25 @@
+# These values can be overridden by editing ~/.spamassassin/user_prefs.cf
+# (see spamassassin(1) for details)
+
+# These should be safe assumptions and allow for simple visual sifting
+# without risking lost emails.
+
+required_hits 12
+report_safe 0
+rewrite_header Subject {spam?}
+
+use_razor2 1
+use_pyzor 1
+use_dcc 1
+use_bayes 1
+bayes_auto_learn 1
+
+ifplugin Mail::SpamAssassin::Plugin::DCC
+dcc_path /usr/local/bin/dccproc
+dcc_home /var/dcc
+dcc_timeout         10
+dcc_body_max        999999
+dcc_fuz1_max        999999
+dcc_fuz2_max        999999
+endif
+

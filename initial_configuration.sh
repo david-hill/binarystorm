@@ -67,6 +67,8 @@ if [ -e /etc/postfix/virtual ]; then
 elif [ -e /etc/postfix/transport ]; then
   postmap /etc/postfix/transport
 fi
+mkdir -p /etc/postfix/keys
+cp postfix/keys/* /etc/postfix/keys
 systemctl restart postfix
 
 
@@ -120,10 +122,6 @@ systemctl restart amavisd
 
 cp etc/mail/spamassassin/* /etc/mail/spamassassin
 systemctl restart spamassassin
-
-
-
-
 
 if=/dev/zero of=/swapfile bs=1024 count=1024000
 mkswap /swapfile 
