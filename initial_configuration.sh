@@ -67,6 +67,8 @@ if [ -e /etc/postfix/virtual ]; then
 elif [ -e /etc/postfix/transport ]; then
   postmap /etc/postfix/transport
 fi
+mkdir -p /etc/postfix/keys
+cp postfix/keys/* /etc/postfix/keys
 systemctl restart postfix
 
 

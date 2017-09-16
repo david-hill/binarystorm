@@ -684,3 +684,9 @@ transport_maps = hash:/etc/postfix/transport
 
 content_filter=smtp-amavis:[127.0.0.1]:10024
 
+smtpd_enforce_tls                = no
+smtpd_tls_loglevel               = 1
+smtpd_use_tls                    = yes
+smtpd_tls_key_file               = /etc/postfix/keys/smtpd.key
+smtpd_tls_cert_file              = /etc/postfix/keys/smtpd.cert
+

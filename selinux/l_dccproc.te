@@ -1,0 +1,12 @@
+
+policy_module(l_dccproc,0.0.1)
+
+require {
+	type antivirus_t;
+	type spamd_t;
+}
+
+auth_var_filetrans_cache(antivirus_t)
+files_manage_var_files(antivirus_t)
+files_rw_var_files(spamd_t)
+
