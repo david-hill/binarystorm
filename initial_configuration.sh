@@ -50,9 +50,12 @@ firewall-cmd --permanent --zone=public --add-port=995/tcp
 firewall-cmd --reload
 
 
-
 if [[ "$HOSTNAME" =~ dns1 ]]; then
+  mkdir -p /etc/postfix/keys
   cp postfix/* /etc/postfix 
+  openssl req -newkey rsa:4096 -nodes -sha512 -x509 -days 3650 -nodes -out /etc/postfix/keys/smtpd.cert -keyout /etc/postfix/keys/smtpd.key
+  openssl req -newkey rsa:4096 -nodes -sha512 -x509 -days 3650 -nodes -out /etc/pki/cyrus-imapd/cyrus-imapd.pem -keyout /etc/pki/cyrus-imapd/cyrus-imapd.pem
+  openssl req -newkey rsa:4096 -nodes -sha512 -x509 -days 3650 -nodes -out /etc/httpd/keys/wildcard.crt -keyout /etc/httpd/keys/wildcard.key
   cp httpd/conf/httpd.conf /etc/httpd/conf/httpd.conf
   cp httpd/conf.d/* /etc/httpd/conf.d/
   cp squirrelmail/* /etc/squirrelmail/
