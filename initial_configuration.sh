@@ -51,6 +51,19 @@ function configure_snmpd {
   fi
 }
 
+function configure_selinux {
+  cmp etc/selinux/config /etc/selinux/config
+  if [ $? -ne 0]; then
+    cp etc/selinux/config /etc/selinux
+    cat /etc/selinux/config | grep ^SELINUX=enforcing
+    if [ $? -eq 0 ]; then
+      setenforce 1
+    else
+      setenforce 0
+    fi
+  fi
+}
+
 function configure_spamassassin {
   restart=0
   for f in etc/mail/spamassassin/*; do
@@ -170,15 +183,15 @@ cp etc/yum.repos.d/* /etc/yum.repos.d/
 cp etc/hosts.deny /etc/
 
 cp etc/clamd.d/scan.conf /etc/clamd.d/scan.conf
-cp etc/amavisd/amavisd.conf /etc/amavisd/amavisd.conf
-
 touch /var/log/clamd.scan
 chmod 777 /var/run/clamd.scan
 chgrp virusgroup /var/run/clamd.scan
+restorecon -v /var/log/clamd.scan 
+
+cp etc/amavisd/amavisd.conf /etc/amavisd/amavisd.conf
 chgrp -R virusgroup /var/spool/amavisd
 chmod 775 /var/spool/amavisd/tmp
 chown clamscan. /var/log/clamd.scan 
-restorecon -v /var/log/clamd.scan 
 usermod -G virusgroup amavis
 
 enable_start amavisd
@@ -191,11 +204,5 @@ systemctl restart amavisd
 
 configure_spamassassin
 configure_swap
-cp etc/selinux/config /etc/selinux
+configure_selinux
 
-cat /etc/selinux/config | grep ^SELINUX=enforcing
-if [ $? -eq 0 ]; then
-  setenforce 1
-else
-  setenforce 0
-fi
