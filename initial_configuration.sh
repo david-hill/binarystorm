@@ -20,12 +20,20 @@ function configure_authorized_keys {
 }
 
 function configure_clamd {
-  cp etc/clamd.d/scan.conf /etc/clamd.d/scan.conf
+  restart=0
+  cmp etc/clamd.d/scan.conf /etc/clamd.d/scan.conf
+  if [ $? -ne 0 ]; then
+    cp etc/clamd.d/scan.conf /etc/clamd.d/scan.conf
+    restart=1
+  fi
   touch /var/log/clamd.scan
   chmod 777 /var/run/clamd.scan
   chgrp virusgroup /var/run/clamd.scan
   restorecon -v /var/log/clamd.scan 
   setsebool -P antivirus_can_scan_system on
+  if [ $restart -eq 1 ]; then
+    systemctl restart amavisd
+  fi
 }
 
 
@@ -60,7 +68,7 @@ function configure_named {
   for f in *.conf; do
     cmp $f /etc/named/named/$f
     if [ $? -ne 0 ]; then
-      cp * /etc/named/named
+      cp $f /etc/named/named
       restart=1
     fi
   done
@@ -189,8 +197,8 @@ if [[ "$HOSTNAME" =~ dns1 ]]; then
   cp etc/httpd/conf.d/* /etc/httpd/conf.d/
   cp etc/squirrelmail/* /etc/squirrelmail/
   systemctl restart httpd
-  cp etc/cyrus/imapd.conf /etc
-  cp etc/cyrus/cyrus.conf /etc
+  cp etc/imapd.conf /etc
+  cp etc/cyrus.conf /etc
   systemctl restart cyrus-imapd
 elif [[ "$HOSTNAME" =~ dns2 ]]; then
   cp etc/postfix/master.cf /etc/postfix 
