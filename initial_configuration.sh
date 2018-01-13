@@ -1,10 +1,37 @@
 #!/bin/bash
 
+function configure_amavisd {
+  cp etc/amavisd/amavisd.conf /etc/amavisd/amavisd.conf
+  chgrp -R virusgroup /var/spool/amavisd
+  chmod 775 /var/spool/amavisd/tmp
+  chown clamscan. /var/log/clamd.scan 
+  usermod -G virusgroup amavis
+  cmp usr/lib/systemd/system/amavisd.service /usr/lib/systemd/system/amavisd.service
+  if [ $? -ne 0 ]; then
+    cp usr/lib/systemd/system/amavisd.service /usr/lib/systemd/system 
+    systemctl daemon-reload
+    systemctl restart amavisd
+  fi
+}
+
 function configure_authorized_keys {
   cp ssh/authorized_keys /root/.ssh
   chmod 600 /root/.ssh/authorized_keys
 }
 
+function configure_clamd {
+  cp etc/clamd.d/scan.conf /etc/clamd.d/scan.conf
+  touch /var/log/clamd.scan
+  chmod 777 /var/run/clamd.scan
+  chgrp virusgroup /var/run/clamd.scan
+  restorecon -v /var/log/clamd.scan 
+  setsebool -P antivirus_can_scan_system on
+}
+
+
+function configure_hostsdeny {
+  cp etc/hosts.deny /etc/
+}
 function configure_selinux_modules {
   for f in usr/share/selinux/devel/*; do
     cmp $f /$f
@@ -100,6 +127,10 @@ function add_port {
   fi
 }
 
+function configure_yumreposd {
+  cp etc/yum.repos.d/* /etc/yum.repos.d/
+}
+
 ifconfig eth0 | grep inet | grep -q 158.69.192.170
 if [ $? -eq 0 ]; then
   sed -i 's/hostname: .*/hostname: dns1.binarystorm.net/' /etc/cloud/cloud.cfg
@@ -108,6 +139,9 @@ else
   sed -i 's/hostname: .*/hostname: dns2.binarystorm.net/' /etc/cloud/cloud.cfg
   hostnamectl set-hostname dns2.binarystorm.net
 fi
+
+configure_yumreposd
+configure_hostsdeny
 
 yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
 yum install -y postfix bind cyrus-imapd cyrus-sasl vim bind-utils telnet httpd ntp wget net-snmp net-snmp-utils squirrelmail mod_ssl uptimed yum-utils selinux-policy-devel clamav amavisd-new clamav-scanner clamav-scanner-systemd clamav-update
@@ -176,33 +210,11 @@ configure_named
 configure_snmpd
 configure_authorized_keys
 configure_selinux_modules
-
-setsebool -P antivirus_can_scan_system on
-
-cp etc/yum.repos.d/* /etc/yum.repos.d/
-cp etc/hosts.deny /etc/
-
-cp etc/clamd.d/scan.conf /etc/clamd.d/scan.conf
-touch /var/log/clamd.scan
-chmod 777 /var/run/clamd.scan
-chgrp virusgroup /var/run/clamd.scan
-restorecon -v /var/log/clamd.scan 
-
-cp etc/amavisd/amavisd.conf /etc/amavisd/amavisd.conf
-chgrp -R virusgroup /var/spool/amavisd
-chmod 775 /var/spool/amavisd/tmp
-chown clamscan. /var/log/clamd.scan 
-usermod -G virusgroup amavis
-
+configure_clamd 
+configure_amavisd
 enable_start amavisd
 enable_start spamassassin
 enable_start clamd@scan
-
-cp usr/lib/systemd/system/amavisd.service /usr/lib/systemd/system 
-systemctl daemon-reload
-systemctl restart amavisd
-
 configure_spamassassin
 configure_swap
 configure_selinux
-
