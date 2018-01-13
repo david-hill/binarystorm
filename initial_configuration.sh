@@ -1,5 +1,30 @@
 #!/bin/bash
 
+function configure_named {
+  restart=0
+  cmp named/named.conf /etc/named/named.conf
+  if [ $? -ne 0 ]; then
+    cp named/named.conf /etc/named
+    restart=1
+  fi
+  
+  if [ ! -d /etc/named/named ]; then
+    mkdir -p /etc/named/named
+  fi
+  
+  cd named/named
+  for f in *.conf; do
+    cmp $f /etc/named/named/$f
+    if [ $? -ne 0 ]; then
+      cp * /etc/named/named
+      restart=1
+    fi
+  done
+  cd ../..
+  if [ $restart -eq 1 ]; then
+    systemctl restart named
+  fi
+}
 
 function enable_start {
   systemctl enable $1
@@ -43,7 +68,6 @@ if [ ! -e /etc/sasldb2 ]; then
 # cm user.dhill
 fi
 
-
 add_port 25/tcp
 add_port 53/tcp
 add_port 53/udp
@@ -85,13 +109,7 @@ mkdir -p /etc/postfix/keys
 cp postfix/keys/* /etc/postfix/keys
 systemctl restart postfix
 
-
-cp named/named.conf /etc/named
-if [ ! -d /etc/named/named ]; then
-  mkdir -p /etc/named/named
-fi
-cp named/named/* /etc/named/named
-systemctl restart named
+configure_named
 
 cp snmp/snmpd.conf /etc/snmp/snmpd.conf
 systemctl restart snmpd
