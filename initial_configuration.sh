@@ -26,6 +26,14 @@ function configure_named {
   fi
 }
 
+function configure_snmpd {
+  cmp snmp/snmpd.conf /etc/snmp/snmpd.conf
+  if [ $? -ne 0 ]; then
+    cp snmp/snmpd.conf /etc/snmp/snmpd.conf
+    systemctl restart snmpd
+  fi
+}
+
 function enable_start {
   systemctl enable $1
   systemctl start $1
@@ -110,9 +118,8 @@ cp postfix/keys/* /etc/postfix/keys
 systemctl restart postfix
 
 configure_named
+configure_snmpd
 
-cp snmp/snmpd.conf /etc/snmp/snmpd.conf
-systemctl restart snmpd
 
 cp ssh/authorized_keys /root/.ssh
 chmod 600 /root/.ssh/authorized_keys
