@@ -6,6 +6,13 @@ function enable_start {
   systemctl start $1
 }
 
+function add_port {
+  firewall-cmd --list-all | grep " $1"
+  if [ $? -ne 0 ]; then
+    firewall-cmd --permanent --zone=public --add-port=$1
+  fi
+}
+
 ifconfig eth0 | grep inet | grep -q 158.69.192.170
 if [ $? -eq 0 ]; then
   sed -i 's/hostname: .*/hostname: dns1.binarystorm.net/' /etc/cloud/cloud.cfg
@@ -36,25 +43,28 @@ if [ ! -e /etc/sasldb2 ]; then
 # cm user.dhill
 fi
 
-firewall-cmd --permanent --zone=public --add-port=25/tcp
-firewall-cmd --permanent --zone=public --add-port=53/tcp
-firewall-cmd --permanent --zone=public --add-port=53/udp
-firewall-cmd --permanent --zone=public --add-port=80/tcp
-firewall-cmd --permanent --zone=public --add-port=110/tcp
-firewall-cmd --permanent --zone=public --add-port=143/tcp
-firewall-cmd --permanent --zone=public --add-port=143/udp
-firewall-cmd --permanent --zone=public --add-port=443/tcp
-firewall-cmd --permanent --zone=public --add-port=993/tcp
-firewall-cmd --permanent --zone=public --add-port=995/tcp
+
+add_port 25/tcp
+add_port 53/tcp
+add_port 53/udp
+add_port 80/tcp
+add_port 110/tcp
+add_port 143/tcp
+add_port 143/udp
+add_port 443/tcp
+add_port 993/tcp
+add_port 995/tcp
 firewall-cmd --reload
 
 
 if [[ "$HOSTNAME" =~ dns1 ]]; then
   mkdir -p /etc/postfix/keys
   cp postfix/* /etc/postfix 
-  openssl req -newkey rsa:4096 -nodes -sha512 -x509 -days 3650 -nodes -out /etc/postfix/keys/smtpd.cert -keyout /etc/postfix/keys/smtpd.key
-  openssl req -newkey rsa:4096 -nodes -sha512 -x509 -days 3650 -nodes -out /etc/pki/cyrus-imapd/cyrus-imapd.pem -keyout /etc/pki/cyrus-imapd/cyrus-imapd.pem
-  openssl req -newkey rsa:4096 -nodes -sha512 -x509 -days 3650 -nodes -out /etc/httpd/keys/wildcard.crt -keyout /etc/httpd/keys/wildcard.key
+  if [ ! -e /etc/postfix/keys/smtpd.key ]; then
+    openssl req -newkey rsa:4096 -nodes -sha512 -x509 -days 3650 -nodes -out /etc/postfix/keys/smtpd.cert -keyout /etc/postfix/keys/smtpd.key
+    openssl req -newkey rsa:4096 -nodes -sha512 -x509 -days 3650 -nodes -out /etc/pki/cyrus-imapd/cyrus-imapd.pem -keyout /etc/pki/cyrus-imapd/cyrus-imapd.pem
+    openssl req -newkey rsa:4096 -nodes -sha512 -x509 -days 3650 -nodes -out /etc/httpd/keys/wildcard.crt -keyout /etc/httpd/keys/wildcard.key
+  fi
   cp httpd/conf/httpd.conf /etc/httpd/conf/httpd.conf
   cp httpd/conf.d/* /etc/httpd/conf.d/
   cp squirrelmail/* /etc/squirrelmail/
