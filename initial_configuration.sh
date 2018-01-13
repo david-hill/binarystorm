@@ -34,6 +34,16 @@ function configure_snmpd {
   fi
 }
 
+function configure_swap {
+  if [ ! -e /swapfile ]; then
+    if=/dev/zero of=/swapfile bs=1024 count=1024000
+    mkswap /swapfile 
+    swapon /swapfile 
+    chmod 600 /swapfile 
+    echo "/swapfile          swap            swap    defaults        0 0" >> /etc/fstab
+  fi
+}
+
 function enable_start {
   systemctl enable $1
   systemctl start $1
@@ -133,11 +143,11 @@ done
 
 setsebool -P antivirus_can_scan_system on
 
-cp yum/* /etc/yum.repos.d/
-cp etc/* /etc/
+cp etc/yum.repos.d/* /etc/yum.repos.d/
+cp etc/hosts.deny /etc/
 
-cp etc/clamd.d/* /etc/clamd.d
-cp etc/amavisd/* /etc/amavisd
+cp etc/clamd.d/scan.conf /etc/clamd.d/scan.conf
+cp etc/amavisd/amavisd.conf /etc/amavisd/amavisd.conf
 
 touch /var/log/clamd.scan
 chmod 777 /var/run/clamd.scan
@@ -152,20 +162,15 @@ enable_start amavisd
 enable_start spamassassin
 enable_start clamd@scan
 
-cp usr/lib/systemd/system/* /usr/lib/systemd/system 
+cp usr/lib/systemd/system/amavisd.service /usr/lib/systemd/system 
 systemctl daemon-reload
 systemctl restart amavisd
 
 cp etc/mail/spamassassin/* /etc/mail/spamassassin
 systemctl restart spamassassin
 
-if=/dev/zero of=/swapfile bs=1024 count=1024000
-mkswap /swapfile 
-swapon /swapfile 
-chmod 600 /swapfile 
 
-echo "/swapfile          swap            swap    defaults        0 0" >> /etc/fstab
-
+configure_swap
 cp etc/selinux/config /etc/selinux
 
 cat /etc/selinux/config | grep ^SELINUX=enforcing
