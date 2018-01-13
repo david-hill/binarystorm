@@ -136,12 +136,19 @@ systemctl restart postfix
 configure_named
 configure_snmpd
 configure_authorized_keys
+configure_selinux_modules
 
-cp selinux/* /usr/share/selinux/devel
-modules=$(find /usr/share/selinux/devel -name \*.pp)
-for module in $(modules); do
-  semodule -i $module
-done
+function configure_selinux_modules {
+  for f in usr/share/selinux/devel/*; do
+    cmp $f /$f
+    if [ $? -ne 0 ]; then  
+      cp $f /$f
+      if [[ $f =~ .pp ]]; then
+        semodule -i $module
+      fi
+    fi
+  done
+}
 
 
 setsebool -P antivirus_can_scan_system on
