@@ -1,5 +1,11 @@
 #!/bin/bash
 
+
+function enable_start {
+  systemctl enable $1
+  systemctl start $1
+}
+
 ifconfig eth0 | grep inet | grep -q 158.69.192.170
 if [ $? -eq 0 ]; then
   sed -i 's/hostname: .*/hostname: dns1.binarystorm.net/' /etc/cloud/cloud.cfg
@@ -14,28 +20,21 @@ yum install -y postfix bind cyrus-imapd cyrus-sasl vim bind-utils telnet httpd n
 
 yum update -y
 
-systemctl enable cyrus-imapd
-systemctl enable httpd
-systemctl enable postfix
-systemctl enable saslauthd
-systemctl enable ntpd
-systemctl enable named
-systemctl enable snmpd
-systemctl enable uptimed
-systemctl start cyrus-imapd
-systemctl start httpd
-systemctl start postfix
-systemctl start saslauthd
-systemctl start ntpd
-systemctl start named
-systemctl start snmpd
-systemctl start uptimed
+enable_start cyrus_imapd
+enable_start httpd
+enable_start postfix
+enable_start saslauthd
+enable_start ntpd
+enable_start named
+enable_start snmpd
+enable_start uptimed
 
-saslpasswd2 -c cyrus
-passwd cyrus
-
-cyradm -u cyrus localhost 
+if [ ! -e /etc/sasldb2 ]; then
+  saslpasswd2 -c cyrus
+  passwd cyrus
+  cyradm -u cyrus localhost 
 # cm user.dhill
+fi
 
 firewall-cmd --permanent --zone=public --add-port=25/tcp
 firewall-cmd --permanent --zone=public --add-port=53/tcp
@@ -114,13 +113,9 @@ chown clamscan. /var/log/clamd.scan
 restorecon -v /var/log/clamd.scan 
 usermod -G virusgroup amavis
 
-
-systemctl start amavisd
-systemctl start spamassassin 
-systemctl start clamd@scan 
-systemctl enable amavisd
-systemctl enable spamassassin 
-systemctl enable clamd@scan 
+enable_start amavisd
+enable_start spamassassin
+enable_start clamd@scan
 
 cp usr/lib/systemd/system/* /usr/lib/systemd/system 
 systemctl daemon-reload
