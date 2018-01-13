@@ -5,6 +5,18 @@ function configure_authorized_keys {
   chmod 600 /root/.ssh/authorized_keys
 }
 
+function configure_selinux_modules {
+  for f in usr/share/selinux/devel/*; do
+    cmp $f /$f
+    if [ $? -ne 0 ]; then  
+      cp $f /$f
+      if [[ $f =~ .pp ]]; then
+        semodule -i $module
+      fi
+    fi
+  done
+}
+
 function configure_named {
   restart=0
   cmp named/named.conf /etc/named/named.conf
@@ -36,6 +48,20 @@ function configure_snmpd {
   if [ $? -ne 0 ]; then
     cp snmp/snmpd.conf /etc/snmp/snmpd.conf
     systemctl restart snmpd
+  fi
+}
+
+function configure_spamassassin {
+  restart=0
+  for f in etc/mail/spamassassin/*; do
+    cmp $f /$f
+    if [ $? -ne 0 ]; then
+      cp $f /$f
+      restart=1
+    fi
+  done
+  if [ $restart -eq 1 ]; then
+    systemctl restart spamassassin
   fi
 }
 
@@ -138,19 +164,6 @@ configure_snmpd
 configure_authorized_keys
 configure_selinux_modules
 
-function configure_selinux_modules {
-  for f in usr/share/selinux/devel/*; do
-    cmp $f /$f
-    if [ $? -ne 0 ]; then  
-      cp $f /$f
-      if [[ $f =~ .pp ]]; then
-        semodule -i $module
-      fi
-    fi
-  done
-}
-
-
 setsebool -P antivirus_can_scan_system on
 
 cp etc/yum.repos.d/* /etc/yum.repos.d/
@@ -176,10 +189,7 @@ cp usr/lib/systemd/system/amavisd.service /usr/lib/systemd/system
 systemctl daemon-reload
 systemctl restart amavisd
 
-cp etc/mail/spamassassin/* /etc/mail/spamassassin
-systemctl restart spamassassin
-
-
+configure_spamassassin
 configure_swap
 cp etc/selinux/config /etc/selinux
 
