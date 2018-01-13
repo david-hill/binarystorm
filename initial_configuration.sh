@@ -1,5 +1,10 @@
 #!/bin/bash
 
+function configure_authorized_keys {
+  cp ssh/authorized_keys /root/.ssh
+  chmod 600 /root/.ssh/authorized_keys
+}
+
 function configure_named {
   restart=0
   cmp named/named.conf /etc/named/named.conf
@@ -123,16 +128,14 @@ if [ -e /etc/postfix/virtual ]; then
 elif [ -e /etc/postfix/transport ]; then
   postmap /etc/postfix/transport
 fi
+
 mkdir -p /etc/postfix/keys
 cp postfix/keys/* /etc/postfix/keys
 systemctl restart postfix
 
 configure_named
 configure_snmpd
-
-
-cp ssh/authorized_keys /root/.ssh
-chmod 600 /root/.ssh/authorized_keys
+configure_authorized_keys
 
 cp selinux/* /usr/share/selinux/devel
 modules=$(find /usr/share/selinux/devel -name \*.pp)
