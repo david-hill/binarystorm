@@ -46,9 +46,9 @@ function configure_selinux_modules {
 
 function configure_named {
   restart=0
-  cmp named/named.conf /etc/named/named.conf
+  cmp etc/named/named.conf /etc/named/named.conf
   if [ $? -ne 0 ]; then
-    cp named/named.conf /etc/named
+    cp etc/named/named.conf /etc/named
     restart=1
   fi
   
@@ -56,7 +56,7 @@ function configure_named {
     mkdir -p /etc/named/named
   fi
   
-  cd named/named
+  cd etc/named/named
   for f in *.conf; do
     cmp $f /etc/named/named/$f
     if [ $? -ne 0 ]; then
@@ -64,16 +64,16 @@ function configure_named {
       restart=1
     fi
   done
-  cd ../..
+  cd ../../..
   if [ $restart -eq 1 ]; then
     systemctl restart named
   fi
 }
 
 function configure_snmpd {
-  cmp snmp/snmpd.conf /etc/snmp/snmpd.conf
+  cmp etc/snmp/snmpd.conf /etc/snmp/snmpd.conf
   if [ $? -ne 0 ]; then
-    cp snmp/snmpd.conf /etc/snmp/snmpd.conf
+    cp etc/snmp/snmpd.conf /etc/snmp/snmpd.conf
     systemctl restart snmpd
   fi
 }
@@ -179,22 +179,22 @@ firewall-cmd --reload
 
 if [[ "$HOSTNAME" =~ dns1 ]]; then
   mkdir -p /etc/postfix/keys
-  cp postfix/* /etc/postfix 
+  cp etc/postfix/* /etc/postfix 
   if [ ! -e /etc/postfix/keys/smtpd.key ]; then
     openssl req -newkey rsa:4096 -nodes -sha512 -x509 -days 3650 -nodes -out /etc/postfix/keys/smtpd.cert -keyout /etc/postfix/keys/smtpd.key
     openssl req -newkey rsa:4096 -nodes -sha512 -x509 -days 3650 -nodes -out /etc/pki/cyrus-imapd/cyrus-imapd.pem -keyout /etc/pki/cyrus-imapd/cyrus-imapd.pem
     openssl req -newkey rsa:4096 -nodes -sha512 -x509 -days 3650 -nodes -out /etc/httpd/keys/wildcard.crt -keyout /etc/httpd/keys/wildcard.key
   fi
-  cp httpd/conf/httpd.conf /etc/httpd/conf/httpd.conf
-  cp httpd/conf.d/* /etc/httpd/conf.d/
-  cp squirrelmail/* /etc/squirrelmail/
+  cp etc/httpd/conf/httpd.conf /etc/httpd/conf/httpd.conf
+  cp etc/httpd/conf.d/* /etc/httpd/conf.d/
+  cp etc/squirrelmail/* /etc/squirrelmail/
   systemctl restart httpd
-  cp cyrus/imapd.conf /etc
-  cp cyrus/cyrus.conf /etc
+  cp etc/cyrus/imapd.conf /etc
+  cp etc/cyrus/cyrus.conf /etc
   systemctl restart cyrus-imapd
 elif [[ "$HOSTNAME" =~ dns2 ]]; then
-  cp postfix/master.cf /etc/postfix 
-  cp postfix/backup_mx/* /etc/postfix 
+  cp etc/postfix/master.cf /etc/postfix 
+  cp etc/postfix/backup_mx/* /etc/postfix 
 fi
 if [ -e /etc/postfix/virtual ]; then
   postmap /etc/postfix/virtual
@@ -203,7 +203,7 @@ elif [ -e /etc/postfix/transport ]; then
 fi
 
 mkdir -p /etc/postfix/keys
-cp postfix/keys/* /etc/postfix/keys
+cp etc/postfix/keys/* /etc/postfix/keys
 systemctl restart postfix
 
 configure_named
