@@ -122,7 +122,7 @@ function configure_snmpd {
 
 function configure_selinux {
   cmp etc/selinux/config /etc/selinux/config
-  if [ $? -ne 0]; then
+  if [ $? -ne 0 ]; then
     cp etc/selinux/config /etc/selinux
     cat /etc/selinux/config | grep ^SELINUX=enforcing
     if [ $? -eq 0 ]; then
