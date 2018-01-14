@@ -80,7 +80,7 @@ function configure_selinux_modules {
     if [ $? -ne 0 ]; then  
       cp $f /$f
       if [[ $f =~ .pp ]]; then
-        semodule -i $module
+        semodule -i /$f
       fi
     fi
   done
@@ -304,7 +304,6 @@ configure_yumreposd
 configure_hostsdeny
 
 install_packages_and_update
-
 
 enable_start cyrus_imapd
 enable_start httpd
