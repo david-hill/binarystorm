@@ -30,7 +30,11 @@ function configure_clamd {
   chmod 777 /var/run/clamd.scan
   chgrp virusgroup /var/run/clamd.scan
   restorecon -v /var/log/clamd.scan 
-  setsebool -P antivirus_can_scan_system on
+  getsebool -a | grep -q antivirus_can_scan_system.*off 
+  if [ $? -eq 0 ]; then
+    setsebool -P antivirus_can_scan_system on
+    restart=1
+  fi
   if [ $restart -eq 1 ]; then
     systemctl restart amavisd
   fi
