@@ -128,7 +128,7 @@ function configure_named {
     cp etc/named.conf /etc/named.conf
     restart=1
   fi
-  for f in etc/named; do
+  for f in etc/named/*; do
     cmp $f /$f
     if [ $? -ne 0 ]; then
       cp $f /$f
