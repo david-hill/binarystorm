@@ -62,18 +62,22 @@ function configure_cyrus_passwd {
   fi
 }
 
+function reload {
+  if [ $1 -eq 1 ]; then
+    reload=1
+  fi
+}
+
 function configure_firewall {
-  add_port 25/tcp
-  add_port 53/tcp
-  add_port 53/udp
-  add_port 80/tcp
-  add_port 110/tcp
-  add_port 143/tcp
-  add_port 143/udp
-  add_port 443/tcp
-  add_port 993/tcp
-  add_port 995/tcp
-  firewall-cmd --reload
+  ports="25/tcp 53/tcp 53/udp 80/tcp 110/tcp 143/tcp 143/udp 443/tcp 993/tcp 995/tcp"
+  reload=0
+  for p in $ports; do
+    add_port $p
+    reload $?
+  done
+  if [ $reload -eq 1 ]; then
+    firewall-cmd --reload
+  fi
 }
 
 function configure_hostname {
@@ -88,9 +92,7 @@ function configure_hostname {
 }
 
 function configure_hostsdeny {
-
   cp etc/hosts.deny /etc/
-  echo > /dev/null
 }
 
 function configure_selinux_modules {
@@ -200,15 +202,17 @@ function enable_start {
 }
 
 function add_port {
+  lreload=0
   firewall-cmd --list-all | grep -q " $1"
   if [ $? -ne 0 ]; then
     firewall-cmd --permanent --zone=public --add-port=$1
+    lreload=1
   fi
+ return $lreload
 }
 
 function configure_yumreposd {
   cp etc/yum.repos.d/* /etc/yum.repos.d/
-  echo > /dev/null
 }
 
 function install_package {
@@ -217,9 +221,8 @@ function install_package {
   if [ $? -ne 0 ]; then
     yum install -y $p
   fi
-   
-
 }
+
 function configure_cyrus {
   packages="cyrus-imapd cyrus-sasl"
   if [[ "$HOSTNAME" =~ dns1 ]]; then
