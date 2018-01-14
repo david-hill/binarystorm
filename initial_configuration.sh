@@ -184,12 +184,19 @@ function configure_swap {
 }
 
 function enable_start {
-  systemctl enable $1
-  systemctl start $1
+  s=$1
+  systemctl status $s | grep -q enabled
+  if [ $? -ne 0 ]; then
+    systemctl enable $s
+  fi
+  systemctl status $s | grep -q running
+  if [ $? -ne 0 ]; then
+    systemctl start $s
+  fi
 }
 
 function add_port {
-  firewall-cmd --list-all | grep " $1"
+  firewall-cmd --list-all | grep -q " $1"
   if [ $? -ne 0 ]; then
     firewall-cmd --permanent --zone=public --add-port=$1
   fi
@@ -346,18 +353,11 @@ function install_packages_and_update {
   yum update -y
 }
 
-
 configure_hostname
-
 configure_yumreposd
 configure_hostsdeny
-
 install_packages_and_update
-
-
-
 configure_firewall
-
 configure_httpd
 configure_cyrus
 configure_cyrus_passwd
@@ -372,11 +372,10 @@ configure_amavisd
 configure_spamassassin
 configure_swap
 configure_selinux
-
 enable_start amavisd
 enable_start spamassassin
 enable_start clamd@scan
-enable_start cyrus_imapd
+enable_start cyrus-imapd
 enable_start httpd
 enable_start saslauthd
 enable_start ntpd
