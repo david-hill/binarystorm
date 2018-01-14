@@ -88,7 +88,9 @@ function configure_hostname {
 }
 
 function configure_hostsdeny {
+
   cp etc/hosts.deny /etc/
+  echo > /dev/null
 }
 
 function configure_selinux_modules {
@@ -110,25 +112,27 @@ function configure_named {
     install_package $p
   done
   restart=0
-  cmp etc/named/named.conf /etc/named/named.conf
+  cmp etc/named.conf /etc/named.conf
   if [ $? -ne 0 ]; then
-    cp etc/named/named.conf /etc/named
+    cp etc/named.conf /etc/named.conf
     restart=1
   fi
   
-  if [ ! -d /etc/named/named ]; then
-    mkdir -p /etc/named/named
+  if [ ! -d /etc/named ]; then
+    mkdir -p /etc/named
   fi
-  
-  cd etc/named/named
-  for f in *.conf; do
-    cmp $f /etc/named/named/$f
+  cmp etc/named.conf /etc/named.conf
+  if [ $? -ne 0 ]; then 
+    cp etc/named.conf /etc/named.conf
+    restart=1
+  fi
+  for f in etc/named; do
+    cmp $f /$f
     if [ $? -ne 0 ]; then
-      cp $f /etc/named/named
+      cp $f /$f
       restart=1
     fi
   done
-  cd ../../..
   if [ $restart -eq 1 ]; then
     systemctl restart named
   fi
@@ -204,6 +208,7 @@ function add_port {
 
 function configure_yumreposd {
   cp etc/yum.repos.d/* /etc/yum.repos.d/
+  echo > /dev/null
 }
 
 function install_package {
@@ -230,7 +235,7 @@ function configure_cyrus {
       cp etc/imapd.conf /etc
       restart=1
     fi
-    cmp etc/cyrus.conf /etc
+    cmp etc/cyrus.conf /etc/cyrus.conf
     if [ $? -ne 0 ]; then
       cp etc/cyrus.conf /etc
       restart=1
@@ -342,7 +347,7 @@ function configure_postfix {
 }
 
 function install_packages_and_update {
-  rpm -qa | grep -q epel-release-latest
+  rpm -qa | grep -q epel-release
   if [ $? -ne 0 ]; then
     yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
   fi
