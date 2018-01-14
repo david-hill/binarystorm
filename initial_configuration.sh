@@ -1,14 +1,23 @@
 #!/bin/bash
 
 function configure_amavisd {
-  cp etc/amavisd/amavisd.conf /etc/amavisd/amavisd.conf
+  restart=0
+  install_package amavisd-new
+  cmp etc/amavisd/amavisd.conf /etc/amavisd/amavisd.conf
+  if [ $? -ne 0 ]; then
+    cp etc/amavisd/amavisd.conf /etc/amavisd/amavisd.conf
+    restart=1
+  fi
   chgrp -R virusgroup /var/spool/amavisd
   chmod 775 /var/spool/amavisd/tmp
   chown clamscan. /var/log/clamd.scan 
   usermod -G virusgroup amavis
   cmp usr/lib/systemd/system/amavisd.service /usr/lib/systemd/system/amavisd.service
   if [ $? -ne 0 ]; then
+    restart=1
     cp usr/lib/systemd/system/amavisd.service /usr/lib/systemd/system 
+  fi
+  if [ $restart -eq 1 ]; then
     systemctl daemon-reload
     systemctl restart amavisd
   fi
@@ -20,6 +29,10 @@ function configure_authorized_keys {
 }
 
 function configure_clamd {
+  packages="clamav clamav-scanner clamav-scanner-systemd clamav-update"
+  for p in $packages; do
+    install_package $p
+  done
   restart=0
   cmp etc/clamd.d/scan.conf /etc/clamd.d/scan.conf
   if [ $? -ne 0 ]; then
@@ -79,6 +92,7 @@ function configure_hostsdeny {
 }
 
 function configure_selinux_modules {
+  install_package selinux-policy-devel
   for f in usr/share/selinux/devel/*; do
     cmp $f /$f
     if [ $? -ne 0 ]; then  
@@ -91,6 +105,10 @@ function configure_selinux_modules {
 }
 
 function configure_named {
+  packages="bind bind-utils"
+  for p in $packages; do
+    install_package $p
+  done
   restart=0
   cmp etc/named/named.conf /etc/named/named.conf
   if [ $? -ne 0 ]; then
@@ -117,6 +135,10 @@ function configure_named {
 }
 
 function configure_snmpd {
+  packages="net-snmp net-snmp-utils"
+  for p in $packages; do
+    install_package $p
+  done
   cmp etc/snmp/snmpd.conf /etc/snmp/snmpd.conf
   if [ $? -ne 0 ]; then
     cp etc/snmp/snmpd.conf /etc/snmp/snmpd.conf
@@ -177,8 +199,21 @@ function configure_yumreposd {
   cp etc/yum.repos.d/* /etc/yum.repos.d/
 }
 
+function install_package {
+  p=$1
+  rpm -qa | grep -q $p
+  if [ $? -ne 0 ]; then
+    yum install -y $p
+  fi
+   
+
+}
 function configure_cyrus {
+  packages="cyrus-imapd cyrus-sasl"
   if [[ "$HOSTNAME" =~ dns1 ]]; then
+    for p in $packages; do
+      install_package $p
+    done
     restart=0
     if [ ! -e /etc/pki/cyrus-imapd/cyrus-imapd.pem ]; then
       openssl req -newkey rsa:4096 -nodes -sha512 -x509 -days 3650 -nodes -out /etc/pki/cyrus-imapd/cyrus-imapd.pem -keyout /etc/pki/cyrus-imapd/cyrus-imapd.pem
@@ -200,6 +235,7 @@ function configure_cyrus {
 }
 function configure_squirrelmail {
   if [[ "$HOSTNAME" =~ dns1 ]]; then
+    install_package squirrelmail
     restart=0
     for f in etc/squirrelmail/*; do
       cmp $f /$f
@@ -215,6 +251,8 @@ function configure_squirrelmail {
 }
 function configure_httpd {
   if [[ "$HOSTNAME" =~ dns1 ]]; then
+    install_package httpd
+    install_package mod_ssl
     restart=0
     if [ ! -e /etc/httpd/keys/wildcard.key ]; then
       mkdir -p /etc/httpd/keys
@@ -248,6 +286,7 @@ function run_postmap {
 }
 
 function configure_postfix {
+  install_package postfix
   restart=0
   if [ ! -e /etc/postfix/keys ]; then
     mkdir -p /etc/postfix/keys
@@ -296,8 +335,14 @@ function configure_postfix {
 }
 
 function install_packages_and_update {
-  yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
-  yum install -y postfix bind cyrus-imapd cyrus-sasl vim bind-utils telnet httpd ntp wget net-snmp net-snmp-utils squirrelmail mod_ssl uptimed yum-utils selinux-policy-devel clamav amavisd-new clamav-scanner clamav-scanner-systemd clamav-update
+  rpm -qa | grep -q epel-release-latest
+  if [ $? -ne 0 ]; then
+    yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+  fi
+  packages="uptimed vim yum-utils telnet wget ntp"
+  for p in $packages; do 
+    install_package $p
+  done
   yum update -y
 }
 
@@ -309,21 +354,13 @@ configure_hostsdeny
 
 install_packages_and_update
 
-enable_start cyrus_imapd
-enable_start httpd
-enable_start postfix
-enable_start saslauthd
-enable_start ntpd
-enable_start named
-enable_start snmpd
-enable_start uptimed
 
-configure_cyrus_passwd
 
 configure_firewall
 
 configure_httpd
 configure_cyrus
+configure_cyrus_passwd
 configure_squirrelmail
 configure_postfix
 configure_named
@@ -332,11 +369,17 @@ configure_authorized_keys
 configure_selinux_modules
 configure_clamd 
 configure_amavisd
+configure_spamassassin
+configure_swap
+configure_selinux
 
 enable_start amavisd
 enable_start spamassassin
 enable_start clamd@scan
-
-configure_spamassassin
-configure_swap
-configure_selinux
+enable_start cyrus_imapd
+enable_start httpd
+enable_start saslauthd
+enable_start ntpd
+enable_start named
+enable_start snmpd
+enable_start uptimed
