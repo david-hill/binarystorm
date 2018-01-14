@@ -186,52 +186,120 @@ firewall-cmd --reload
 
 function configure_cyrus {
   if [[ "$HOSTNAME" =~ dns1 ]]; then
-    cp etc/imapd.conf /etc
-    cp etc/cyrus.conf /etc
-    systemctl restart cyrus-imapd
+    restart=0
     if [ ! -e /etc/pki/cyrus-imapd/cyrus-imapd.pem ]; then
       openssl req -newkey rsa:4096 -nodes -sha512 -x509 -days 3650 -nodes -out /etc/pki/cyrus-imapd/cyrus-imapd.pem -keyout /etc/pki/cyrus-imapd/cyrus-imapd.pem
+    fi
+    cmp etc/imapd.conf /etc/imapd.conf
+    if [ $? -ne 0 ]; then
+      cp etc/imapd.conf /etc
+      restart=1
+    fi
+    cmp etc/cyrus.conf /etc
+    if [ $? -ne 0 ]; then
+      cp etc/cyrus.conf /etc
+      restart=1
+    fi
+    if [ $restart -eq 1 ]; then
+      systemctl restart cyrus-imapd
     fi
   fi
 }
 function configure_squirrelmail {
   if [[ "$HOSTNAME" =~ dns1 ]]; then
-    cp etc/squirrelmail/* /etc/squirrelmail/
-    systemctl restart httpd
+    restart=0
+    for f in etc/squirrelmail/*; do
+      cmp $f /$f
+      if [ $? -ne 0 ]; then
+       cp $f /$f
+       restart=1
+      fi
+    done
+    if [ $restart -eq 1 ]; then
+      systemctl restart httpd
+    fi
   fi
 }
 function configure_httpd {
   if [[ "$HOSTNAME" =~ dns1 ]]; then
-    mkdir -p /etc/postfix/keys
-    cp etc/postfix/* /etc/postfix 
+    restart=0
     if [ ! -e /etc/httpd/keys/wildcard.key ]; then
+      mkdir -p /etc/httpd/keys
       openssl req -newkey rsa:4096 -nodes -sha512 -x509 -days 3650 -nodes -out /etc/httpd/keys/wildcard.crt -keyout /etc/httpd/keys/wildcard.key
     fi
-    cp etc/httpd/conf/httpd.conf /etc/httpd/conf/httpd.conf
-    cp etc/httpd/conf.d/* /etc/httpd/conf.d/
+    cmp etc/httpd/conf/httpd.conf /etc/httpd/conf/httpd.conf
+    if [ $? -ne 0 ]; then
+      cp etc/httpd/conf/httpd.conf /etc/httpd/conf/httpd.conf
+      restart=1
+    fi
+    for f in etc/httpd/conf.d/*; do
+      cmp $f /$f
+      if [ $? -ne 0 ]; then
+        cp $f /$f
+        restart=1
+      fi
+    done
+    if [ $restart -eq 1 ]; then
+      systemctl restart httpd
+    fi
+  fi
+}
+
+function run_postmap {
+  f=$1
+  if [[ $f =~ virtual ]] || [[ $f =~ transport ]]; then
+    if [ -e /etc/postfix/$f ]; then
+      postmap /etc/postfix/$f
+    fi
   fi
 }
 
 function configure_postfix {
-  if [[ "$HOSTNAME" =~ dns1 ]]; then
+  restart=0
+  if [ ! -e /etc/postfix/keys ]; then
     mkdir -p /etc/postfix/keys
-    cp etc/postfix/* /etc/postfix 
+  fi
+  cmp etc/postfix/keys/smtpd.cert /etc/postfix/keys/smtpd.cert
+  if [ $? -ne 0 ]; then
+    cp etc/postfix/keys/smtpd.cert /etc/postfix/keys
+    restart=1
+  fi
+  if [[ "$HOSTNAME" =~ dns1 ]]; then
     if [ ! -e /etc/postfix/keys/smtpd.key ]; then
       openssl req -newkey rsa:4096 -nodes -sha512 -x509 -days 3650 -nodes -out /etc/postfix/keys/smtpd.cert -keyout /etc/postfix/keys/smtpd.key
     fi
+    cd etc/postfix
+    for f in *; do
+      if [ -f $f ]; then
+        cmp $f /etc/postfix/$f
+        if [ $? -ne 0 ]; then
+          cp $f /etc/postfix/$f
+          run_postmap $f
+          restart=1
+        fi
+      fi
+    done
+    cd ../../
   elif [[ "$HOSTNAME" =~ dns2 ]]; then
-    cp etc/postfix/master.cf /etc/postfix 
-    cp etc/postfix/backup_mx/* /etc/postfix 
+    cmp etc/postfix/master.cf /etc/postfix/master.cf
+    if [ $? -ne 0 ]; then
+      cp etc/postfix/master.cf /etc/postfix 
+      restart=1
+    fi
+    cd etc/postfix/backup_mx
+    for f in *; do
+      cmp $f /etc/postfix/$f
+      if [ $? -ne 0 ]; then
+        cp $f /etc/postfix/
+        run_postmap $f
+        restart=1
+      fi
+    done
+    cd ../../../
   fi
-  if [ -e /etc/postfix/virtual ]; then
-    postmap /etc/postfix/virtual
-  elif [ -e /etc/postfix/transport ]; then
-    postmap /etc/postfix/transport
+  if [ $restart -eq 1 ]; then 
+    systemctl restart postfix
   fi
-  
-  mkdir -p /etc/postfix/keys
-  cp etc/postfix/keys/* /etc/postfix/keys
-  systemctl restart postfix
 }
 
 configure_httpd
