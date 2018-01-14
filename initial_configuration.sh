@@ -36,10 +36,44 @@ function configure_clamd {
   fi
 }
 
+function configure_cyrus_passwd {
+  if [ ! -e /etc/sasldb2 ]; then
+    saslpasswd2 -c cyrus
+    passwd cyrus
+    cyradm -u cyrus localhost 
+  # cm user.dhill
+  fi
+}
+
+function configure_firewall {
+  add_port 25/tcp
+  add_port 53/tcp
+  add_port 53/udp
+  add_port 80/tcp
+  add_port 110/tcp
+  add_port 143/tcp
+  add_port 143/udp
+  add_port 443/tcp
+  add_port 993/tcp
+  add_port 995/tcp
+  firewall-cmd --reload
+}
+
+function configure_hostname {
+  ifconfig eth0 | grep inet | grep -q 158.69.192.170
+  if [ $? -eq 0 ]; then
+    sed -i 's/hostname: .*/hostname: dns1.binarystorm.net/' /etc/cloud/cloud.cfg
+    hostnamectl set-hostname dns1.binarystorm.net
+  else
+    sed -i 's/hostname: .*/hostname: dns2.binarystorm.net/' /etc/cloud/cloud.cfg
+    hostnamectl set-hostname dns2.binarystorm.net
+  fi
+}
 
 function configure_hostsdeny {
   cp etc/hosts.deny /etc/
 }
+
 function configure_selinux_modules {
   for f in usr/share/selinux/devel/*; do
     cmp $f /$f
@@ -138,51 +172,6 @@ function add_port {
 function configure_yumreposd {
   cp etc/yum.repos.d/* /etc/yum.repos.d/
 }
-
-ifconfig eth0 | grep inet | grep -q 158.69.192.170
-if [ $? -eq 0 ]; then
-  sed -i 's/hostname: .*/hostname: dns1.binarystorm.net/' /etc/cloud/cloud.cfg
-  hostnamectl set-hostname dns1.binarystorm.net
-else
-  sed -i 's/hostname: .*/hostname: dns2.binarystorm.net/' /etc/cloud/cloud.cfg
-  hostnamectl set-hostname dns2.binarystorm.net
-fi
-
-configure_yumreposd
-configure_hostsdeny
-
-yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
-yum install -y postfix bind cyrus-imapd cyrus-sasl vim bind-utils telnet httpd ntp wget net-snmp net-snmp-utils squirrelmail mod_ssl uptimed yum-utils selinux-policy-devel clamav amavisd-new clamav-scanner clamav-scanner-systemd clamav-update
-
-yum update -y
-
-enable_start cyrus_imapd
-enable_start httpd
-enable_start postfix
-enable_start saslauthd
-enable_start ntpd
-enable_start named
-enable_start snmpd
-enable_start uptimed
-
-if [ ! -e /etc/sasldb2 ]; then
-  saslpasswd2 -c cyrus
-  passwd cyrus
-  cyradm -u cyrus localhost 
-# cm user.dhill
-fi
-
-add_port 25/tcp
-add_port 53/tcp
-add_port 53/udp
-add_port 80/tcp
-add_port 110/tcp
-add_port 143/tcp
-add_port 143/udp
-add_port 443/tcp
-add_port 993/tcp
-add_port 995/tcp
-firewall-cmd --reload
 
 function configure_cyrus {
   if [[ "$HOSTNAME" =~ dns1 ]]; then
@@ -302,6 +291,34 @@ function configure_postfix {
   fi
 }
 
+function install_packages_and_update {
+  yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+  yum install -y postfix bind cyrus-imapd cyrus-sasl vim bind-utils telnet httpd ntp wget net-snmp net-snmp-utils squirrelmail mod_ssl uptimed yum-utils selinux-policy-devel clamav amavisd-new clamav-scanner clamav-scanner-systemd clamav-update
+  yum update -y
+}
+
+
+configure_hostname
+
+configure_yumreposd
+configure_hostsdeny
+
+install_packages_and_update
+
+
+enable_start cyrus_imapd
+enable_start httpd
+enable_start postfix
+enable_start saslauthd
+enable_start ntpd
+enable_start named
+enable_start snmpd
+enable_start uptimed
+
+configure_cyrus_passwd
+
+configure_firewall
+
 configure_httpd
 configure_cyrus
 configure_squirrelmail
@@ -312,9 +329,11 @@ configure_authorized_keys
 configure_selinux_modules
 configure_clamd 
 configure_amavisd
+
 enable_start amavisd
 enable_start spamassassin
 enable_start clamd@scan
+
 configure_spamassassin
 configure_swap
 configure_selinux
