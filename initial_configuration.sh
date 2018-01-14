@@ -184,36 +184,60 @@ add_port 993/tcp
 add_port 995/tcp
 firewall-cmd --reload
 
-
-if [[ "$HOSTNAME" =~ dns1 ]]; then
-  mkdir -p /etc/postfix/keys
-  cp etc/postfix/* /etc/postfix 
-  if [ ! -e /etc/postfix/keys/smtpd.key ]; then
-    openssl req -newkey rsa:4096 -nodes -sha512 -x509 -days 3650 -nodes -out /etc/postfix/keys/smtpd.cert -keyout /etc/postfix/keys/smtpd.key
-    openssl req -newkey rsa:4096 -nodes -sha512 -x509 -days 3650 -nodes -out /etc/pki/cyrus-imapd/cyrus-imapd.pem -keyout /etc/pki/cyrus-imapd/cyrus-imapd.pem
-    openssl req -newkey rsa:4096 -nodes -sha512 -x509 -days 3650 -nodes -out /etc/httpd/keys/wildcard.crt -keyout /etc/httpd/keys/wildcard.key
+function configure_cyrus {
+  if [[ "$HOSTNAME" =~ dns1 ]]; then
+    cp etc/imapd.conf /etc
+    cp etc/cyrus.conf /etc
+    systemctl restart cyrus-imapd
+    if [ ! -e /etc/pki/cyrus-imapd/cyrus-imapd.pem ]; then
+      openssl req -newkey rsa:4096 -nodes -sha512 -x509 -days 3650 -nodes -out /etc/pki/cyrus-imapd/cyrus-imapd.pem -keyout /etc/pki/cyrus-imapd/cyrus-imapd.pem
+    fi
   fi
-  cp etc/httpd/conf/httpd.conf /etc/httpd/conf/httpd.conf
-  cp etc/httpd/conf.d/* /etc/httpd/conf.d/
-  cp etc/squirrelmail/* /etc/squirrelmail/
-  systemctl restart httpd
-  cp etc/imapd.conf /etc
-  cp etc/cyrus.conf /etc
-  systemctl restart cyrus-imapd
-elif [[ "$HOSTNAME" =~ dns2 ]]; then
-  cp etc/postfix/master.cf /etc/postfix 
-  cp etc/postfix/backup_mx/* /etc/postfix 
-fi
-if [ -e /etc/postfix/virtual ]; then
-  postmap /etc/postfix/virtual
-elif [ -e /etc/postfix/transport ]; then
-  postmap /etc/postfix/transport
-fi
+}
+function configure_squirrelmail {
+  if [[ "$HOSTNAME" =~ dns1 ]]; then
+    cp etc/squirrelmail/* /etc/squirrelmail/
+    systemctl restart httpd
+  fi
+}
+function configure_httpd {
+  if [[ "$HOSTNAME" =~ dns1 ]]; then
+    mkdir -p /etc/postfix/keys
+    cp etc/postfix/* /etc/postfix 
+    if [ ! -e /etc/httpd/keys/wildcard.key ]; then
+      openssl req -newkey rsa:4096 -nodes -sha512 -x509 -days 3650 -nodes -out /etc/httpd/keys/wildcard.crt -keyout /etc/httpd/keys/wildcard.key
+    fi
+    cp etc/httpd/conf/httpd.conf /etc/httpd/conf/httpd.conf
+    cp etc/httpd/conf.d/* /etc/httpd/conf.d/
+  fi
+}
 
-mkdir -p /etc/postfix/keys
-cp etc/postfix/keys/* /etc/postfix/keys
-systemctl restart postfix
+function configure_postfix {
+  if [[ "$HOSTNAME" =~ dns1 ]]; then
+    mkdir -p /etc/postfix/keys
+    cp etc/postfix/* /etc/postfix 
+    if [ ! -e /etc/postfix/keys/smtpd.key ]; then
+      openssl req -newkey rsa:4096 -nodes -sha512 -x509 -days 3650 -nodes -out /etc/postfix/keys/smtpd.cert -keyout /etc/postfix/keys/smtpd.key
+    fi
+  elif [[ "$HOSTNAME" =~ dns2 ]]; then
+    cp etc/postfix/master.cf /etc/postfix 
+    cp etc/postfix/backup_mx/* /etc/postfix 
+  fi
+  if [ -e /etc/postfix/virtual ]; then
+    postmap /etc/postfix/virtual
+  elif [ -e /etc/postfix/transport ]; then
+    postmap /etc/postfix/transport
+  fi
+  
+  mkdir -p /etc/postfix/keys
+  cp etc/postfix/keys/* /etc/postfix/keys
+  systemctl restart postfix
+}
 
+configure_httpd
+configure_cyrus
+configure_squirrelmail
+configure_postfix
 configure_named
 configure_snmpd
 configure_authorized_keys
