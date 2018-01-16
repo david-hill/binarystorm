@@ -9,7 +9,7 @@ global $version;
 $config_version = '1.4.0';
 $config_use_color = 1;
 
-$org_name      = "davidchill.ca"
+$org_name      = "davidchill.ca";
 $org_logo      = SM_PATH . 'images/sm_logo.png';
 $org_logo_width  = '308';
 $org_logo_height = '111';
