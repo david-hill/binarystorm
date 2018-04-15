@@ -197,13 +197,15 @@ function configure_swap {
 
 function enable_start {
   s=$1
-  systemctl status $s | grep -q enabled
-  if [ $? -ne 0 ]; then
-    systemctl enable $s
-  fi
-  systemctl status $s | grep -q running
-  if [ $? -ne 0 ]; then
-    systemctl start $s
+  if $( systemctl list-unit-files | grep -q $s) ; then
+    systemctl status $s | grep -q enabled
+    if [ $? -ne 0 ]; then
+      systemctl enable $s
+    fi
+    systemctl status $s | grep -q running
+    if [ $? -ne 0 ]; then
+      systemctl start $s
+    fi
   fi
 }
 
