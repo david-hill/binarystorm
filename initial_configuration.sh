@@ -333,7 +333,7 @@ function configure_postfix {
       fi
     done
     cd ../../
-  elif [[ "$HOSTNAME" =~ dns2 ]]; then
+  elif [[ "$HOSTNAME" =~ dns2 ]] || [[ "$HOSTNAME" =~ dns3 ]]; then
     cmp etc/postfix/master.cf /etc/postfix/master.cf
     if [ $? -ne 0 ]; then
       cp etc/postfix/master.cf /etc/postfix 
