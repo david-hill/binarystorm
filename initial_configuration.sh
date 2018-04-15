@@ -86,8 +86,14 @@ function configure_hostname {
     sed -i 's/hostname: .*/hostname: dns1.binarystorm.net/' /etc/cloud/cloud.cfg
     hostnamectl set-hostname dns1.binarystorm.net
   else
-    sed -i 's/hostname: .*/hostname: dns2.binarystorm.net/' /etc/cloud/cloud.cfg
-    hostnamectl set-hostname dns2.binarystorm.net
+    ifconfig eth0 | grep inet | grep -q 145.239.80.189
+    if [ $? -eq 0 ]; then
+      sed -i 's/hostname: .*/hostname: dns3.binarystorm.net/' /etc/cloud/cloud.cfg
+      hostnamectl set-hostname dns3.binarystorm.net
+    else
+      sed -i 's/hostname: .*/hostname: dns2.binarystorm.net/' /etc/cloud/cloud.cfg
+      hostnamectl set-hostname dns2.binarystorm.net
+    fi
   fi
 }
 
@@ -181,7 +187,7 @@ function configure_spamassassin {
 
 function configure_swap {
   if [ ! -e /swapfile ]; then
-    if=/dev/zero of=/swapfile bs=1024 count=1024000
+    dd if=/dev/zero of=/swapfile bs=1024 count=1024000
     mkswap /swapfile 
     swapon /swapfile 
     chmod 600 /swapfile 
@@ -217,7 +223,7 @@ function configure_yumreposd {
 
 function install_package {
   p=$1
-  rpm -qa | grep -q $p
+  rpm -qi $p > /dev/null 2>&1
   if [ $? -ne 0 ]; then
     yum install -y $p
   fi
