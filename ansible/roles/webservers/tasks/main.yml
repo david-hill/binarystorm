@@ -1,3 +1,12 @@
+- file:
+    path: /etc/httpd/keys
+    state: directory
+    mode: 0755
+  when: enable_ssl == true
+- file:
+    path: /usr/local/apache2/cgi-bin
+    state: directory
+    mode: 0755
 - name: ensure apache is at the latest version
   yum:
     name: httpd
@@ -45,10 +54,6 @@
   notify:
   - restart apache
   when: enable_ssl == true
-- file:
-    path: /etc/httpd/keys
-    state: directory
-    mode: 0755
 - name: write the wildcard.crt file
   template:
     src: roles/webservers/tasks/files/wildcard.crt
