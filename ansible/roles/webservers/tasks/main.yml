@@ -1,0 +1,86 @@
+- name: ensure apache is at the latest version
+  yum:
+    name: httpd
+    state: latest
+- name: ensure mod_ssl is installed
+  yum:
+    name: mod_ssl
+    state: latest
+  when: enable_ssl == true
+- name: ensure perl-CGI is installed
+  yum:
+    name: perl-CGI
+    state: latest
+- name: ensure perl-DBD-MySQL is installed
+  yum:
+    name: perl-DBD-MySQL
+    state: latest
+- name: write the apache config file
+  template:
+    src: roles/webservers/tasks/files/httpd.conf
+    dest: /etc/httpd/conf/httpd.conf
+  notify:
+  - restart apache
+- name: write the virtualhost apache config file
+  template:
+    src: roles/webservers/tasks/files/test.conf
+    dest: /etc/httpd/conf.d/test.conf
+  notify:
+  - restart apache
+  when: enable_ssl == false
+- name: write the SSL virtualhost apache config file
+  template:
+    src: roles/webservers/tasks/files/test.conf.ssl
+    dest: /etc/httpd/conf.d/test.conf
+  notify:
+  - restart apache
+  when: enable_ssl == true
+- name: write the wildcard.key file
+  template:
+    src: roles/webservers/tasks/files/wildcard.key
+    dest: /etc/httpd/keys/wildcard.key
+    mode: 0644
+    owner: root
+    group: root
+  notify:
+  - restart apache
+  when: enable_ssl == true
+- name: write the wildcard.crt file
+  template:
+    src: roles/webservers/tasks/files/wildcard.crt
+    dest: /etc/httpd/keys/wildcard.crt
+    mode: 0644
+    owner: root
+    group: root
+  notify:
+  - restart apache
+  when: enable_ssl | bool
+- name: write the index.cgi file
+  template:
+    src: roles/webservers/tasks/files/index.cgi
+    dest: /usr/local/apache2/cgi-bin/index.cgi
+    mode: 0755
+    owner: root
+    group: root
+  notify:
+  - restart apache
+- name: Set httpd_can_network_connect flag on and keep it persistent across reboots
+  seboolean:
+    name: httpd_can_network_connect
+    state: yes
+    persistent: yes
+- name: ensure apache is running (and enable it at boot)
+  service:
+    name: httpd
+    state: started
+    enabled: yes
+- firewalld:
+    port: 80/tcp
+    permanent: true
+    state: enabled
+    immediate: yes
+- firewalld:
+    port: 443/tcp
+    permanent: true
+    state: enabled
+    immediate: yes

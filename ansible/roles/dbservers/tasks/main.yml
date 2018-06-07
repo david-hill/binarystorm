@@ -1,0 +1,34 @@
+- name: ensure mariadb-server is at the latest version
+  yum:
+    name: mariadb-server
+    state: latest
+- name: ensure MySQL-python is at the latest version
+  yum:
+    name: MySQL-python
+    state: latest
+- name: ensure mariadb is running (and enable it at boot)
+  service:
+    name: mariadb
+    state: started
+    enabled: yes
+- mysql_user:
+    name: "{{ db_username }}"
+    password: "{{ db_password }}"
+    priv: "*.*:ALL"
+    host: "%"
+    state: present
+    sql_log_bin: no
+- name: Create a new database with name 'test_db'
+  mysql_db:
+    name: "{{ db_name }}"
+    state: present
+- firewalld:
+    port: 3306/tcp
+    permanent: true
+    state: enabled
+    immediate: yes
+- firewalld:
+    port: 3306/udp
+    permanent: true
+    state: enabled
+    immediate: yes

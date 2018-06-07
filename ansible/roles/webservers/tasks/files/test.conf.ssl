@@ -1,0 +1,27 @@
+<VirtualHost *:80>
+  ServerName {{ domain_name }}
+  ServerAlias {{ ssl_bind_ip }}
+  RewriteEngine On
+  RewriteCond %{HTTPS} !=on
+  RewriteRule ^/?(.*) https://%{SERVER_NAME}/$1 [R,L]
+</VirtualHost>
+
+<VirtualHost {{ ssl_bind_ip }}:443>
+  DocumentRoot "/usr/local/apache2/cgi-bin"
+  ServerName {{ domain_name }}
+  ServerAlias {{ ssl_bind_ip }} {{ domain_name }}
+    <Directory /usr/local/apache2/cgi-bin>
+      Options FollowSymLinks
+      <IfModule mod_dir.c>
+        DirectoryIndex index.cgi
+        SetHandler cgi-script
+        Options +ExecCGI
+      </IfModule>
+    </Directory>
+
+  SSLEngine on
+  SSLCertificateFile /etc/httpd/keys/wildcard.crt
+  SSLCertificateKeyFile /etc/httpd/keys/wildcard.key
+
+</VirtualHost>
+

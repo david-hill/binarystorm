@@ -1,0 +1,18 @@
+all:
+  vars:
+    enable_ssl: false
+    db_name: test_db
+    db_table: test_table
+    db_username: test_user
+    db_password: test_password
+    db_hostname: ssh2.davidchill.ca
+    ssl_bind_ip: 158.69.192.170
+    bind_ip: "{{ ssl_bind_ip }}"
+    domain_name: test.davidchill.ca
+  children:
+    webservers:
+      hosts:
+        ssh1.davidchill.ca:
+    dbservers:
+      hosts:
+        ssh2.davidchill.ca:

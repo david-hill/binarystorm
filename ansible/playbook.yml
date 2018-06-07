@@ -1,0 +1,12 @@
+- hosts: all
+  remote_user: root
+  roles: 
+     - common
+- hosts: webservers
+  remote_user: root
+  roles:
+     - webservers
+- hosts: dbservers
+  remote_user: root
+  roles:
+     - dbservers

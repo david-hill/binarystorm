@@ -1,0 +1,7 @@
+- name: Enable firewalld
+  service: name=firewalld state=started enabled=yes
+- firewalld:
+    port: 22/tcp
+    permanent: true
+    state: enabled
+    immediate: yes
