@@ -24,6 +24,11 @@
   yum:
     name: perl-DBD-MySQL
     state: latest
+- name: ensure httpd is running (and enable it at boot)
+  service:
+    name: httpd
+    state: started
+    enabled: yes
 - name: write the apache config file
   template:
     src: roles/webservers/tasks/files/httpd.conf
