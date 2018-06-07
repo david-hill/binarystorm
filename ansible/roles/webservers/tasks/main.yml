@@ -45,6 +45,10 @@
   notify:
   - restart apache
   when: enable_ssl == true
+- file:
+    path: /etc/httpd/keys
+    state: directory
+    mode: 0755
 - name: write the wildcard.crt file
   template:
     src: roles/webservers/tasks/files/wildcard.crt
