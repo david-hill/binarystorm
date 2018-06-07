@@ -4,8 +4,6 @@ Installation:
    openssl req -newkey rsa:4096 -nodes -sha512 -x509 -days 3650 -nodes -out roles/webservers/tasks/files/wildcard.crt -keyout roles/webservers/tasks/files/wildcard.key
 2) edit inventory.yaml 
   all:
-    set_fact:
-      enable_ssl: true
     vars:
       enable_ssl: true                         # Disable SSL or enable it in this deployment (see limitations and todo)
       db_name: test_db                         # Ansible will use this database name to create the database
@@ -26,7 +24,6 @@ Installation:
   ansible-playbook -i inventory.yml -s playbook.yml   
 
 Todo:
-  - Add "enable_ssl" variable in order to support non-SSL deployment which could support more than one web server
   - Add some master/slave or master/master mysql replication in order to support multiple database servers
 
 Limitations: 
@@ -39,4 +36,4 @@ What it does:
   - Set a SSL vhost and a non-SSL vhost that redirect to the SSL vhost
   - Make sure selinux is not in our way
   - Enable firewall
-  - Install lots of packages
+  - Install some packages

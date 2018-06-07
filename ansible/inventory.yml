@@ -1,6 +1,6 @@
 all:
   vars:
-    enable_ssl: false
+    enable_ssl: true
     db_name: test_db
     db_table: test_table
     db_username: test_user
@@ -13,6 +13,7 @@ all:
     webservers:
       hosts:
         ssh1.davidchill.ca:
+        ssh2.davidchill.ca:
     dbservers:
       hosts:
         ssh2.davidchill.ca:
