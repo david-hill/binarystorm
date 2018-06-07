@@ -69,7 +69,7 @@ function reload {
 }
 
 function configure_firewall {
-  ports="25/tcp 53/tcp 53/udp 80/tcp 110/tcp 143/tcp 143/udp 443/tcp 993/tcp 995/tcp"
+  ports="25/tcp 53/tcp 53/udp 80/tcp 110/tcp 143/tcp 143/udp 161/udp 443/tcp 993/tcp 995/tcp"
   reload=0
   for p in $ports; do
     add_port $p
@@ -86,8 +86,14 @@ function configure_hostname {
     sed -i 's/hostname: .*/hostname: dns1.binarystorm.net/' /etc/cloud/cloud.cfg
     hostnamectl set-hostname dns1.binarystorm.net
   else
-    sed -i 's/hostname: .*/hostname: dns2.binarystorm.net/' /etc/cloud/cloud.cfg
-    hostnamectl set-hostname dns2.binarystorm.net
+    ifconfig eth0 | grep inet | grep -q 145.239.80.189
+    if [ $? -eq 0 ]; then
+      sed -i 's/hostname: .*/hostname: dns3.binarystorm.net/' /etc/cloud/cloud.cfg
+      hostnamectl set-hostname dns3.binarystorm.net
+    else
+      sed -i 's/hostname: .*/hostname: dns2.binarystorm.net/' /etc/cloud/cloud.cfg
+      hostnamectl set-hostname dns2.binarystorm.net
+    fi
   fi
 }
 
@@ -181,7 +187,7 @@ function configure_spamassassin {
 
 function configure_swap {
   if [ ! -e /swapfile ]; then
-    if=/dev/zero of=/swapfile bs=1024 count=1024000
+    dd if=/dev/zero of=/swapfile bs=1024 count=1024000
     mkswap /swapfile 
     swapon /swapfile 
     chmod 600 /swapfile 
@@ -191,13 +197,15 @@ function configure_swap {
 
 function enable_start {
   s=$1
-  systemctl status $s | grep -q enabled
-  if [ $? -ne 0 ]; then
-    systemctl enable $s
-  fi
-  systemctl status $s | grep -q running
-  if [ $? -ne 0 ]; then
-    systemctl start $s
+  if $( systemctl list-unit-files | grep -q $s) ; then
+    systemctl status $s | grep -q enabled
+    if [ $? -ne 0 ]; then
+      systemctl enable $s
+    fi
+    systemctl status $s | grep -q running
+    if [ $? -ne 0 ]; then
+      systemctl start $s
+    fi
   fi
 }
 
@@ -217,7 +225,7 @@ function configure_yumreposd {
 
 function install_package {
   p=$1
-  rpm -qa | grep -q $p
+  rpm -qi $p > /dev/null 2>&1
   if [ $? -ne 0 ]; then
     yum install -y $p
   fi
@@ -327,7 +335,7 @@ function configure_postfix {
       fi
     done
     cd ../../
-  elif [[ "$HOSTNAME" =~ dns2 ]]; then
+  elif [[ "$HOSTNAME" =~ dns2 ]] || [[ "$HOSTNAME" =~ dns3 ]]; then
     cmp etc/postfix/master.cf /etc/postfix/master.cf
     if [ $? -ne 0 ]; then
       cp etc/postfix/master.cf /etc/postfix 
@@ -354,7 +362,7 @@ function install_packages_and_update {
   if [ $? -ne 0 ]; then
     yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
   fi
-  packages="uptimed vim yum-utils telnet wget ntp"
+  packages="uptimed vim yum-utils telnet wget ntp tmux"
   for p in $packages; do 
     install_package $p
   done
