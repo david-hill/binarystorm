@@ -1,0 +1,47 @@
+- name: ensure bind is at the latest version
+  yum:
+    name: bind
+    state: latest
+- name: ensure named is running (and enable it at boot)
+  service:
+    name: named
+    state: started
+    enabled: yes
+- name: write the named config file
+  template:
+    src: roles/dnsservers/tasks/files/named.conf
+    dest: /etc/named.conf
+    mode: 0640
+  notify:
+  - reload named
+- name: write the binarystorm_net.conf config file
+  template:
+    src: roles/dnsservers/tasks/files/named/binarystorm_net.conf
+    dest: /etc/named/binarystorm_net.conf
+    mode: 0640
+  notify:
+  - reload named
+- name: write the binarystorm_org.conf config file
+  template:
+    src: roles/dnsservers/tasks/files/named/binarystorm_org.conf
+    dest: /etc/named/binarystorm_org.conf
+    mode: 0640
+  notify:
+  - reload named
+- name: write the davidchill_ca.conf config file
+  template:
+    src: roles/dnsservers/tasks/files/named/davidchill_ca.conf
+    dest: /etc/named/davidchill_ca.conf
+    mode: 0640
+  notify:
+  - reload named
+- firewalld:
+    port: 53/tcp
+    permanent: true
+    state: enabled
+    immediate: yes
+- firewalld:
+    port: 53/udp
+    permanent: true
+    state: enabled
+    immediate: yes
