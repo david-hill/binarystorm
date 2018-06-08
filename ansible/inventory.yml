@@ -17,3 +17,16 @@ all:
     dbservers:
       hosts:
         ssh2.davidchill.ca:
+    dnsservers:
+      hosts:
+        ssh1.davidchill.ca:
+        ssh2.davidchill.ca:
+        ssh3.davidchill.ca:
+    mailservers:
+      hosts:
+        ssh1.davidchill.ca:
+        ssh2.davidchill.ca:
+        ssh3.davidchill.ca:
+    imapservers:
+      hosts:
+        ssh1.davidchill.ca:

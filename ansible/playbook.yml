@@ -10,3 +10,7 @@
   remote_user: root
   roles:
      - dbservers
+- hosts: dnsservers
+  remote_user: root
+  roles:
+     - dnsservers
