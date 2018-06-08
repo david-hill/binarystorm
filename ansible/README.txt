@@ -11,7 +11,6 @@ Installation:
       db_username: test_user                   # Ansible will use this username to create it in mysql and use it in index.cgi
       db_password: test_password               # Ansible will use this password to create it in mysql and use it in index.cgi
       db_hostname: ssh2.davidchill.ca          # Ansible will use this hostname in index.cgi
-      ssl_bind_ip: 158.69.192.170              # Ansible will use this in the virtualhost definition test.conf and is required by SSL (should be your webserver IP)
       domain_name: test.davidchill.ca          # Ansible will use this in the virtualhost definition test.conf
     children:
       webservers:
