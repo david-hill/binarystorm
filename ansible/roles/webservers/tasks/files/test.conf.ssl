@@ -24,5 +24,3 @@
   SSLCertificateKeyFile /etc/httpd/keys/wildcard.key
 
 </VirtualHost>
-
-# {{ ansible_eth0.ipv4.address }}
