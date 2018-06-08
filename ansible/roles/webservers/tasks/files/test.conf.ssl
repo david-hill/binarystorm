@@ -1,15 +1,15 @@
 <VirtualHost *:80>
   ServerName {{ domain_name }}
-  ServerAlias {{ ssl_bind_ip }}
+  ServerAlias {{ ansible_eth0.ipv4.address }}
   RewriteEngine On
   RewriteCond %{HTTPS} !=on
   RewriteRule ^/?(.*) https://%{SERVER_NAME}/$1 [R,L]
 </VirtualHost>
 
-<VirtualHost {{ ssl_bind_ip }}:443>
+<VirtualHost {{ ansible_eth0.ipv4.address }}:443>
   DocumentRoot "/usr/local/apache2/cgi-bin"
   ServerName {{ domain_name }}
-  ServerAlias {{ ssl_bind_ip }} {{ domain_name }}
+  ServerAlias {{ ansible_eth0.ipv4.address }} {{ domain_name }}
     <Directory /usr/local/apache2/cgi-bin>
       Options FollowSymLinks
       <IfModule mod_dir.c>
@@ -25,3 +25,4 @@
 
 </VirtualHost>
 
+# {{ ansible_eth0.ipv4.address }}
