@@ -34,6 +34,12 @@ function configure_clamd {
     install_package $p
   done
   restart=0
+  if [ -e /var/lib/clamav/bytecode.cld ]; then
+    rm -rf /var/lib/clamav/bytecode.cld
+  fi
+  if [ -e /var/lib/clamav/main.cld ]; then
+    rm -rf /var/lib/clamav/main.cld
+  fi
   cmp etc/clamd.d/scan.conf /etc/clamd.d/scan.conf
   if [ $? -ne 0 ]; then
     cp etc/clamd.d/scan.conf /etc/clamd.d/scan.conf
