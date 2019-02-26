@@ -199,6 +199,13 @@ function configure_swap {
     chmod 600 /swapfile 
     echo "/swapfile          swap            swap    defaults        0 0" >> /etc/fstab
   fi
+  if [ ! -e /swapfile1 ]; then
+    dd if=/dev/zero of=/swapfile1 bs=1024 count=1024000
+    mkswap /swapfile1 
+    swapon /swapfile1 
+    chmod 600 /swapfile1 
+    echo "/swapfile1          swap            swap    defaults        0 0" >> /etc/fstab
+  fi
 }
 
 function enable_start {
@@ -375,6 +382,9 @@ function install_packages_and_update {
   yum update -y
 }
 
+function diff_changes {
+  for p in $( find -name \*rpmnew ); do q=${p%\.rpmnew}; diff -u $p $q;  done | less
+}
 configure_hostname
 configure_yumreposd
 configure_hostsdeny
@@ -404,3 +414,4 @@ enable_start ntpd
 enable_start named
 enable_start snmpd
 enable_start uptimed
+diff_changes
