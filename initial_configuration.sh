@@ -57,6 +57,10 @@ function configure_clamd {
   if [ $restart -eq 1 ]; then
     systemctl restart amavisd
   fi
+  if [ ! -e /var/run/clamd.scan/clamd.sock ]; then
+    touch /var/run/clamd.scan/clamd.sock
+    systemctl restart clamd@scan
+  fi
 }
 
 function configure_cyrus_passwd {
