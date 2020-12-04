@@ -325,6 +325,19 @@ function run_postmap {
   fi
 }
 
+function configure_fail2ban {
+  install_package fail2ban
+  restart=0
+  cmp etc/fail2ban/jail.conf /etc/fail2ban/jail.conf
+  if [ $? -ne 0 ]; then
+    cp etc/fail2ban/jail.conf /etc/fail2ban/jail.conf
+    restart=1
+  fi
+  if [ $restart -eq 1 ]; then 
+    systemctl restart postfix
+  fi
+}
+
 function configure_postfix {
   install_package postfix
   restart=0
@@ -397,6 +410,7 @@ configure_firewall
 configure_httpd
 configure_cyrus
 configure_cyrus_passwd
+configure_fail2ban
 configure_squirrelmail
 configure_postfix
 configure_named
@@ -411,6 +425,7 @@ configure_selinux
 enable_start amavisd
 enable_start spamassassin
 enable_start clamd@scan
+enable_start fail2ban
 enable_start cyrus-imapd
 enable_start httpd
 enable_start saslauthd
