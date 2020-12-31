@@ -45,6 +45,11 @@ function configure_clamd {
     cp etc/clamd.d/scan.conf /etc/clamd.d/scan.conf
     restart=1
   fi
+  cmp etc/clamd.d/amavisd.conf /etc/clamd.d/amavisd.conf
+  if [ $? -ne 0 ]; then
+    cp etc/clamd.d/amavisd.conf /etc/clamd.d/amavisd.conf
+    restart=1
+  fi
   touch /var/log/clamd.scan
   chmod 777 /var/run/clamd.scan
   chgrp virusgroup /var/run/clamd.scan
@@ -425,6 +430,7 @@ configure_selinux
 enable_start amavisd
 enable_start spamassassin
 enable_start clamd@scan
+enable_start clamd@amavisd
 enable_start fail2ban
 enable_start cyrus-imapd
 enable_start httpd
