@@ -201,20 +201,16 @@ function configure_spamassassin {
 }
 
 function configure_swap {
-  if [ ! -e /swapfile ]; then
-    dd if=/dev/zero of=/swapfile bs=1024 count=1024000
-    mkswap /swapfile 
-    swapon /swapfile 
-    chmod 600 /swapfile 
-    echo "/swapfile          swap            swap    defaults        0 0" >> /etc/fstab
-  fi
-  if [ ! -e /swapfile1 ]; then
-    dd if=/dev/zero of=/swapfile1 bs=1024 count=1024000
-    mkswap /swapfile1 
-    swapon /swapfile1 
-    chmod 600 /swapfile1 
-    echo "/swapfile1          swap            swap    defaults        0 0" >> /etc/fstab
-  fi
+  list="swapfile swafile1 swapfile2 swapfile3"
+  for swap in $list; do
+    if [ ! -e /$swap ]; then
+      dd if=/dev/zero of=/$swap bs=1024 count=1024000
+      mkswap /$swap 
+      swapon /$swap 
+      chmod 600 /$swap
+      echo "/$swap          swap            swap    defaults        0 0" >> /etc/fstab
+    fi
+  done
 }
 
 function enable_start {
