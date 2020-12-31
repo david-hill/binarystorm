@@ -393,7 +393,7 @@ function install_packages_and_update {
   if [ $? -ne 0 ]; then
     yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
   fi
-  packages="uptimed vim yum-utils telnet wget ntp tmux"
+  packages="uptimed vim yum-utils telnet wget ntp tmux sysstat"
   for p in $packages; do 
     install_package $p
   done
@@ -431,7 +431,7 @@ configure_swap
 configure_selinux
 enable_start amavisd
 enable_start spamassassin
-enable_start clamd@scan
+#enable_start clamd@scan
 enable_start clamd@amavisd
 enable_start fail2ban
 enable_start cyrus-imapd
