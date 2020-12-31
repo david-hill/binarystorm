@@ -403,10 +403,16 @@ function install_packages_and_update {
 function diff_changes {
   for p in $( find -name \*rpmnew ); do q=${p%\.rpmnew}; diff -u $p $q;  done | less
 }
+
+function resize_disk {
+  growpart /dev/sda 1
+  resize2fs /dev/sda
+}
 configure_hostname
 configure_yumreposd
 configure_hostsdeny
 install_packages_and_update
+resize_disk
 configure_firewall
 configure_httpd
 configure_cyrus
