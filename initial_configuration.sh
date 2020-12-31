@@ -201,7 +201,7 @@ function configure_spamassassin {
 }
 
 function configure_swap {
-  list="swapfile swafile1 swapfile2 swapfile3"
+  list="swapfile swapfile1 swapfile2 swapfile3"
   for swap in $list; do
     if [ ! -e /$swap ]; then
       dd if=/dev/zero of=/$swap bs=1024 count=1024000
