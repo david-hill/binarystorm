@@ -66,6 +66,9 @@ function configure_clamd {
     touch /var/run/clamd.scan/clamd.sock
     systemctl restart clamd@scan
   fi
+  if [ -e /var/run/clamd.scan/clamd.sock ]; then
+    chown amavis:virusgroup /var/run/clamd.scan/clamd.sock
+  fi
 }
 
 function configure_cyrus_passwd {
