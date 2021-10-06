@@ -63,11 +63,21 @@ function configure_clamd {
     systemctl restart amavisd
   fi
   if [ ! -e /var/run/clamd.scan/clamd.sock ]; then
-    touch /var/run/clamd.scan/clamd.sock
+    python -c "import socket as s; sock = s.socket(s.AF_UNIX); sock.bind('/var/run/clamd.scan/clamd.sock')"
     systemctl restart clamd@scan
   fi
   if [ -e /var/run/clamd.scan/clamd.sock ]; then
     chown amavis:virusgroup /var/run/clamd.scan/clamd.sock
+    chmod 666 /var/run/clamd.scan/clamd.sock
+  fi
+  cmp usr/lib/systemd/system/clamd@.service /usr/lib/systemd/system/
+  if [ $? -ne 0 ]; then
+    restart=1
+    cp usr/lib/systemd/system/clamd@.service /usr/lib/systemd/system 
+  fi
+  if [ $restart -eq 1 ]; then
+    systemctl daemon-reload
+    systemctl restart amavisd
   fi
 }
 
