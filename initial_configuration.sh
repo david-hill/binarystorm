@@ -270,7 +270,7 @@ function configure_cyrus {
     done
     restart=0
     if [ ! -e /etc/pki/cyrus-imapd/cyrus-imapd.pem ]; then
-      openssl req -newkey rsa:4096 -nodes -sha512 -x509 -days 3650 -nodes -out /etc/pki/cyrus-imapd/cyrus-imapd.pem -keyout /etc/pki/cyrus-imapd/cyrus-imapd.pem
+      openssl req -newkey rsa:4096 -extensions 'extendedkey' -nodes -sha512 -x509 -days 825 -nodes -out /etc/pki/cyrus-imapd/cyrus-imapd.pem -keyout /etc/pki/cyrus-imapd/cyrus-imapd.pem
     fi
     cmp etc/imapd.conf /etc/imapd.conf
     if [ $? -ne 0 ]; then
@@ -310,7 +310,7 @@ function configure_httpd {
     restart=0
     if [ ! -e /etc/httpd/keys/wildcard.key ]; then
       mkdir -p /etc/httpd/keys
-      openssl req -newkey rsa:4096 -nodes -sha512 -x509 -days 3650 -nodes -out /etc/httpd/keys/wildcard.crt -keyout /etc/httpd/keys/wildcard.key
+      openssl req -newkey rsa:4096 -extensions 'extendedkey' -nodes -sha512 -x509 -days 825 -nodes -out /etc/httpd/keys/wildcard.crt -keyout /etc/httpd/keys/wildcard.key
     fi
     cmp etc/httpd/conf/httpd.conf /etc/httpd/conf/httpd.conf
     if [ $? -ne 0 ]; then
@@ -365,7 +365,7 @@ function configure_postfix {
   fi
   if [[ "$HOSTNAME" =~ dns1 ]]; then
     if [ ! -e /etc/postfix/keys/smtpd.key ]; then
-      openssl req -newkey rsa:4096 -nodes -sha512 -x509 -days 3650 -nodes -out /etc/postfix/keys/smtpd.cert -keyout /etc/postfix/keys/smtpd.key
+      openssl req -newkey rsa:4096 -extensions 'extendedkey' -nodes -sha512 -x509 -days 825 -nodes -out /etc/postfix/keys/smtpd.cert -keyout /etc/postfix/keys/smtpd.key
     fi
     cd etc/postfix
     for f in *; do
