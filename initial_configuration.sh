@@ -352,6 +352,13 @@ function configure_fail2ban {
   fi
 }
 
+function configure_openssl {
+  cmp etc/pki/tls/openssl.cnf /etc/pki/tls/openssl.cnf
+  if [ $? -ne 0 ]; then
+    cp etc/pki/tls/openssl.cnf /etc/pki/tls/openssl.cnf
+  fi
+}
+
 function configure_postfix {
   install_package postfix
   restart=0
@@ -428,6 +435,7 @@ install_packages_and_update
 resize_disk
 configure_firewall
 configure_httpd
+configure_openssl
 configure_cyrus
 configure_cyrus_passwd
 configure_fail2ban
