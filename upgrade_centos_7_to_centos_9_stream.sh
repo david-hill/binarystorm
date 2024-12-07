@@ -79,4 +79,5 @@ rpm -e --nodeps man-pages-fr iptables-ebtables
 sudo dnf install -y https://mirror.stream.centos.org/9-stream/BaseOS/x86_64/os/Packages/centos-stream-release-9.0-22.el9.noarch.rpm https://mirror.stream.centos.org/9-stream/BaseOS/x86_64/os/Packages/centos-gpg-keys-9.0-22.el9.noarch.rpm https://mirror.stream.centos.org/9-stream/BaseOS/x86_64/os/Packages/centos-stream-repos-9.0-22.el9.noarch.rpm
 sudo dnf --releasever=9 --allowerasing --setopt=deltarpm=false distro-sync -y
 sudo dnf -y upgrade https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
-sudo dnf -y install spamasssin
+sudo rpm --rebuilddb
+sudo dnf -y install spamassin amavis
