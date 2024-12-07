@@ -4,7 +4,7 @@ sudo mv /etc/yum.repos.d/*.repo /root/backup_7
 sudo dnf install http://vault.centos.org/8.5.2111/BaseOS/x86_64/os/Packages/{centos-linux-repos-8-3.el8.noarch.rpm,centos-linux-release-8.5-1.2111.el8.noarch.rpm,centos-gpg-keys-8-3.el8.noarch.rpm}
 sudo dnf clean all
 sudo rpm -e `rpm -q kernel`
-sudo rpm -e --nodeps sysvinit-tools
+sudo rpm -e --nodeps sysvinit-tools man-pages
 
 cat << EOF > /etc/yum.repos.d/centos.repo
 [appstream]
