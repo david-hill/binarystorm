@@ -79,7 +79,7 @@ sudo dnf install -y https://mirror.stream.centos.org/9-stream/BaseOS/x86_64/os/P
 sudo dnf --releasever=9 --allowerasing --setopt=deltarpm=false distro-sync -y
 sudo dnf -y upgrade https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
 sudo rpm --rebuilddb
-sudo dnf -y install spamassin amavis vim fail2ban git bind bind-utils net-snmp uptimed pyzor
+sudo dnf -y install spamassin amavis vim fail2ban git bind bind-utils net-snmp uptimed pyzor httpd
 sudo cp /etc/named.conf.rpmsave /etc/named.conf
 sudo cp /etc/amavisd/amavisd.conf.rpmsave /etc/amavisd/amavisd.conf
 sudo cp /etc/mail/spamassassin/local.cf.rpmsave /etc/mail/spamassassin/local.cf
