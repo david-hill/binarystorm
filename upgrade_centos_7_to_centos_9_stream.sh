@@ -81,6 +81,7 @@ sudo dnf -y upgrade https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.
 sudo rpm --rebuilddb
 sudo dnf -y install spamassin amavis vim fail2ban git bind bind-utils
 sudo cp /etc/named.conf.rpmsave /etc/named.conf
+sudo cp /etc/amavisd/amavisd.conf.rpmsave /etc/amavisd/amavisd.conf
 sudo mkdir /var/lib/razor
 sudo systemctl enable amavisd fail2ban spamassassin named
 sudo systemctl start amavisd fail2ban spamassassin named
