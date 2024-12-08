@@ -342,6 +342,15 @@ function run_postmap {
   fi
 }
 
+function configure_sshd {
+  setsebool -P ssh_use_tcpd=1
+  systemctl stop sshd
+  systemctl disable sshd
+  systemctl enable --now sshd.socket
+  cp usr/lib/systemd/system/sshd.service /usr/lib/systemd/system/
+  systemctl daemon-reload
+}
+
 function configure_fail2ban {
   /usr/bin/razor-admin  -register
 }
@@ -457,6 +466,7 @@ configure_cyrus
 configure_cyrus_passwd
 configure_fail2ban
 configure_squirrelmail
+configure_sshd
 configure_postfix
 configure_named
 configure_snmpd
