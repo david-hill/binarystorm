@@ -200,6 +200,7 @@ function configure_selinux {
 }
 
 function configure_spamassassin {
+  install_package spamassassin
   restart=0
   for f in etc/mail/spamassassin/*; do
     cmp $f /$f
@@ -270,6 +271,8 @@ function configure_cyrus {
     done
     restart=0
     if [ ! -e /etc/pki/cyrus-imapd/cyrus-imapd.pem ]; then
+      openssl req  -new -extensions 'extendedkey' -nodes -sha512  -days 398 -key /etc/pki/cyrus-imapd/cyrus-imapd.key -nodes -out /etc/pki/cyrus-imapd/cyrus-imapd.csr
+
       openssl req -newkey rsa:4096 -extensions 'extendedkey' -nodes -sha512 -x509 -days 825 -nodes -out /etc/pki/cyrus-imapd/cyrus-imapd.pem -keyout /etc/pki/cyrus-imapd/cyrus-imapd.pem
     fi
     cmp etc/imapd.conf /etc/imapd.conf
@@ -411,15 +414,24 @@ function configure_postfix {
 function install_packages_and_update {
   rpm -qa | grep -q epel-release
   if [ $? -ne 0 ]; then
-    yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+    dnf -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
   fi
-  packages="uptimed vim yum-utils telnet wget ntp tmux sysstat"
+  packages="uptimed vim yum-utils telnet wget ntp tmux sysstat gcc"
   for p in $packages; do 
     install_package $p
   done
   yum update -y
 }
 
+function install_dcc {
+  cd /tmp
+  wget https://www.dcc-servers.net/dcc/source/dcc.tar.Z
+  tar xvf dcc.tar.Z
+  cd dcc-2.3.169
+  ./configure
+  make
+  make install
+}
 function diff_changes {
   for p in $( find -name \*rpmnew ); do q=${p%\.rpmnew}; diff -u $p $q;  done | less
 }
@@ -432,6 +444,7 @@ configure_hostname
 configure_yumreposd
 configure_hostsdeny
 install_packages_and_update
+install_dcc
 resize_disk
 configure_firewall
 configure_httpd
