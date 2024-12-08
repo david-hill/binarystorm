@@ -82,6 +82,8 @@ sudo rpm --rebuilddb
 sudo dnf -y install spamassin amavis vim fail2ban git bind bind-utils
 sudo cp /etc/named.conf.rpmsave /etc/named.conf
 sudo cp /etc/amavisd/amavisd.conf.rpmsave /etc/amavisd/amavisd.conf
+sudo cp /etc/mail/spamassassin/local.cf.rpmsave /etc/mail/spamassassin/local.cf
+sudo cp /etc/mail/spamassassin/v310.pre.rpmsave /etc/mail/spamassassin/v310.pre
 sudo mkdir /var/lib/razor
 sudo systemctl enable amavisd fail2ban spamassassin named
 sudo systemctl start amavisd fail2ban spamassassin named
