@@ -91,3 +91,10 @@ sudo mkdir /var/lib/razor
 sudo /usr/bin/razor-admin  -register
 sudo systemctl enable amavisd fail2ban spamassassin named snmpd uptimed
 sudo systemctl start amavisd fail2ban spamassassin named snmpd uptimed 
+sudo setsebool -P ssh_use_tcpd=1
+sudo systemctl stop sshd
+sudo systemctl disable sshd
+sudo cp etc/hosts.deny /etc/hosts.deny
+sudo systemctl enable --now sshd.socket
+sudo cp usr/lib/systemd/system/sshd.service /usr/lib/systemd/system/sshd.service
+sudo systemctl daemon-reload
