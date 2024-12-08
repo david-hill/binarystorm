@@ -85,6 +85,8 @@ sudo cp /etc/amavisd/amavisd.conf.rpmsave /etc/amavisd/amavisd.conf
 sudo cp /etc/mail/spamassassin/local.cf.rpmsave /etc/mail/spamassassin/local.cf
 sudo cp /etc/mail/spamassassin/v310.pre.rpmsave /etc/mail/spamassassin/v310.pre
 sudo cp /etc/snmp/snmpd.conf.rpmsave /etc/snmp/snmpd.conf
+sudo cp /etc/clamd.d/scan.conf.rpmnew /etc/clamd.d/scan.conf
+sudo cp /etc/clamd.d/amavisd.conf.rpmsave /etc/clamd.d/amavisd.conf
 sudo mkdir /var/lib/razor
 sudo /usr/bin/razor-admin  -register
 sudo systemctl enable amavisd fail2ban spamassassin named snmpd uptimed
