@@ -11,4 +11,4 @@
 #		for information on rule syntax.
 #		See 'man tcpd' for information on tcp_wrappers
 #
-sshd: PARANOID
+ALL: PARANOID
