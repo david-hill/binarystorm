@@ -343,6 +343,10 @@ function run_postmap {
 }
 
 function configure_fail2ban {
+  /usr/bin/razor-admin  -register
+}
+
+function configure_fail2ban {
   install_package fail2ban
   restart=0
   cmp etc/fail2ban/jail.conf /etc/fail2ban/jail.conf
@@ -460,6 +464,7 @@ configure_authorized_keys
 configure_selinux_modules
 configure_clamd 
 configure_amavisd
+configure_razor
 configure_spamassassin
 configure_swap
 configure_selinux
