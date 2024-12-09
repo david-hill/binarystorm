@@ -89,8 +89,8 @@ sudo cp /etc/clamd.d/scan.conf.rpmnew /etc/clamd.d/scan.conf
 sudo cp /etc/clamd.d/amavisd.conf.rpmsave /etc/clamd.d/amavisd.conf
 sudo mkdir /var/lib/razor
 sudo /usr/bin/razor-admin  -register
-sudo systemctl enable amavisd fail2ban spamassassin named snmpd uptimed
-sudo systemctl start amavisd fail2ban spamassassin named snmpd uptimed 
+sudo systemctl enable amavisd fail2ban spamassassin named snmpd uptimed clamav-freshclam.service
+sudo systemctl start amavisd fail2ban spamassassin named snmpd uptimed clamav-freshclam.service
 sudo setsebool -P ssh_use_tcpd=1
 sudo systemctl stop sshd
 sudo systemctl disable sshd
