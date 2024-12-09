@@ -96,5 +96,6 @@ sudo systemctl stop sshd
 sudo systemctl disable sshd
 sudo cp etc/hosts.deny /etc/hosts.deny
 sudo systemctl enable --now sshd.socket
-sudo cp usr/lib/systemd/system/sshd.service /usr/lib/systemd/system/sshd.service
+sudo mkdir -p /etc/systemd/system/sshd@.service.d/
+sudo cp etc/systemd/system/sshd@.service.d/override.conf /etc/systemd/system/sshd@.service.d/override.conf
 sudo systemctl daemon-reload

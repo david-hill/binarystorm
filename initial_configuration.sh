@@ -347,7 +347,8 @@ function configure_sshd {
   systemctl stop sshd
   systemctl disable sshd
   systemctl enable --now sshd.socket
-  cp usr/lib/systemd/system/sshd.service /usr/lib/systemd/system/
+  mkdir -p /etc/systemd/system/sshd@.service.d/
+  sudo cp etc/systemd/system/sshd@.service.d/override.conf /etc/systemd/system/sshd@.service.d/override.conf
   systemctl daemon-reload
 }
 
