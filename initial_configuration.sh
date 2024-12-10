@@ -441,10 +441,16 @@ function install_dcc {
   cd /tmp
   wget https://www.dcc-servers.net/dcc/source/dcc.tar.Z
   tar xvf dcc.tar.Z
-  cd dcc-2.3.169
-  ./configure
-  make
-  make install
+  tdn=$(tar tvf dcc.tar.Z | awk '{ print $6 }' | tail -1 |xargs dirname)
+  if [ ! -e /root/.${tdn} ]; then
+    touch /root/.${tdn}
+    cd ${tdn}
+    ./configure
+    make
+    make install
+  fi
+  rm -rf ${tdn}
+  rm -rf dcc.tar.Z
 }
 function diff_changes {
   for p in $( find -name \*rpmnew ); do q=${p%\.rpmnew}; diff -u $p $q;  done | less
