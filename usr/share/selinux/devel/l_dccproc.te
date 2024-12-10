@@ -18,4 +18,3 @@ allow antivirus_t dcc_var_t:dir { write };
 allow antivirus_t dcc_var_t:file { map write };
 allow spamd_t dcc_client_map_t:file { getattr lock map open read write };
 allow spamd_t dcc_var_t:file { getattr map lock open read write };
-
