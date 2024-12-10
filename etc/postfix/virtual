@@ -292,6 +292,9 @@
 #        Yorktown Heights, NY 10598, USA
 # 
 #                                                                     VIRTUAL(5)
+@dns1.binarystorm.net   dhill
+@dns2.binarystorm.net   dhill
+@dns3.binarystorm.net   dhill
 @binarystorm.net	dhill
 @binarystorm.org	dhill
 @davidchill.ca	dhill
