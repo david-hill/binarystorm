@@ -1,11 +1,11 @@
-policy_module(l_dccproc,0.0.4)
+policy_module(l_dccproc,0.0.6)
 
 require {
 	type antivirus_t;
 	type dcc_var_t;
 	type dcc_client_map_t;
 	type spamd_t;
-	class file { getattr lock open read write };
+	class file { getattr lock map open read write };
 	class dir write;
 }
 
@@ -13,8 +13,9 @@ auth_var_filetrans_cache(antivirus_t)
 files_manage_var_files(antivirus_t)
 files_rw_var_files(spamd_t)
 files_rw_var_files(antivirus_t)
-allow antivirus_t dcc_client_map_t:file write;
-allow antivirus_t dcc_var_t:dir write;
-allow antivirus_t dcc_var_t:file write;
-allow spamd_t dcc_client_map_t:file { getattr lock open read write };
-allow spamd_t dcc_var_t:file { getattr lock open read write };
+allow antivirus_t dcc_client_map_t:file { map write };
+allow antivirus_t dcc_var_t:dir { write };
+allow antivirus_t dcc_var_t:file { map write };
+allow spamd_t dcc_client_map_t:file { getattr lock map open read write };
+allow spamd_t dcc_var_t:file { getattr map lock open read write };
+
