@@ -35,6 +35,7 @@ enabled=0
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-centosofficial
 EOF
 sudo dnf -y remove dracut-network vim-common yum yum-metadata-parser
+sudo mv /etc/yum /etc/yum.old
 sudo dnf -y --releasever=8 --allowerasing --setopt=deltarpm=false distro-sync --disablerepo=appstream
 sudo dnf -y --releasever=8 --allowerasing --setopt=deltarpm=false distro-sync
 sudo dnf -y groupupdate "Core" "Minimal Install"
@@ -110,7 +111,7 @@ sudo dnf -y upgrade https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.
 sudo rpm --rebuilddb
 sudo systemctl stop clamd@scan.service
 sudo systemctl stop clamd@amavisd.service
-sudo dnf -y install spamassassin amavis vim fail2ban git bind bind-utils net-snmp uptimed pyzor httpd tcp_wrappers
+sudo dnf -y install spamassassin amavis vim fail2ban git bind bind-utils net-snmp uptimed pyzor httpd tcp_wrappers yum
 sudo cp /etc/named.conf.rpmsave /etc/named.conf
 sudo cp /etc/amavisd/amavisd.conf.rpmsave /etc/amavisd/amavisd.conf
 sudo cp /etc/mail/spamassassin/local.cf.rpmsave /etc/mail/spamassassin/local.cf
@@ -123,6 +124,7 @@ sudo /usr/bin/razor-admin  -register
 sudo systemctl enable amavisd fail2ban spamassassin named snmpd uptimed clamav-freshclam.service sshd clamd@amavisd.service
 sudo systemctl start amavisd fail2ban spamassassin named snmpd uptimed clamav-freshclam.service sshd clamd@amavisd.service
 sudo setsebool -P ssh_use_tcpd=1
+sudo setsebool -P antivirus_can_scan_system=1
 sudo systemctl stop sshd
 sudo systemctl disable sshd
 sudo cp etc/hosts.deny /etc/hosts.deny
