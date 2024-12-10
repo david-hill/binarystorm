@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 
 function configure_amavisd {
   restart=0
