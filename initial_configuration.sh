@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 
 function configure_amavisd {
   restart=0
@@ -352,7 +352,7 @@ function configure_sshd {
   systemctl daemon-reload
 }
 
-function configure_fail2ban {
+function configure_razor {
   /usr/bin/razor-admin  -register
 }
 
