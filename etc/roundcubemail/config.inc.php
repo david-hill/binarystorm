@@ -33,10 +33,17 @@ $config['db_dsnw'] = 'sqlite:////var/lib/sql/roundcubemail.db?mode=0646';
 // For example %n = mail.domain.tld, %t = domain.tld
 // WARNING: After hostname change update of mail_host column in users table is
 //          required to match old user data records with the new host.
-$config['default_host'] = 'dns1.davidchill.ca';
+$config['default_host'] = 'ssl://dns1.davidchill.ca';
 
 // TCP port used for IMAP connections
-$config['default_port'] = 143;
+$config['default_port'] = 993;
+
+// Don't verify peer, it's local and apparently broken somehow
+$config['imap_conn_options'] = array(
+          'tls'         => array(
+                       'verify_peer'  => false,
+                                    ),
+           );
 
 // ----------------------------------
 // SMTP
