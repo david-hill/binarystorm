@@ -111,7 +111,7 @@ sudo dnf -y upgrade https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.
 sudo rpm --rebuilddb
 sudo systemctl stop clamd@scan.service
 sudo systemctl stop clamd@amavisd.service
-sudo dnf -y install spamassassin amavis vim fail2ban git bind bind-utils net-snmp uptimed pyzor httpd tcp_wrappers yum
+sudo dnf -y install spamassassin amavis vim fail2ban git bind bind-utils net-snmp uptimed pyzor httpd tcp_wrappers yum roundcubemail.noarch
 sudo cp /etc/named.conf.rpmsave /etc/named.conf
 sudo cp /etc/amavisd/amavisd.conf.rpmsave /etc/amavisd/amavisd.conf
 sudo cp /etc/mail/spamassassin/local.cf.rpmsave /etc/mail/spamassassin/local.cf
