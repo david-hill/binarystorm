@@ -263,6 +263,27 @@ function install_package {
   fi
 }
 
+function configure_roundcubemail {
+  install_package roundcubemail
+  restart=0
+  cmp etc/roundcubemail/config.inc.php /etc/roundcubemail/config.inc.php
+  if [ $? -ne 0 ]; then
+    cp etc/roundcubemail/config.inc.php /etc/roundcubemail/config.inc.php
+  fi
+  cmp etc/httpd/conf.d/roundcubemail.conf /etc/httpd/conf.d/roundcubemail.conf
+  if [ $? -ne 0 ]; then
+    cp etc/httpd/conf.d/roundcubemail.conf /etc/httpd/conf.d/roundcubemail.conf
+    restart=1
+  fi
+  if [ $restart -eq ]; then
+    systemctl restart httpd
+  fi
+  if [ ! -e /var/lib/sql/roundcubemail.db ]; then
+    mkdir /var/lib/sql
+    sqlite3 /var/lib/sql/roundcubemail.db < /usr/share/roundcubemail/SQL/sqlite.initial.sql
+    chown apache:apache /var/lib/sql -R
+  fi
+}
 function configure_cyrus {
   packages="cyrus-imapd cyrus-sasl"
   if [[ "$HOSTNAME" =~ dns1 ]]; then
