@@ -111,7 +111,7 @@ sudo dnf -y upgrade https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.
 sudo rpm --rebuilddb
 sudo systemctl stop clamd@scan.service
 sudo systemctl stop clamd@amavisd.service
-sudo dnf -y install spamassassin amavis vim fail2ban git bind bind-utils net-snmp uptimed pyzor httpd tcp_wrappers yum mod_ssl roundcubemail.noarch whois net-snmp-utils clamav-freshclam clamd
+sudo dnf -y install spamassassin amavis vim fail2ban git bind bind-utils net-snmp uptimed pyzor httpd tcp_wrappers yum mod_ssl roundcubemail.noarch whois net-snmp-utils clamav-freshclam clamd cyrus-imapd cyrus-imapd rpmconf
 sudo cp /etc/named.conf.rpmsave /etc/named.conf
 sudo cp /etc/amavisd/amavisd.conf.rpmsave /etc/amavisd/amavisd.conf
 sudo cp /etc/mail/spamassassin/local.cf.rpmsave /etc/mail/spamassassin/local.cf
@@ -119,10 +119,12 @@ sudo cp /etc/mail/spamassassin/v310.pre.rpmsave /etc/mail/spamassassin/v310.pre
 sudo cp /etc/snmp/snmpd.conf.rpmsave /etc/snmp/snmpd.conf
 sudo cp /etc/clamd.d/scan.conf.rpmnew /etc/clamd.d/scan.conf
 sudo cp /etc/clamd.d/amavisd.conf.rpmsave /etc/clamd.d/amavisd.conf
+sudo cp /etc/cyrus.conf.rpmsave /etc/cyrus.conf
+sudo cp /etc/imapd.conf.rpmsave /etc/imapd.conf
 sudo mkdir /var/lib/razor
 sudo /usr/bin/razor-admin  -register
-sudo systemctl enable amavisd fail2ban spamassassin named snmpd uptimed clamav-freshclam.service sshd clamd@amavisd.service
-sudo systemctl start amavisd fail2ban spamassassin named snmpd uptimed clamav-freshclam.service sshd clamd@amavisd.service
+sudo systemctl enable amavisd fail2ban spamassassin named snmpd uptimed clamav-freshclam.service sshd clamd@amavisd.service cyrus-imapd
+sudo systemctl start amavisd fail2ban spamassassin named snmpd uptimed clamav-freshclam.service sshd clamd@amavisd.service cyrus-imapd
 sudo setsebool -P ssh_use_tcpd=1
 sudo setsebool -P antivirus_can_scan_system=1
 sudo systemctl stop sshd
