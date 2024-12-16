@@ -114,6 +114,7 @@ sudo systemctl stop clamd@amavisd.service
 sudo dnf -y install spamassassin amavis vim fail2ban git bind bind-utils net-snmp uptimed pyzor httpd tcp_wrappers yum mod_ssl roundcubemail.noarch whois net-snmp-utils clamav-freshclam clamd cyrus-imapd cyrus-imapd rpmconf
 sudo cp /etc/named.conf.rpmsave /etc/named.conf
 sudo cp /etc/amavisd/amavisd.conf.rpmsave /etc/amavisd/amavisd.conf
+sudo cp /etc/fail2ban/jail.conf.rpmsave /etc/fail2ban/jail.conf
 sudo cp /etc/mail/spamassassin/local.cf.rpmsave /etc/mail/spamassassin/local.cf
 sudo cp /etc/mail/spamassassin/v310.pre.rpmsave /etc/mail/spamassassin/v310.pre
 sudo cp /etc/snmp/snmpd.conf.rpmsave /etc/snmp/snmpd.conf
