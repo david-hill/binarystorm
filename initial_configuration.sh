@@ -280,6 +280,8 @@ function configure_roundcubemail {
   fi
   if [ ! -e /var/lib/sql/roundcubemail.db ]; then
     mkdir /var/lib/sql
+    semanage fcontext -a '/var/lib/sql(/.*)?' -t httpd_sys_rw_content_t
+    restorecon -R -v -F /var/lib/sql
     sqlite3 /var/lib/sql/roundcubemail.db < /usr/share/roundcubemail/SQL/sqlite.initial.sql
     chown apache:apache /var/lib/sql -R
   fi
