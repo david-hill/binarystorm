@@ -134,4 +134,5 @@ sudo cp etc/systemd/system/sshd@.service.d/override.conf /etc/systemd/system/ssh
 sudo systemctl daemon-reload
 sudo sed -i 's/SELINUX=enforcing/SELINUX=permissive/' /etc/selinux/config
 chown amavis /var/run/clamd.scan
+sudo rm -f /etc/dnf/modules.d/*.module
 sudo touch /.autorelabel
