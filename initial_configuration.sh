@@ -387,6 +387,16 @@ function configure_fail2ban {
     cp etc/fail2ban/jail.conf /etc/fail2ban/jail.conf
     restart=1
   fi
+  cmp etc/fail2ban/fail2ban.conf /etc/fail2ban/fail2ban.conf
+  if [ $? -ne 0 ]; then
+    cp etc/fail2ban/fail2ban.conf /etc/fail2ban/fail2ban.conf
+    restart=1
+  fi
+  cmp etc/fail2ban/action.d/firewallcmd-common.conf /etc/fail2ban/action.d/firewallcmd-common.conf
+  if [ $? -ne 0 ]; then
+    cp etc/fail2ban/action.d/firewallcmd-common.conf /etc/fail2ban/action.d/firewallcmd-common.conf
+    restart=1
+  fi
   if [ $restart -eq 1 ]; then 
     systemctl restart postfix
   fi
