@@ -9,6 +9,7 @@
 #               (yes)   (yes)   (yes)   (never) (100)
 # ==========================================================================
 smtp      inet  n       -       n       -       -       smtpd
+  -o smtpd_client_restrictions=reject_unknown_reverse_client_hostname
 #smtp      inet  n       -       n       -       1       postscreen
 #smtpd     pass  -       -       n       -       -       smtpd
 #dnsblog   unix  -       -       n       -       0       dnsblog
@@ -144,3 +145,4 @@ smtp-amavis unix -    -    n    -    2 smtp
     -o smtpd_error_sleep_time=0
     -o smtpd_soft_error_limit=1001
     -o smtpd_hard_error_limit=1000
+postlog   unix-dgram n  -       n       -       1       postlogd
