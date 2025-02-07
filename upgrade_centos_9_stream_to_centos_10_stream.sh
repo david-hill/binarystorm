@@ -1,6 +1,6 @@
 cat<<EOF>/etc/yum.repos.d/centos.repo
 [baseos]
-name=CentOS Stream $releasever - BaseOS
+name=CentOS Stream 10 - BaseOS
 metalink=https://mirrors.centos.org/metalink?repo=centos-baseos-10-stream&arch=$basearch&protocol=https,http
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-centosofficial
 gpgcheck=1
@@ -10,7 +10,7 @@ countme=1
 enabled=1
 
 [appstream]
-name=CentOS Stream $releasever - AppStream
+name=CentOS Stream 10 - AppStream
 metalink=https://mirrors.centos.org/metalink?repo=centos-appstream-10-stream&arch=$basearch&protocol=https,http
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-centosofficial
 gpgcheck=1
