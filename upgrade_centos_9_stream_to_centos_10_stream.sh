@@ -34,5 +34,5 @@ gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-9
 EOF
 
 yum clean all
-#yum update -y
-dnf --releasever=10 --allowerasing --setopt=deltarpm=false distro-sync -y
+yum update -y
+#dnf --releasever=10 --allowerasing --setopt=deltarpm=false distro-sync -y
