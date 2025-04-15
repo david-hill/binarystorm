@@ -12,6 +12,8 @@ function configure_amavisd {
   chmod 775 /var/spool/amavisd/tmp
   chown clamscan. /var/log/clamd.scan 
   usermod -G virusgroup amavis
+  mkdir -p /etc/systemd/clamd\@amavisd.service.d/
+  cp etc/systemd/clamd\@amavisd.service.d/override.conf etc/systemd/clamd\@amavisd.service.d/
   cmp usr/lib/systemd/system/amavisd.service /usr/lib/systemd/system/amavisd.service
   if [ $? -ne 0 ]; then
     restart=1
