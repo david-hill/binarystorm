@@ -48,3 +48,6 @@ rm -rf /etc/postfix/*.db
 postmap lmdb:/etc/postfix/transport
 postmap lmdb:/etc/postfix/alias
 
+systemctl stop sshd
+systemctl enable sshd.socket
+
