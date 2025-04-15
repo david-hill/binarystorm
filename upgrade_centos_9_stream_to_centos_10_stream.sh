@@ -50,4 +50,5 @@ postmap lmdb:/etc/postfix/alias
 
 systemctl stop sshd
 systemctl enable sshd.socket
+systemctl start sshd.socket
 
