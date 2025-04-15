@@ -34,5 +34,17 @@ gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-9
 EOF
 
 yum clean all
-yum update -y
-#dnf --releasever=10 --allowerasing --setopt=deltarpm=false distro-sync -y
+#yum update -y
+dnf --releasever=10 --allowerasing --setopt=deltarpm=false distro-sync -y
+
+rpm -q gpg-pubkey --qf '%{NAME}-%{VERSION}-%{RELEASE}\t%{SUMMARY}\n' | awk '{ print $1 }' | xargs rpm -e
+
+yum install -y wget
+
+/var/dcc/libexec/updatedcc
+
+rm -rf /etc/postfix/*.db
+
+postmap lmdb:/etc/postfix/transport
+postmap lmdb:/etc/postfix/alias
+
