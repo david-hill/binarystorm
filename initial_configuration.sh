@@ -155,7 +155,7 @@ function configure_named {
     cp etc/named.conf /etc/named.conf
     restart=1
   fi
-  
+  setsebool -P named_write_master_zones on
   if [ ! -d /etc/named ]; then
     mkdir -p /etc/named
   fi
