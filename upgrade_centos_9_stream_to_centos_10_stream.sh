@@ -1,4 +1,4 @@
-cat<<EOF>/etc/yum.repos.d/centos.repo
+cat<<'EOF'>/etc/yum.repos.d/centos.repo
 [baseos]
 name=CentOS Stream 10 - BaseOS
 metalink=https://mirrors.centos.org/metalink?repo=centos-baseos-10-stream&arch=$basearch&protocol=https,http
@@ -20,7 +20,7 @@ countme=1
 enabled=1
 EOF
 
-cat<<EOF>/etc/yum.repos.d/epel.repo
+cat<<'EOF'>/etc/yum.repos.d/epel.repo
 [epel]
 name=Extra Packages for Enterprise Linux 10 - $basearch
 # It is much more secure to use the metalink, but if you wish to use a local mirror
