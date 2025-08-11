@@ -1,8 +1,9 @@
-policy_module(l_sshd,0.0.2)
+policy_module(l_sshd,0.0.3)
 
 require {
 	type init_t;
 	type sshd_net_t;
+	type systemd_logind_t;
 	type unconfined_service_t;
 	type unconfined_t;
 	class vsock_socket create;
@@ -16,3 +17,5 @@ allow init_t unconfined_service_t:vsock_socket create;
 allow unconfined_service_t sshd_net_t:process dyntransition;
 allow unconfined_service_t unconfined_t:process dyntransition;
 
+#============= systemd_logind_t ==============
+term_use_generic_ptys(systemd_logind_t)
