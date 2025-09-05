@@ -10,25 +10,6 @@
 # For best results, change no more than 2-3 parameters at a time,
 # and test if Postfix still works after every change.
 
-# COMPATIBILITY
-#
-# The compatibility_level determines what default settings Postfix
-# will use for main.cf and master.cf settings. These defaults will
-# change over time.
-#
-# To avoid breaking things, Postfix will use backwards-compatible
-# default settings and log where it uses those old backwards-compatible
-# default settings, until the system administrator has determined
-# if any backwards-compatible default settings need to be made
-# permanent in main.cf or master.cf.
-#
-# When this review is complete, update the compatibility_level setting
-# below as recommended in the RELEASE_NOTES file.
-#
-# The level below is what should be used with new (not upgrade) installs.
-#
-compatibility_level = 2
-
 # SOFT BOUNCE
 #
 # The soft_bounce parameter provides a limited safety net for
@@ -39,6 +20,7 @@ compatibility_level = 2
 # is no cure for address rewriting mistakes or mail routing mistakes.
 #
 #soft_bounce = no
+compatibility_level = 2
 
 # LOCAL PATHNAME INFORMATION
 #
@@ -403,7 +385,7 @@ relay_domains = $mydestination
 # "postfix reload" to eliminate the delay.
 #
 #alias_maps = dbm:/etc/aliases
-alias_maps = hash:/etc/aliases
+alias_maps = lmdb:/etc/aliases
 #alias_maps = hash:/etc/aliases, nis:mail.aliases
 #alias_maps = netinfo:/aliases
 
@@ -414,7 +396,7 @@ alias_maps = hash:/etc/aliases
 #
 #alias_database = dbm:/etc/aliases
 #alias_database = dbm:/etc/mail/aliases
-alias_database = hash:/etc/aliases
+alias_database = lmdb:/etc/aliases
 #alias_database = hash:/etc/aliases, hash:/opt/majordomo/aliases
 
 # ADDRESS EXTENSIONS (e.g., user+foo)
@@ -692,14 +674,14 @@ manpage_directory = /usr/share/man
 # sample_directory: The location of the Postfix sample configuration files.
 # This parameter is obsolete as of Postfix 2.1.
 #
-sample_directory = /usr/share/doc/postfix-2.10.1/samples
+sample_directory = /usr/share/doc/postfix/samples
 
 # readme_directory: The location of the Postfix README files.
 #
-readme_directory = /usr/share/doc/postfix-2.10.1/README_FILES
+readme_directory = /usr/share/doc/postfix/README_FILES
 
 #relay_recipient_maps = hash:/etc/postfix/relay_recipients
-transport_maps = hash:/etc/postfix/transport
+transport_maps = lmdb:/etc/postfix/transport
 
 content_filter=smtp-amavis:[127.0.0.1]:10024
 
@@ -708,4 +690,7 @@ smtpd_tls_loglevel               = 1
 smtpd_use_tls                    = yes
 smtpd_tls_key_file               = /etc/postfix/keys/smtpd.key
 smtpd_tls_cert_file              = /etc/postfix/keys/smtpd.cert
+
+meta_directory = /etc/postfix
+shlib_directory = /usr/lib64/postfix
 
