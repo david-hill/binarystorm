@@ -30,7 +30,7 @@ metalink=https://mirrors.fedoraproject.org/metalink?repo=epel-10&arch=$basearch&
 enabled=1
 gpgcheck=1
 countme=1
-gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-9
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-10
 EOF
 
 yum clean all
