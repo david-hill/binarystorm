@@ -39,6 +39,8 @@ dnf --releasever=10 --allowerasing --setopt=deltarpm=false distro-sync -y
 
 rpm -q gpg-pubkey --qf '%{NAME}-%{VERSION}-%{RELEASE}\t%{SUMMARY}\n' | awk '{ print $1 }' | xargs rpm -e
 
+rpm --import https://www.centos.org/keys/RPM-GPG-KEY-CentOS-Official-SHA256
+
 yum install -y wget
 
 /var/dcc/libexec/updatedcc
