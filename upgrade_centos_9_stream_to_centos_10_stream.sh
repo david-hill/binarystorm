@@ -54,3 +54,5 @@ systemctl stop sshd
 systemctl enable sshd.socket
 systemctl start sshd.socket
 
+chcon -t tcpd_exec_t tcpd
+
