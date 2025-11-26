@@ -465,7 +465,7 @@ function install_packages_and_update {
   if [ $? -ne 0 ]; then
     dnf -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
   fi
-  packages="uptimed vim yum-utils telnet wget ntp tmux sysstat gcc tcp_wrappers whois"
+  packages="uptimed vim yum-utils telnet wget ntp tmux sysstat gcc tcp_wrappers whois podman"
   for p in $packages; do 
     install_package $p
   done
