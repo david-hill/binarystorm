@@ -1,0 +1,5 @@
+#!/usr/bin/sh
+
+cyr_expire -X 7 -v
+
+exit 0
