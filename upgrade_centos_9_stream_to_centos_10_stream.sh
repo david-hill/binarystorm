@@ -41,7 +41,7 @@ rpm -q gpg-pubkey --qf '%{NAME}-%{VERSION}-%{RELEASE}\t%{SUMMARY}\n' | awk '{ pr
 
 rpm --import https://www.centos.org/keys/RPM-GPG-KEY-CentOS-Official-SHA256
 
-yum install -y wget
+yum install -y wget sysstat
 
 /var/dcc/libexec/updatedcc
 
@@ -56,3 +56,5 @@ systemctl start sshd.socket
 
 chcon -t tcpd_exec_t tcpd
 
+systemctl enable logrotate.timer
+systemctl enable sysstat
