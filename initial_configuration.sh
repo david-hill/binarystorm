@@ -527,10 +527,12 @@ enable_start clamav-freshclam
 enable_start clamd@amavisd
 enable_start fail2ban
 enable_start cyrus-imapd
+enable_start logrotate.timer
 enable_start httpd
 enable_start saslauthd
 enable_start ntpd
 enable_start named
 enable_start snmpd
+enable_start sysstat
 enable_start uptimed
 diff_changes
