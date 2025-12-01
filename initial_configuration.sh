@@ -374,6 +374,7 @@ function configure_sshd {
   systemctl enable --now sshd.socket
   mkdir -p /etc/systemd/system/sshd@.service.d/
   sudo cp etc/systemd/system/sshd@.service.d/override.conf /etc/systemd/system/sshd@.service.d/override.conf
+  sudo rm -rf /usr/lib/systemd/system/ssh-host-keys-migration.service
   systemctl daemon-reload
 }
 
