@@ -5,6 +5,7 @@ rm -rf $tmp/var/cache/dnf
 rm -rf $tmp/var/lib/dnf
 rm -rf $tmp/usr/share/man
 rm -rf $tmp/usr/share/doc
+rm -rf $tmp/usr/lib/.build-id
 tar zcvf php-fpm-root.tgz -C $tmp . | tee -a install.out
 podman import php-fpm-root.tgz php-fpm-root:latest | tee -a install.out
 rm -rf $tmp
