@@ -3,6 +3,8 @@ packages="php-fpm php-pdo php-process php-gd php-intl php-ldap php-mbstring php-
 yum install -y --installroot=$tmp --nogpgcheck $packages | tee install.out
 rm -rf $tmp/var/cache/dnf
 rm -rf $tmp/var/lib/dnf
+rm -rf $tmp/usr/share/man
+rm -rf $tmp/usr/share/doc
 tar zcvf php-fpm-root.tgz -C $tmp . | tee -a install.out
 podman import php-fpm-root.tgz php-fpm-root:latest | tee -a install.out
 rm -rf $tmp
