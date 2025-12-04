@@ -7,3 +7,6 @@ podman  run -d --network ipv6 --ip6 fd00::7 --ip 10.89.0.7 -v /run/:/run/ --moun
 #-v /var/named:/var/named -v /etc/named:/etc/named:ro -v /etc/named.ca:/etc/named.ca:ro  -v /etc/named.conf:/etc/named.conf:ro -v /etc/named.rfc1912.zones:/etc/named.rfc1912.zones:ro -v /etc/named.root.key:/etc/named.root.key:ro -v /var/log/bind.log:/var/log/bind.log --mount=type=bind,src=/dev/log,dst=/dev/log --name=bind bind 
 sleep 3
 podman generate systemd --new --files --name php-fpm
+cp *.service /etc/systemd/system
+systemctl daemon-reload
+systemctl enable container-php-fpm
