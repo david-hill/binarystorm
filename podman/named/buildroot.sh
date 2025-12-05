@@ -6,6 +6,7 @@ rm -rf $tmp/usr/share/man
 rm -rf $tmp/usr/share/doc
 rm -rf $tmp/usr/lib/.build-id
 rm -rf $tmp/var/log/dnf*
+rm -rf $tmp/var/log/hawkey*
 tar zcvf root-named.tgz -C $tmp .  | tee -a install.out
 podman import root-named.tgz root-named:latest | tee -a install.out
 rm -rf $tmp
