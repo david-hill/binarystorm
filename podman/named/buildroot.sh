@@ -5,6 +5,6 @@ rm -rf $tmp/var/lib/dnf
 rm -rf $tmp/usr/share/man
 rm -rf $tmp/usr/share/doc
 rm -rf $tmp/usr/lib/.build-id
-tar zcvf root-bind.tgz -C $tmp .  | tee -a install.out
-podman import root-bind.tgz root-bind:latest | tee -a install.out
+tar zcvf root-named.tgz -C $tmp .  | tee -a install.out
+podman import root-named.tgz root-named:latest | tee -a install.out
 rm -rf $tmp

@@ -1,1 +1,1 @@
-podman build -t bind .
+podman build -t named .
