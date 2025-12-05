@@ -683,7 +683,7 @@ readme_directory = /usr/share/doc/postfix/README_FILES
 #relay_recipient_maps = hash:/etc/postfix/relay_recipients
 transport_maps = lmdb:/etc/postfix/transport
 
-content_filter=smtp-amavis:[127.0.0.1]:10024
+content_filter=smtp-amavis:[10.89.0.4]:10024
 
 smtpd_enforce_tls                = no
 smtpd_tls_loglevel               = 1
