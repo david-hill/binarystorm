@@ -1,12 +1,7 @@
+source ../common/common.sh
 tmp=$(mktemp -d)
 yum install -y --installroot=$tmp --nogpgcheck amavis perl-Razor-Agent pyzor | tee install.out
-rm -rf $tmp/var/cache/dnf
-rm -rf $tmp/var/lib/dnf
-rm -rf $tmp/usr/share/man
-rm -rf $tmp/usr/share/doc
-rm -rf $tmp/usr/lib/.build-id
-rm -rf $tmp/var/log/dnf*
-rm -rf $tmp/var/log/hawkey*
+cleanup_root
 tar zcvf amavisd-root.tgz -C $tmp . | tee -a install.out
-podman import amavisd-root.tgz amavisd-root:latest | tee -a install.out
+podman import amavisd-root.tgz amavisd-root:$creation_date | tee -a install.out
 rm -rf $tmp
