@@ -1,4 +1,4 @@
-systemctl | grep named
+systemctl | grep named.service
 if [ $? -eq 0 ]; then
   systemctl stop named
   systemctl disable named
@@ -8,7 +8,7 @@ if [ $? -ne 0 ]; then
   podman network create  --ipv6 ipv6 --gateway fd00::1 --subnet fd00:0000:0000:0000:0000:0000:0000:0000/120 --gateway 10.89.0.1 --subnet 10.89.0.0/16 --disable-dns
 fi
 podman ps -a | grep named
-if [ $? -ne 0 ]; then
+if [ $? -eq 0 ]; then
   podman stop named
   podman rm named
 fi
