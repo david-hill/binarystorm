@@ -58,3 +58,5 @@ chcon -t tcpd_exec_t tcpd
 
 systemctl enable logrotate.timer
 systemctl enable sysstat
+
+yum remove subscription-manager
