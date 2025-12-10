@@ -1,4 +1,4 @@
-creation_date=$(date '+%Y-%m-%d')
+creation_date=$(date '+%Y%m%d%H%M%S')
 
 function cleanup_root {
   if [ ! -z $tmp ]; then
