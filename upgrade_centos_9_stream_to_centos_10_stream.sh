@@ -60,3 +60,6 @@ systemctl enable logrotate.timer
 systemctl enable sysstat
 
 yum remove subscription-manager
+
+systemctl disable ssh-host-keys-migration.service
+systemctl stop ssh-host-keys-migration.service
