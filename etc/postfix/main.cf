@@ -691,3 +691,8 @@ smtpd_tls_key_file               = /etc/postfix/keys/smtpd.key
 smtpd_tls_cert_file              = /etc/postfix/keys/smtpd.cert
 meta_directory = /etc/postfix
 shlib_directory = /usr/lib64/postfix
+
+smtpd_sasl_auth_enable = yes
+smtpd_sasl_path = smtpd
+smtpd_sasl_application_name = smtpd
+
