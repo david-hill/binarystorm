@@ -99,7 +99,7 @@ function reload {
 }
 
 function configure_firewall {
-  ports="25/tcp 53/tcp 53/udp 80/tcp 110/tcp 143/tcp 143/udp 161/udp 443/tcp 993/tcp 995/tcp"
+  ports="25/tcp 53/tcp 53/udp 80/tcp 110/tcp 143/tcp 143/udp 161/udp 443/tcp 587/tcp 993/tcp 995/tcp"
   reload=0
   for p in $ports; do
     add_port $p
