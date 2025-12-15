@@ -4,3 +4,4 @@
 10.89.0.6	httpd
 10.89.0.7	php-fpm
 10.89.0.8	clamd
+10.89.0.9	saslauthd
