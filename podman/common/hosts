@@ -5,3 +5,4 @@
 10.89.0.7	php-fpm
 10.89.0.8	clamd
 10.89.0.9	saslauthd
+10.89.0.10	freshclam
