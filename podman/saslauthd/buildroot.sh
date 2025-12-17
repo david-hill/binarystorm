@@ -1,6 +1,6 @@
 source ../common/common.sh
 tmp=$(mktemp -d)
-rpms="cyrus-sasl cyrus-imapd" 
+rpms="cyrus-sasl cyrus-imapd postfix" 
 yum install -y --installroot=$tmp --nogpgcheck $rpms | tee install.out
 cleanup_root
 tar zcvf saslauthd-root.tgz -C $tmp . | tee -a install.out
