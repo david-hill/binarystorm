@@ -6,5 +6,5 @@ sed -i 's/#SAUPDATE=yes/SAUPDATE=yes/' $tmp/etc/sysconfig/sa-update
 chroot $tmp usermod -a -G virusgroup amavis  | tee -a install.out
 cleanup_root
 tar zcvf sa-update-root.tgz -C $tmp . | tee -a install.out
-podman import --change 'ENTRYPOINT ["/usr/sbin/crond", "-f"]' sa-update-root.tgz sa-update-root:$creation_date | tee -a install.out
+podman import --change 'ENTRYPOINT ["/usr/sbin/crond", "-f", "-s"]' sa-update-root.tgz sa-update-root:$creation_date | tee -a install.out
 rm -rf $tmp
