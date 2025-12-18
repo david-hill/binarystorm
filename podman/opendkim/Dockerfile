@@ -1,2 +1,2 @@
 FROM localhost/opendkim-root:latest
-ENTRYPOINT ["/usr/bin/opendkim","-f"]
+ENTRYPOINT ["/usr/sbin/opendkim","-f"]
