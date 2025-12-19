@@ -696,3 +696,8 @@ smtpd_sasl_auth_enable = yes
 smtpd_sasl_path = smtpd
 smtpd_sasl_application_name = smtpd
 
+milter_default_action = accept
+milter_protocol = 2
+smtpd_milters = inet:10.89.0.12:8891
+non_smtpd_milters = inet:10.89.0.12:8891
+
