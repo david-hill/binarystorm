@@ -1,3 +1,4 @@
+source ../common/common.sh
 systemctl | grep clamd
 if [ $? -eq 0 ]; then
 	systemctl disable clamd
