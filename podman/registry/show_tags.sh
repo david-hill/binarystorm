@@ -1,1 +1,2 @@
-curl -sS registry.davidchill.ca:5000/v2/$1/tags/list
+source conf
+curl -sS $registry/v2/$1/tags/list | jq .
