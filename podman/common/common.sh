@@ -1,4 +1,5 @@
 creation_date=$(date '+%Y%m%d%H%M%S')
+registry=registry.davidchill.ca:5000
 
 function cleanup_root {
   if [ ! -z $tmp ]; then
