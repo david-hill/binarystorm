@@ -1,1 +1,2 @@
-curl -X GET registry.davidchill.ca:5000/v2/_catalog
+source conf
+curl -s -X GET $registry/v2/_catalog | jq .
