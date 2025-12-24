@@ -1,7 +1,9 @@
 for dir in *; do
   if [ -d $dir ]; then
     cd $dir
-    bash buildroot.sh
+    if [ -e buildroot.sh ]; then
+      bash buildroot.sh
+    fi
 #    bash build.sh
     cd ..
   fi
