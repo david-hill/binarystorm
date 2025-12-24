@@ -8,7 +8,7 @@ podman ps -a | grep saslauthd
 if [ $? -eq 0 ]; then
   podman stop saslauthd
   podman rm saslauthd
-  podman rmi saslauthd-root
+  podman pull $registry/saslauthd-root:latest
 fi
 if [ ! -d /run/saslauthd ]; then
   mkdir /run/saslauthd

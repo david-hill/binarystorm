@@ -8,7 +8,7 @@ podman ps -a | grep -q amavisd
 if [ $? -eq 0 ]; then
   podman stop amavisd
   podman rm amavisd
-  podman rmi amavisd-root
+  podman pull $registry/amavisd-root:latest
 fi
 chown 995 /var/spool/amavisd -R
 chgrp 998 /var/lib/clamav -R

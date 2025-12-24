@@ -8,7 +8,7 @@ podman ps -a | grep -q postfix
 if [ $? -eq 0 ]; then
   podman stop postfix
   podman rm postfix
-  podman rmi postfix-root
+  podman pull $registry/postfix-root:latest
 fi
 if [ ! -e /etc/imapd.conf ]; then
   touch /etc/imapd.conf
