@@ -8,6 +8,7 @@ podman ps -a | grep opendkim
 if [ $? -eq 0 ]; then
   podman stop opendkim
   podman rm opendkim
+  podman rmi opendkim-root
 fi
 if [ ! -e /etc/imapd.conf ]; then
   touch /etc/imapd.conf

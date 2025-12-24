@@ -4,6 +4,7 @@ podman ps | grep -q httpd
 if [ $? -eq 0 ]; then
   podman stop httpd
   podman rm httpd
+  podman rmi httpd-root
 fi
 #podman --debug run  --net host -v /etc/named:/etc/named:ro -v /etc/named.ca:/etc/named.ca:ro  -v /etc/named.conf:/etc/named.conf:ro -v /etc/named.rfc1912.zones:/etc/named.rfc1912.zones:ro -v /etc/named.root.key:/etc/named.root.key:ro --name=bind bind  &
 if [ ! -d /var/lib/sql ]; then

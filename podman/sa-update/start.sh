@@ -8,6 +8,7 @@ podman ps -a | grep sa-update
 if [ $? -eq 0 ]; then
   podman stop sa-update
   podman rm sa-update
+  podman rmi sa-update-root
 fi
 podman  run -d -h $(hostname) --network ipv6 --ip6 fd00::11 --ip 10.89.0.11 -v /etc/mail:/etc/mail:ro -v /var/lib/spamassassin:/var/lib/spamassassin --mount=type=bind,src=/dev/log,dst=/dev/log --hosts-file ../common/hosts --name=sa-update $registry/sa-update-root:latest
 sleep 3

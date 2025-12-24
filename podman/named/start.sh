@@ -12,6 +12,7 @@ podman ps -a | grep named
 if [ $? -eq 0 ]; then
   podman stop named
   podman rm named
+  podman rmi named-root
 fi
 touch /var/log/named.log
 chown named:named /var/log/named.log
