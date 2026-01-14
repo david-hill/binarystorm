@@ -50,6 +50,11 @@ function customize_sa-update {
   chroot $tmp usermod -a -G virusgroup amavis  | tee -a install.out
 }
 
+function customize_builddcc {
+  cp builddcc.sh $tmp/
+  cp dcc.spec $tmp/
+  cp macros $tmp/root/.rpmmacros
+}
 function import_container {
   podman import --change "$entrypoint" ${service}-root.tgz ${service}-root:$creation_date | tee -a install.out
 }
