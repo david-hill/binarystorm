@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 set -ex
 if [ ! -d /root/rpmbuild/SOURCES ]; then
   mkdir -p /root/rpmbuild/SOURCES
@@ -5,11 +6,17 @@ fi
 if [ ! -d /root/rpmbuild/SPECS ]; then
   mkdir -p /root/rpmbuild/SPECS
 fi
+=======
+if [ ! -d /root/rpmbuild/SOURCES ]; then
+  mkdir -p /root/rpmbuild/SOURCES
+fi
+>>>>>>> cc37894 (Adding dcc RPMS building scripts.)
 cd /root/rpmbuild/SOURCES
 if [ ! -e dcc.tar.Z ]; then
   curl https://www.dcc-servers.net/dcc/source/dcc.tar.Z --output dcc.tar.Z
 fi
 
+<<<<<<< HEAD
 specfile=/root/rpmbuild/SPECS/dcc.spec
 cp /dcc.spec $specfile
 #QA_SKIP_BUILD_ROOT=1 rpmbuild -ba /dcc.spec
@@ -32,3 +39,8 @@ rpmbuild -ba $specfile
 if [ $? -eq 0 ]; then
    cp $specfile /dcc.spec
 fi
+=======
+#QA_SKIP_BUILD_ROOT=1 rpmbuild -ba /dcc.spec
+rpmbuild -ba /dcc.spec
+
+>>>>>>> cc37894 (Adding dcc RPMS building scripts.)

@@ -1,5 +1,5 @@
 source /root/binarystorm/podman/common/common.sh
-podman ps | grep -q php-fpm
+podman ps | grep -v container | grep -q php-fpm
 if [ $? -eq 0 ]; then
   podman stop php-fpm
   podman rm php-fpm
@@ -25,11 +25,11 @@ podman  run -d --network ipv6 --ip6 fd00::7 --ip 10.89.0.7 \
 -v /run/php-fpm:/run/php-fpm \
 -v /run/saslauthd:/run/saslauthd \
 -v /var/lib/php:/var/lib/php \
--v /root/binarystorm/etc/php.d:/etc/php.d \
--v /root/binarystorm/etc/php-fpm.d:/etc/php-fpm.d \
--v /root/binarystorm/etc/php-fpm.conf:/etc/php-fpm.conf \
--v /root/binarystorm/etc/php.ini:/etc/php.ini \
--v /root/binarystorm/etc/roundcubemail/config.inc.php:/etc/roundcubemail/config.inc.php \
+-v $gitlocation/etc/php.d:/etc/php.d \
+-v $gitlocation/etc/php-fpm.d:/etc/php-fpm.d \
+-v $gitlocation/etc/php-fpm.conf:/etc/php-fpm.conf \
+-v $gitlocation/etc/php.ini:/etc/php.ini \
+-v $gitlocation/etc/roundcubemail/config.inc.php:/etc/roundcubemail/config.inc.php \
 -v /var/lib/roundcubemail:/var/lib/roundcubemail \
 -v /var/lib/sql:/var/lib/sql \
 -v /var/log/php-fpm:/var/log/php-fpm \

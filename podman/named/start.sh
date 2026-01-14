@@ -1,5 +1,5 @@
 source /root/binarystorm/podman/common/common.sh
-systemctl | grep named.service
+systemctl | grep -v container | grep named.service
 if [ $? -eq 0 ]; then
   systemctl stop named
   systemctl disable named
@@ -21,7 +21,14 @@ done
 touch /var/log/named.log
 chown 25:25 /var/log/named.log
 chown -R 25:25 /var/named
-podman  run -d --network ipv6 --ip6 fd00::2 --ip 10.89.0.2 -p 53:53/udp -p 53:53/tcp -p [::]:53:53/udp -p [::]:53:53/tcp -v /var/named:/var/named -v /root/binarystorm/etc/named:/etc/named:ro -v /root/binarystorm/etc/named.conf:/etc/named.conf:ro -v /var/log/named.log:/var/log/named.log --mount=type=bind,src=/dev/log,dst=/dev/log --name=named $registry/named-root:latest
+podman  run -d --network ipv6 --ip6 fd00::2 --ip 10.89.0.2 -p 53:53/udp -p 53:53/tcp -p [::]:53:53/udp -p [::]:53:53/tcp \
+-v $gitlocation/etc/named:/etc/named:ro \
+-v $gitlocation/etc/named.conf:/etc/named.conf:ro \
+-v /var/named:/var/named \
+-v /var/log/named.log:/var/log/named.log \
+--mount=type=bind,src=/dev/log,dst=/dev/log \
+--name=named \
+$registry/named-root:latest
 sleep 3
 podman generate systemd --new --files --name named
 cp *.service /etc/systemd/system

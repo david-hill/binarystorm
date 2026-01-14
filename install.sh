@@ -44,3 +44,6 @@ systemctl start snmpd
 
 systemctl enable certmonger
 systemctl start certmonger
+
+cp etc/selinux/config /etc/selinux
+setenforce 0

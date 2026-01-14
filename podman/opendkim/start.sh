@@ -1,5 +1,5 @@
 source /root/binarystorm/podman/common/common.sh
-systemctl | grep opendkim
+systemctl | grep -v container | grep opendkim
 if [ $? -eq 0 ]; then
 	systemctl disable opendkim
 	systemctl stop opendkim
@@ -12,13 +12,13 @@ if [ $? -eq 0 ]; then
 fi
 chgrp -R 998 /etc/opendkim/keys
 podman  run -d --network ipv6 --ip6 fd00::12 --ip 10.89.0.12 -p 8891:8891/tcp -h $(hostname) \
--v /root/binarystorm/etc/opendkim.conf:/etc/opendkim.conf:ro \
+-v $gitlocation/etc/opendkim.conf:/etc/opendkim.conf:ro \
+-v $gitlocation/etc/opendkim/TrustedHosts:/etc/opendkim/TrustedHosts:ro \
+-v $gitlocation/etc/opendkim/SigningTable:/etc/opendkim/SigningTable:ro \
+-v $gitlocation/etc/opendkim/KeyTable:/etc/opendkim/KeyTable:ro \
 -v /etc/opendkim/keys:/etc/opendkim/keys:ro \
--v /root/binarystorm/etc/opendkim/TrustedHosts:/etc/opendkim/TrustedHosts:ro \
--v /root/binarystorm/etc/opendkim/SigningTable:/etc/opendkim/SigningTable:ro \
--v /root/binarystorm/etc/opendkim/KeyTable:/etc/opendkim/KeyTable:ro \
 --mount=type=bind,src=/dev/log,dst=/dev/log \
---hosts-file ../common/hosts \
+--hosts-file $gitlocation/podman/common/hosts \
 --name=opendkim \
 $registry/opendkim-root:latest
 sleep 3
