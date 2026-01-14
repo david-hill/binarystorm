@@ -1,0 +1,5 @@
+[davidchill]
+name=davidchill.ca repository
+baseurl=http://repo.davidchill.ca
+enabled=1
+gpgcheck=0
