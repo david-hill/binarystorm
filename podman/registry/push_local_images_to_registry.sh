@@ -6,4 +6,6 @@ for image in $( podman images | grep -v latest  | grep root  | awk '{ print $1 }
    podman push $image:$tag $registry/$imagename:$tag
    echo "Pushing $image:$tag to $registry/$imagename:latest"
    podman push $image:$tag $registry/$imagename:latest
+   echo "Deleting local copy"
+   podman rmi $image:$tag
 done
