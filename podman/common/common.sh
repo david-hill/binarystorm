@@ -60,8 +60,8 @@ function customize_sa-update {
 }
 
 function customize_builddcc {
-  cp builddcc.sh $tmp/
-  cp dcc.spec $tmp/
+#  cp builddcc.sh $tmp/
+#  cp dcc.spec $tmp/
   cp macros $tmp/root/.rpmmacros
 }
 function import_container {
