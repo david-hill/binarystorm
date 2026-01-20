@@ -1,6 +1,6 @@
 Name:           dcc
 Version:        2.3.169
-Release:        1%{?dist}
+Release:        0%{?dist}
 Summary:        Distributed Checksum Clearinghouses
 License:        https://www.dcc-servers.net/dcc/LICENSE
 URL:            https://www.dcc-servers.net/dcc/source/
@@ -54,5 +54,5 @@ This package contains man pages.
 /usr/share/man
 
 %changelog
-* Tue Jan 13 2026 David Hill <dhill@redhat.com> - 2.3.169-1
+* Fri Jan 16 2026 David Hill <dhill@redhat.com> - 2.3.169-0
 - Initial release
