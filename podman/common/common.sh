@@ -16,20 +16,29 @@ function cleanup_root {
 }
 
 function build_container {
+  update=0
+  install=0
   if [ -e ${service}-root-diff.tgz ]; then
     tar xvf ${service}-root-diff.tgz -C $tmp
     tar xvf ${service}-root.tgz -C $tmp
-    yum update -y --installroot=$tmp --nogpgcheck | tee install.out
+    yum check-update --installroot=$tmp
+    if [ $? -ne 0 ]; then
+      yum update -y --installroot=$tmp --nogpgcheck | tee install.out
+      update=1
+    fi
   else
     yum install -y --installroot=$tmp --nogpgcheck $packages | tee install.out
+    install=1
   fi
-  if declare -F customize_$service; then
-    customize_$service
+  if [[ $install -ne 0 ]] || [[ $update -ne 0 ]]; then
+    if declare -F customize_$service; then
+      customize_$service
+    fi
+    tar zcvf ${service}-root-diff.tgz -C $tmp $include | tee -a install.out
+    cleanup_root
+    tar zcvf ${service}-root.tgz -C $tmp . | tee -a install.out
+    import_container
   fi
-  tar zcvf ${service}-root-diff.tgz -C $tmp $include | tee -a install.out
-  cleanup_root
-  tar zcvf ${service}-root.tgz -C $tmp . | tee -a install.out
-  import_container
   rm -rf $tmp
 }
 
