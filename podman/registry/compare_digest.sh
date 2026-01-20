@@ -1,4 +1,4 @@
-source conf
+source ../common/common.sh
 rpm -qi skopeo > /dev/null
 if [ $? -ne 0 ]; then
   yum install -y skopeo

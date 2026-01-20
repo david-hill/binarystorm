@@ -1,2 +1,2 @@
-source conf
+source ../common/common.sh
 curl -sS $registry/v2/$1/tags/list | jq .tags
