@@ -1,7 +1,7 @@
 creation_date=$(date '+%Y%m%d%H%M%S')
 tmp=$(mktemp -d)
 #include="$tmp/var/cache/dnf $tmp/var/lib/dnf $tmp/usr/share/man $tmp/usr/share/doc $tmp/usr/lib/.build-id $tmp/var/log/dnf $tmp/var/log/hawkey $tmp/usr/share/licenses"
-include="var/cache/dnf var/lib/dnf usr/share/man usr/share/doc usr/lib/.build-id var/log/dnf var/log/hawkey usr/share/licenses"
+include="var/cache/dnf var/lib/dnf usr/share/man usr/share/doc usr/lib/.build-id var/log/dnf var/log/hawkey usr/share/licenses usr/share/X11 usr/lib/systemd usr/lib/rpm"
 registry=registry.davidchill.ca:5000
 scriptlocation=$(echo $0 | xargs dirname)
 decompressargs='xf'
