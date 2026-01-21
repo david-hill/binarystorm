@@ -1,5 +1,4 @@
-source ../common/common.sh
+source /root/binarystorm/podman/common/common.sh
 service=opendkim
 packages=opendkim
-entrypoint='ENTRYPOINT ["/usr/sbin/opendkim","-f"]'
 build_container

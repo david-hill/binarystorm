@@ -1,4 +1,4 @@
-source ../common/common.sh
+source /root/binarystorm/podman/common/common.sh
 systemctl | grep named.service
 if [ $? -eq 0 ]; then
   systemctl stop named

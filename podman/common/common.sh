@@ -1,7 +1,10 @@
 creation_date=$(date '+%Y%m%d%H%M%S')
+tmp=$(mktemp -d)
 include="$tmp/var/cache/dnf $tmp/var/lib/dnf $tmp/usr/share/man $tmp/usr/share/doc $tmp/usr/lib/.build-id $tmp/var/log/dnf $tmp/var/log/hawkey"
 registry=registry.davidchill.ca:5000
-tmp=$(mktemp -d)
+scriptlocation=$(echo $0 | xargs dirname)
+decompressargs='xf'
+compressargs='zcf'
 
 function cleanup_root {
   if [ ! -z $tmp ]; then
@@ -15,48 +18,94 @@ function cleanup_root {
   fi
 }
 
+function install_required_packages {
+  rpm -qi shadow-utils >/dev/null
+  if [ $? -ne 0 ]; then
+    yum install -y shadow-utils | tee -a $scriptlocation/install.out
+  fi
+}
+
+function install_epel_repo {
+  rpm -qi epel-release > /dev/null
+  if [ $? -ne 0 ]; then
+    rpm -i https://dl.fedoraproject.org/pub/epel/epel-release-latest-10.noarch.rpm  2>/dev/null 1>/dev/null
+  fi
+}
+
+function pre_amavisd {
+  install_epel_repo
+}
+function pre_clamd {
+  install_epel_repo
+}
+function pre_freshclam {
+  install_epel_repo
+}
+function pre_httpd {
+  install_epel_repo
+}
+function pre_opendkim {
+  install_epel_repo
+}
+function pre_sa-update {
+  install_epel_repo
+}
+
 function build_container {
+  changed=0
   update=0
   install=0
-  if [ -e ${service}-root-diff.tgz ]; then
-    tar xvf ${service}-root-diff.tgz -C $tmp
-    tar xvf ${service}-root.tgz -C $tmp
-    yum check-update --installroot=$tmp
+  if declare -F pre_$service > /dev/null; then
+    pre_$service
+  fi
+  if [ -e $scriptlocation/${service}-root-diff.tgz ]; then
+    tar $decompressargs $scriptlocation/${service}-root-diff.tgz -C $tmp | tee $scriptlocation/install.out
+    tar $decompressargs $scriptlocation/${service}-root.tgz -C $tmp | tee -a $scriptlocation/install.out
+    cp /root/binarystorm/podman/common/etc/yum.repos.d/*.repo /etc/yum.repos.d
+    yum check-update -q --installroot=$tmp | tee -a $scriptlocation/install.out
     if [ $? -ne 0 ]; then
-      yum update -y --installroot=$tmp --nogpgcheck | tee install.out
+      yum update -y --installroot=$tmp --nogpgcheck | tee -a $scriptlocation/install.out
       update=1
+    else
+      echo "No new updates" | tee -a $scriptlocation/install.out
     fi
   else
-    yum install -y --installroot=$tmp --nogpgcheck $packages | tee install.out
+    cp /root/binarystorm/podman/common/etc/yum.repos.d/*.repo /etc/yum.repos.d
+    yum install -y --installroot=$tmp --nogpgcheck $packages | tee $scriptlocation/install.out
     install=1
   fi
   if [[ $install -ne 0 ]] || [[ $update -ne 0 ]]; then
-    if declare -F customize_$service; then
+    changed=1
+    if declare -F customize_$service > /dev/null; then
       customize_$service
     fi
-    tar zcvf ${service}-root-diff.tgz -C $tmp $include | tee -a install.out
+    tar $compressargs $scriptlocation/${service}-root-diff.tgz -C $tmp $include | tee -a $scriptlocation/install.out
     cleanup_root
-    tar zcvf ${service}-root.tgz -C $tmp . | tee -a install.out
-    import_container
+    tar $compressargs $scriptlocation/${service}-root.tgz -C $tmp . | tee -a $scriptlocation/install.out
   fi
   rm -rf $tmp
+  exit $changed
 }
 
 function customize_freshclam {
-  chroot $tmp useradd -u 995 amavis | tee -a install.out
+  install_required_packages
+  chroot $tmp useradd -u 995 amavis | tee -a $scriptlocation/install.out
 }
 
 function customize_amavisd {
-  chroot $tmp usermod -a -G virusgroup amavis  | tee -a install.out
+  install_required_packages
+  chroot $tmp usermod -a -G virusgroup amavis  | tee -a $scriptlocation/install.out
 }
 
 function customize_clamd {
-  chroot $tmp useradd -u 995 amavis | tee -a install.out
+  install_required_packages
+  chroot $tmp useradd -u 995 amavis | tee -a $scriptlocation/install.out
 }
 function customize_sa-update {
+  install_required_packages
   chroot $tmp cp /usr/share/spamassassin/sa-update.cron /etc/cron.daily/sa-update
   sed -i 's/#SAUPDATE=yes/SAUPDATE=yes/' $tmp/etc/sysconfig/sa-update
-  chroot $tmp usermod -a -G virusgroup amavis  | tee -a install.out
+  chroot $tmp usermod -a -G virusgroup amavis  | tee -a $scriptlocation/install.out
 }
 
 function customize_builddcc {
@@ -65,5 +114,6 @@ function customize_builddcc {
   cp macros $tmp/root/.rpmmacros
 }
 function import_container {
-  podman import --change "$entrypoint" ${service}-root.tgz ${service}-root:$creation_date | tee -a install.out
+  install_required_packages
+  podman import --change "$entrypoint" $scriptlocation/${service}-root.tgz ${service}-root:$creation_date | tee -a $scriptlocation/install.out
 }

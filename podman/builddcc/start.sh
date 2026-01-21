@@ -1,4 +1,4 @@
-source ../common/common.sh
+source /root/binarystorm/podman/common/common.sh
 podman ps -a | grep -q builddcc
 if [ $? -eq 0 ]; then
   podman rm builddcc

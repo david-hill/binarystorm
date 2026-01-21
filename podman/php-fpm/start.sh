@@ -1,4 +1,4 @@
-source ../common/common.sh
+source /root/binarystorm/podman/common/common.sh
 # podman network create  --ipv6 ipv6 --gateway fd00::::1 --subnet fd00:0000:0000:0000:0000:0000:0000:0000/120 --gateway 10.89.0.1 --subnet 10.89.0.0/16 --disable-dns
 podman ps | grep -q php-fpm
 if [ $? -eq 0 ]; then

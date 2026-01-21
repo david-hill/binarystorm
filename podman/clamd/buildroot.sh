@@ -1,6 +1,4 @@
-source ../common/common.sh
-tmp=$(mktemp -d)
+source /root/binarystorm/podman/common/common.sh
 service=clamd
-entrypoint='ENTRYPOINT ["/usr/sbin/clamd","-F","-c","/etc/clamd.d/amavisd.conf"]'
 packages=clamd
 build_container

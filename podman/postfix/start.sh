@@ -1,4 +1,4 @@
-source ../common/common.sh
+source /root/binarystorm/podman/common/common.sh
 systemctl | grep -q postfix
 if [ $? -eq 0 ]; then
 	systemctl disable postfix

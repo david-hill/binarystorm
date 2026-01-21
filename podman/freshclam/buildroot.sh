@@ -1,6 +1,4 @@
-source ../common/common.sh
-tmp=$(mktemp -d)
+source /root/binarystorm/podman/common/common.sh
 packages=clamav-freshclam
 service=freshclam
-entrypoint='ENTRYPOINT ["/usr/bin/freshclam", "-d", "--foreground=true"]'
 build_container
