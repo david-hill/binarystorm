@@ -17,10 +17,17 @@ for directory in $directories; do
   fi
 done
 chown -R 89:90 /var/spool/postfix
+if [[ $(hostname) =~ dns01 ]]; then
+  postfixargs="-v $gitlocation/etc/postfix/main.cf:/etc/postfix/main.cf:ro 
+-v $gitlocation/etc/postfix/virtual.lmdb:/etc/postfix/virtual.lmdb:ro"
+else
+  postfixargs="-v $gitlocation/etc/postfix/backup_mx/main.cf:/etc/postfix/main.cf:ro 
+-v $gitlocation/etc/postfix/backup_mx/transport.lmdb:/etc/postfix/transport.lmdb:ro"
+fi
+
 podman  run -d --network ipv6 --ip6 fd00::3 --ip 10.89.0.3 -p 25:25/tcp -p [::]:25:25/tcp -p 587:587/tcp -p [::]:587:587/tcp -h $(hostname) \
--v $gitlocation/etc/postfix/main.cf:/etc/postfix/main.cf:ro \
+$postfixargs \
 -v $gitlocation/etc/postfix/master.cf:/etc/postfix/master.cf:ro \
--v $gitlocation/etc/postfix/virtual.lmdb:/etc/postfix/virtual.lmdb:ro \
 -v $gitlocation/etc/imapd.conf:/etc/imapd.conf:ro \
 -v $gitlocation/etc/aliases.lmdb:/etc/aliases.lmdb:ro \
 -v $gitlocation/etc/sasl2:/etc/sasl2:ro \
