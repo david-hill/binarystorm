@@ -21,7 +21,21 @@ chown 48 /var/log/php-fpm
 mkdir -p /var/lib/sql
 chown -R 48:48 /var/lib/sql
 mkdir -p /run/saslauthd
-podman  run -d --network ipv6 --ip6 fd00::7 --ip 10.89.0.7 -v /run/php-fpm:/run/php-fpm -v /run/saslauthd:/run/saslauthd --mount=type=bind,src=/dev/log,dst=/dev/log -v /var/lib/php:/var/lib/php -v /root/binarystorm//etc/php.d:/etc/php.d -v /root/binarystorm/etc/php-fpm.d:/etc/php-fpm.d -v /root/binarystorm/etc/php-fpm.conf:/etc/php-fpm.conf -v /root/binarystorm/etc/php.ini:/etc/php.ini -v /root/binarystorm/etc/roundcubemail/config.inc.php:/etc/roundcubemail/config.inc.php -v /var/lib/roundcubemail:/var/lib/roundcubemail -v /var/lib/sql:/var/lib/sql -v /var/log/php-fpm:/var/log/php-fpm -v /etc/pki:/etc/pki:ro --name=php-fpm $registry/php-fpm-root:latest
+podman  run -d --network ipv6 --ip6 fd00::7 --ip 10.89.0.7 \
+-v /run/php-fpm:/run/php-fpm \
+-v /run/saslauthd:/run/saslauthd \
+-v /var/lib/php:/var/lib/php \
+-v /root/binarystorm/etc/php.d:/etc/php.d \
+-v /root/binarystorm/etc/php-fpm.d:/etc/php-fpm.d \
+-v /root/binarystorm/etc/php-fpm.conf:/etc/php-fpm.conf \
+-v /root/binarystorm/etc/php.ini:/etc/php.ini \
+-v /root/binarystorm/etc/roundcubemail/config.inc.php:/etc/roundcubemail/config.inc.php \
+-v /var/lib/roundcubemail:/var/lib/roundcubemail \
+-v /var/lib/sql:/var/lib/sql \
+-v /var/log/php-fpm:/var/log/php-fpm \
+-v /etc/pki:/etc/pki:ro \
+--mount=type=bind,src=/dev/log,dst=/dev/log \
+--name=php-fpm $registry/php-fpm-root:latest
 sleep 3
 podman generate systemd --new --files --name php-fpm
 cp *.service /etc/systemd/system
