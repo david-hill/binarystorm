@@ -1,1 +1,5 @@
 *.service
+*-root-diff.tgz
+*-root.tgz
+install.out
+build_all_from_root.log
