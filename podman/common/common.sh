@@ -1,7 +1,6 @@
 creation_date=$(date '+%Y%m%d%H%M%S')
 tmp=$(mktemp -d)
-#include="$tmp/var/cache/dnf $tmp/var/lib/dnf $tmp/usr/share/man $tmp/usr/share/doc $tmp/usr/lib/.build-id $tmp/var/log/dnf $tmp/var/log/hawkey $tmp/usr/share/licenses"
-include="var/cache/dnf var/lib/dnf usr/share/man usr/share/doc usr/lib/.build-id var/log/dnf var/log/hawkey usr/share/licenses usr/share/X11 usr/lib/systemd usr/lib/rpm"
+include="var/cache/dnf var/lib/dnf usr/share/man usr/share/doc usr/lib/.build-id var/log/dnf var/log/hawkey usr/share/licenses usr/share/X11 usr/lib/systemd usr/lib/rpm usr/lib/tmpfiles.d usr/share/dbus-1"
 registry=registry.davidchill.ca:5000
 scriptlocation=$(echo $0 | xargs dirname)
 decompressargs='xf'
@@ -9,14 +8,9 @@ compressargs='zcf'
 
 function cleanup_root {
   if [ ! -z $tmp ]; then
-    rm -rf $tmp/var/cache/dnf
-    rm -rf $tmp/var/lib/dnf
-    rm -rf $tmp/usr/share/man
-    rm -rf $tmp/usr/share/doc
-    rm -rf $tmp/usr/lib/.build-id
-    rm -rf $tmp/var/log/dnf*
-    rm -rf $tmp/var/log/hawkey*
-    rm -rf $tmp/usr/share/licenses
+    for rmpath in $include; do
+      rm -rf $tmp/$rmpath
+    done
   fi
 }
 
@@ -47,6 +41,9 @@ function pre_httpd {
   install_epel_repo
 }
 function pre_opendkim {
+  install_epel_repo
+}
+function pre_php-fpm {
   install_epel_repo
 }
 function pre_sa-update {
