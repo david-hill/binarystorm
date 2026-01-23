@@ -12,6 +12,11 @@ function configure_firewall {
   fi
 }
 
+function reload {
+  if [ $1 -eq 1 ]; then
+    reload=1
+  fi
+} 
 
 function add_port {
   lreload=0
