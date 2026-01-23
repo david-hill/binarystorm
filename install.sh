@@ -49,3 +49,7 @@ cp etc/selinux/config /etc/selinux
 setenforce 0
 
 rpm -e cloud-init
+
+nmcli con mod "cloud-init ens3" ipv6.addresses "2607:5300:205:200::45cf"
+nmcli con mod "cloud-init ens3" ipv6.gateway "2607:5300:205:200::1"
+nmcli connection up "cloud-init ens3"
