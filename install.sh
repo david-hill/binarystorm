@@ -26,6 +26,7 @@ systemctl enable rsyslog
 
 cp etc/pki/tls/certs/gen_localhost_crt.sh /etc/pki/tls/certs
 cp etc/pki/tls/openssl.cnf /etc/pki/tls/
+bash /etc/pki/tls/certs/gen_localhost_crt.sh
 
 cp etc/pki/ca-trust/source/anchors/* /etc/pki/ca-trust/source/anchors
 update-ca-trust
