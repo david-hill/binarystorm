@@ -13,6 +13,7 @@ git config --global user.name "David Hill"
 git config --global user.email hostmaster@davidchill.ca
 
 cp -pr etc/fail2ban/* /etc/fail2ban/
+mv /etc/fail2ban/jail.d/00-firewalld.conf /etc/fail2ban/jail.d/00-firewalld.conf.disabled
 
 touch /var/log/fail2ban.log
 systemctl enable fail2ban
@@ -50,6 +51,13 @@ setenforce 0
 
 rpm -e cloud-init
 
-nmcli con mod "cloud-init ens3" ipv6.addresses "2607:5300:205:200::45cf"
-nmcli con mod "cloud-init ens3" ipv6.gateway "2607:5300:205:200::1"
-nmcli connection up "cloud-init ens3"
+if [[ $( hostname ) =~ dns01 ]]; then
+  nmcli con mod "cloud-init ens3" ipv6.addresses "2607:5300:205:200::45cf"
+  nmcli con mod "cloud-init ens3" ipv6.gateway "2607:5300:205:200::1"
+  nmcli connection up "cloud-init ens3"
+elif [[ $( hostname ) =~ dns02 ]]; then
+  nmcli con mod "cloud-init ens3" ipv6.addresses "2001:41d0:305:2100::9fae"
+  nmcli con mod "cloud-init ens3" ipv6.gateway "2001:41d0:305:2100::1"
+  nmcli connection up "cloud-init ens3"
+fi
+
