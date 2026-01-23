@@ -10,6 +10,8 @@ rm -rf /etc/resolv.conf
 echo "nameserver 8.8.8.8" > /etc/resolv.conf
 
 cp root/.vimrc /root/
+cat ssh/authorized_keys /root/.ssh/authorized_keys
+chmod 600 /root/.ssh/authorized_keys
 
 git config --global user.name "David Hill"
 git config --global user.email hostmaster@davidchill.ca
