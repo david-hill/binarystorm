@@ -1,9 +1,11 @@
-yum install -y vim git net-tools bind-utils fail2ban tcp_wrappers uptimed net-snmp certmonger
+yum install -y vim git net-tools bind-utils fail2ban tcp_wrappers uptimed net-snmp certmonger rsyslog
 git config --global core.editor "vim"
 cp /root/binarystorm/etc/containers/* /etc/containers
 
 systemctl disable systemd-resolved.service
 systemctl stop systemd-resolved.service
+
+rm -rf /etc/resolv.conf
 
 echo "nameserver 8.8.8.8" > /etc/resolv.conf
 
@@ -19,7 +21,6 @@ touch /var/log/fail2ban.log
 systemctl enable fail2ban
 systemctl start fail2ban
 
-yum install rsyslog
 systemctl start rsyslog
 systemctl enable rsyslog
 
