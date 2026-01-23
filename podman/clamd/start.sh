@@ -10,7 +10,7 @@ if [ $? -eq 0 ]; then
   podman rm clamd
   podman pull $registry/clamd-root:latest
 fi
-directories="/var/run/clamd.scan /var/spool/amavisd/tmp /var/lib/clamav /run/clamd.amavisd"
+directories="/run/clamd.scan /var/spool/amavisd/tmp /var/lib/clamav /run/clamd.amavisd"
 for directory in $directories; do
   mkdir -p $directory
 done
