@@ -47,3 +47,5 @@ systemctl start certmonger
 
 cp etc/selinux/config /etc/selinux
 setenforce 0
+
+rpm -e cloud-init
