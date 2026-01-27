@@ -315,22 +315,6 @@ function configure_cyrus {
     fi
   fi
 }
-function configure_squirrelmail {
-  if [[ "$HOSTNAME" =~ dns1 ]]; then
-    install_package squirrelmail
-    restart=0
-    for f in etc/squirrelmail/*; do
-      cmp $f /$f
-      if [ $? -ne 0 ]; then
-       cp $f /$f
-       restart=1
-      fi
-    done
-    if [ $restart -eq 1 ]; then
-      systemctl restart httpd
-    fi
-  fi
-}
 function configure_httpd {
   if [[ "$HOSTNAME" =~ dns1 ]]; then
     install_package httpd
@@ -508,7 +492,6 @@ configure_openssl
 configure_cyrus
 configure_cyrus_passwd
 configure_fail2ban
-configure_squirrelmail
 configure_sshd
 configure_postfix
 configure_named
