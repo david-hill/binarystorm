@@ -54,6 +54,7 @@ function build_container {
   changed=0
   update=0
   install=0
+  set -o pipefail
   if declare -F pre_$service > /dev/null; then
     pre_$service
   fi
@@ -83,6 +84,7 @@ function build_container {
     tar $compressargs $scriptlocation/${service}-root.tgz -C $tmp . | tee -a $scriptlocation/install.out
   fi
   rm -rf $tmp
+  set +o pipefail
   exit $changed
 }
 
