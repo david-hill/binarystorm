@@ -1,4 +1,4 @@
-yum install -y vim git net-tools bind-utils fail2ban tcp_wrappers uptimed net-snmp certmonger rsyslog
+yum install -y vim git net-tools bind-utils fail2ban tcp_wrappers uptimed net-snmp certmonger rsyslog firewalld
 git config --global core.editor "vim"
 cp /root/binarystorm/etc/containers/* /etc/containers
 
@@ -25,6 +25,9 @@ systemctl start fail2ban
 
 systemctl start rsyslog
 systemctl enable rsyslog
+
+systemctl start firewalld
+systemctl enable firewalld
 
 cp etc/pki/tls/certs/gen_localhost_crt.sh /etc/pki/tls/certs
 cp etc/pki/tls/openssl.cnf /etc/pki/tls/
