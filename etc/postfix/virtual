@@ -294,6 +294,8 @@
 #                                                                     VIRTUAL(5)
 @dns1.binarystorm.net   dhill
 @dns2.binarystorm.net   dhill
+@dns01.binarystorm.net   dhill
+@dns02.binarystorm.net   dhill
 @dns3.binarystorm.net   dhill
 @binarystorm.net	dhill
 @binarystorm.org	dhill
