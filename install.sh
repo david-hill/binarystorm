@@ -1,4 +1,4 @@
-yum install -y vim git net-tools bind-utils fail2ban tcp_wrappers uptimed net-snmp certmonger rsyslog firewalld jq skopeo createrepo_c sysstat
+yum install -y vim git net-tools bind-utils fail2ban tcp_wrappers uptimed net-snmp certmonger rsyslog firewalld jq skopeo createrepo_c sysstat postfix
 git config --global core.editor "vim"
 cp /root/binarystorm/etc/containers/* /etc/containers
 
