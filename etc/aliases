@@ -7,7 +7,7 @@
 #	>>>>>>>>>>	show through to sendmail.
 #
 
-root: root@davidchill.ca
+root: dhill@davidchill.ca
 # Basic system aliases -- these MUST be present.
 mailer-daemon:	postmaster
 postmaster:	root
