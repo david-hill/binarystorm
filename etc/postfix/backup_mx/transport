@@ -293,8 +293,8 @@
 # 
 #                                                                   TRANSPORT(5)
 binarystorm.net smtp:smtp01.binarystorm.net
-binarystorm.org smtp:smtp01.binarystorm.net
-davidchill.ca smtp:smtp01.binarystorm.net
+binarystorm.org smtp:smtp01.binarystorm.org
+davidchill.ca smtp:smtp01.davidchill.ca
 .binarystorm.net smtp:smtp01.binarystorm.net
-.binarystorm.org smtp:smtp01.binarystorm.net
-.davidchill.ca smtp:smtp01.binarystorm.net
+.binarystorm.org smtp:smtp01.binarystorm.org
+.davidchill.ca smtp:smtp01.davidchill.ca
