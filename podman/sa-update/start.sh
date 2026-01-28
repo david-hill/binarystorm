@@ -16,6 +16,7 @@ fi
 podman  run -d -h $(hostname) --network ipv6 --ip6 fd00::11 --ip 10.89.0.11 \
 -v $gitlocation/etc/mail/spamassassin/local.cf:/etc/mail/spamassassin/local.cf:ro \
 -v /var/lib/spamassassin:/var/lib/spamassassin \
+-v /var/spool/postfix:/var/spool/postfix \
 --mount=type=bind,src=/dev/log,dst=/dev/log \
 --hosts-file $gitlocation/podman/common/hosts \
 --name=sa-update \
