@@ -50,6 +50,20 @@ function pre_sa-update {
   install_epel_repo
 }
 
+function prepare_chroot {
+  if [ ! -d $tmp/proc ]; then
+    mkdir -p $tmp/proc
+    mount --bind /proc $tmp/proc
+  fi
+  if [ ! -d $tmp/sys ]; then
+    mkdir -p $tmp/sys
+    mount --bind /sys $tmp/sys
+  fi
+}
+function remove_chroot {
+  umount $tmp/proc
+  umount $tmp/sys
+}
 function build_container {
   changed=0
   update=0
@@ -61,6 +75,7 @@ function build_container {
   if [ -e $scriptlocation/${service}-root-diff.tgz ]; then
     tar $decompressargs $scriptlocation/${service}-root-diff.tgz -C $tmp | tee $scriptlocation/install.out
     tar $decompressargs $scriptlocation/${service}-root.tgz -C $tmp | tee -a $scriptlocation/install.out
+    prepare_chroot
     cp /root/binarystorm/podman/common/etc/yum.repos.d/*.repo /etc/yum.repos.d
     yum check-update -q --installroot=$tmp | tee -a $scriptlocation/install.out
     if [ $? -ne 0 ]; then
@@ -70,15 +85,20 @@ function build_container {
       echo "No new updates" | tee -a $scriptlocation/install.out
     fi
   else
+    prepare_chroot
     cp /root/binarystorm/podman/common/etc/yum.repos.d/*.repo /etc/yum.repos.d
     yum install -y --installroot=$tmp --nogpgcheck $packages | tee $scriptlocation/install.out
     install=1
   fi
   if [[ $install -ne 0 ]] || [[ $update -ne 0 ]]; then
+    if [[ $decompressargs =~ v ]]; then
+      find $tmp | tee -a $scriptlocation/install.out
+    fi
     changed=1
     if declare -F customize_$service > /dev/null; then
       customize_$service
     fi
+    remove_chroot
     tar $compressargs $scriptlocation/${service}-root-diff.tgz -C $tmp $include | tee -a $scriptlocation/install.out
     cleanup_root
     tar $compressargs $scriptlocation/${service}-root.tgz -C $tmp . | tee -a $scriptlocation/install.out
