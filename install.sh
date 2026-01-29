@@ -56,6 +56,9 @@ systemctl start certmonger
 cp etc/selinux/config /etc/selinux
 setenforce 0
 
+systemctl disable ssh-host-keys-migration.service
+systemctl mask ssh-host-keys-migration.service
+
 rpm -e cloud-init
 
 if [[ $( hostname ) =~ dns01 ]]; then
