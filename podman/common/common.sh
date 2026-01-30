@@ -1,6 +1,6 @@
 creation_date=$(date '+%Y%m%d%H%M%S')
 tmp=$(mktemp -d)
-include="var/cache/dnf var/lib/dnf usr/share/man usr/share/doc usr/lib/.build-id var/log/dnf var/log/hawkey usr/share/licenses usr/share/X11 usr/lib/systemd usr/lib/rpm usr/lib/tmpfiles.d usr/share/dbus-1"
+include="var/cache/dnf var/lib/dnf usr/share/man usr/share/doc usr/lib/.build-id var/log/dnf var/log/hawkey usr/share/licenses usr/share/X11 usr/lib/systemd usr/lib/rpm usr/lib/tmpfiles.d usr/share/dbus-1 etc/yum.repos.d etc/dnf etc/systemd etc/tpm2-tss run/systemd"
 registry=registry.davidchill.ca:5000
 scriptlocation=$(echo $0 | xargs dirname)
 decompressargs='xf'
@@ -24,7 +24,7 @@ function install_required_packages {
 function install_epel_repo {
   rpm -qi epel-release > /dev/null
   if [ $? -ne 0 ]; then
-    rpm -i https://dl.fedoraproject.org/pub/epel/epel-release-latest-10.noarch.rpm  2>/dev/null 1>/dev/null
+    rpm -i https://dl.fedoraproject.org/pub/epel/epel-release-latest-10.noarch.rpm 2>/dev/null 1>/dev/null
   fi
 }
 
@@ -87,7 +87,9 @@ function build_container {
   else
     prepare_chroot
     cp /root/binarystorm/podman/common/etc/yum.repos.d/*.repo /etc/yum.repos.d
-    yum install -y --installroot=$tmp --nogpgcheck $packages | tee $scriptlocation/install.out
+    yum install -y --installroot=$tmp --nogpgcheck setup util-linux | tee $scriptlocation/install.out
+    cp /root/binarystorm/podman/common/etc/yum.repos.d/*.repo $tmp/etc/yum.repos.d
+    yum install -y --installroot=$tmp --nogpgcheck $packages | tee -a $scriptlocation/install.out
     install=1
   fi
   if [[ $install -ne 0 ]] || [[ $update -ne 0 ]]; then
@@ -110,16 +112,21 @@ function build_container {
 
 function customize_freshclam {
   install_required_packages
+  chroot $tmp groupmod -g 993 virusgroup | tee -a $scriptlocation/install.out
   chroot $tmp useradd -u 995 amavis | tee -a $scriptlocation/install.out
 }
 
 function customize_amavisd {
   install_required_packages
-  chroot $tmp usermod -a -G virusgroup amavis  | tee -a $scriptlocation/install.out
+  chroot $tmp groupmod -g 993 virusgroup | tee -a $scriptlocation/install.out
+  chroot $tmp usermod -u 993 clamscan  | tee -a $scriptlocation/install.out
+  chroot $tmp usermod -a -u 995 -G virusgroup amavis  | tee -a $scriptlocation/install.out
+  chroot $tmp find / -uid 998  -exec chown 995 {} \; | tee -a $scriptlocation/install.out
 }
 
 function customize_clamd {
   install_required_packages
+  chroot $tmp groupmod -g 993 virusgroup | tee -a $scriptlocation/install.out
   chroot $tmp useradd -u 995 amavis | tee -a $scriptlocation/install.out
 }
 function customize_sa-update {
