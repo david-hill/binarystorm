@@ -1,6 +1,9 @@
-yum install -y vim git net-tools bind-utils fail2ban tcp_wrappers uptimed net-snmp certmonger rsyslog firewalld jq skopeo createrepo_c sysstat postfix
+yum install -y vim git net-tools bind-utils fail2ban tcp_wrappers uptimed net-snmp certmonger rsyslog firewalld jq skopeo createrepo_c sysstat postfix fetchmail
 git config --global core.editor "vim"
 cp /root/binarystorm/etc/containers/* /etc/containers
+cp etc/systemd/system/fetchmail /etc/systemd/system
+systemctl enable fetchmail
+systemctl start fetchmail
 
 systemctl disable systemd-resolved.service
 systemctl stop systemd-resolved.service
