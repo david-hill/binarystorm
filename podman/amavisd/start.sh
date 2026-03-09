@@ -21,6 +21,7 @@ podman  run -d -h $(hostname) --network ipv6 --ip6 fd00::4 --ip 10.89.0.4 \
 -v $gitlocation/etc/mail/spamassassin/local.cf:/etc/mail/spamassassin/local.cf:ro \
 -v $gitlocation/etc/mail/spamassassin/v310.pre:/etc/mail/spamassassin/v310.pre:ro \
 -v $gitlocation/etc/amavisd:/etc/amavisd:ro \
+-v $gitlocation/podman/common/etc/resolv.conf:/etc/resolv.conf:ro \
 -v /var/spool/amavisd:/var/spool/amavisd \
 -v /var/lib/spamassassin:/var/lib/spamassassin:ro \
 -v /var/run/clamd.scan:/var/run/clamd.scan \
