@@ -41,6 +41,9 @@ function pre_freshclam {
 function pre_httpd {
   install_epel_repo
 }
+function pre_named {
+  install_epel_repo
+}
 function pre_opendkim {
   install_epel_repo
 }
