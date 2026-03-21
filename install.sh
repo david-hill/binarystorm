@@ -39,6 +39,7 @@ bash /etc/pki/tls/certs/gen_localhost_crt.sh
 cp etc/pki/ca-trust/source/anchors/* /etc/pki/ca-trust/source/anchors
 update-ca-trust
 
+cp etc/hosts.deny /etc
 cp -pr etc/systemd/system/sshd@.service.d /etc/systemd/system
 systemctl daemon-reload
 
