@@ -57,12 +57,12 @@ function pre_sa-update {
 function prepare_chroot {
   if [ ! -d $tmp/proc ]; then
     mkdir -p $tmp/proc
-    mount --bind /proc $tmp/proc
   fi
+  mount --bind /proc $tmp/proc
   if [ ! -d $tmp/sys ]; then
     mkdir -p $tmp/sys
-    mount --bind /sys $tmp/sys
   fi
+  mount --bind /sys $tmp/sys
 }
 function remove_chroot {
   umount $tmp/proc
