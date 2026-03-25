@@ -107,6 +107,8 @@ function build_container {
     tar $compressargs $scriptlocation/${service}-root-diff.tgz -C $tmp $include | tee -a $scriptlocation/install.out
     cleanup_root
     tar $compressargs $scriptlocation/${service}-root.tgz -C $tmp . | tee -a $scriptlocation/install.out
+  else
+    remove_chroot
   fi
   rm -rf $tmp
   set +o pipefail
