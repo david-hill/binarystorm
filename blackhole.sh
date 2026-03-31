@@ -1,4 +1,4 @@
-history=100
+history=200
 blacklist=$(grep SASL /var/log/maillog | grep failed | grep -v Password|  awk '{ print $7 }' | sort | uniq -c | sort -k1,1n | tail -$history | sed -e 's/.*\[\(.*\)\].*/\1/' | awk -F\. '{ print $1 "." $2 "." $3 ".0/24," }' | sort | uniq | xargs echo -n)
 blacklist=$blacklist$(cat /var/log/secure | grep failure | grep sshd-session | awk '{ print $14 }' | sort | uniq -c | sort -k1,1n | tail -$history | grep -v "::" | grep -v tty=ssh | sed -e 's/.*=\(.*\)/\1/g' | awk -F\. '{ print $1 "." $2 "." $3 ".0/24," }' | sort |uniq | xargs echo -n)
 
