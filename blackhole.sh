@@ -4,7 +4,7 @@ blacklist=$blacklist$(cat /var/log/secure | grep failure | grep sshd-session | a
 
 blacklist6=$(cat /var/log/secure | grep failure | grep sshd-session | awk '{ print $14 }' | sort | uniq -c | sort -k1,1n | tail -$history | grep "::" | grep -v tty=ssh | sed -e 's/.*=\(.*\)/\1/g' | awk -F: '{ print $1":"$2":"$3":"$4"::/64" }' | sort |uniq | xargs echo -n)
 
-nft add set inet f2b-table blackhole { type ipv4_addr\; flags interval\; }
+nft add set inet f2b-table blackhole { type ipv4_addr\; flags interval\; size 200 \;}
 nft add element inet f2b-table blackhole { $blacklist }
 
 nft add set inet f2b-table blackhole6 { type ipv6_addr\; flags interval\; }
