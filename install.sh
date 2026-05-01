@@ -60,6 +60,9 @@ systemctl start certmonger
 cp etc/selinux/config /etc/selinux
 setenforce 0
 
+systemctl enable sysstat-collect.timer
+systemctl start sysstat-collect.timer
+
 systemctl disable ssh-host-keys-migration.service
 systemctl mask ssh-host-keys-migration.service
 
