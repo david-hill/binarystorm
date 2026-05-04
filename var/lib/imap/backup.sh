@@ -1,3 +1,5 @@
+#!/bin/bash
+
 tdate=$(date "+%Y%m%d")
 if ! [ -e /var/spool/imap/mailbox-$tdate.tgz ]; then
   cd  /var/spool/imap
