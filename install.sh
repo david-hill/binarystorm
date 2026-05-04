@@ -73,6 +73,7 @@ if [[ $( hostname ) =~ dns01 ]]; then
   nmcli con mod "cloud-init ens3" ipv6.gateway "2607:5300:205:200::1"
   nmcli connection up "cloud-init ens3"
   cp etc/systemd/system/cyrus-backup* /etc/systemd/system
+  cp var/lib/imap/backup.sh /var/lib/imap
   systemctl enable cyrus-backup.timer
   systemctl start cyrus-backup.timer
 elif [[ $( hostname ) =~ dns02 ]]; then
