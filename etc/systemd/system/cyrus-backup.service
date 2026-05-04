@@ -6,6 +6,7 @@ Type=oneshot
 Persistent=true
 User=cyrus
 Group=mail
+ExecStart=/var/lib/imap/backup.sh
 ExecStart=rsync -avgo /var/lib/imap/ cyrus@dns02.davidchill.ca:/var/lib/imap/
 ExecStart=rsync -avgo /var/spool/imap/ cyrus@dns02.davidchill.ca:/var/spool/imap/
 
