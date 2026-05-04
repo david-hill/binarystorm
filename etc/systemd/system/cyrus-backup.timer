@@ -1,0 +1,10 @@
+[Unit]
+Description=Run myscript every 60 minutes
+
+[Timer]
+OnCalendar=hourly
+Persistent=true
+Unit=cyrus-backup.service
+
+[Install]
+WantedBy=timers.target
