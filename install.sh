@@ -2,8 +2,11 @@ yum install -y vim git net-tools bind-utils fail2ban tcp_wrappers uptimed net-sn
 git config --global core.editor "vim"
 cp /root/binarystorm/etc/containers/* /etc/containers
 cp etc/systemd/system/fetchmail /etc/systemd/system
-systemctl enable fetchmail
-systemctl start fetchmail
+
+if [[ $( hostname ) =~ dns01 ]]; then
+  systemctl enable fetchmail
+  systemctl start fetchmail
+fi
 
 systemctl disable systemd-resolved.service
 systemctl stop systemd-resolved.service
