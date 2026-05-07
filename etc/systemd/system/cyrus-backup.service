@@ -3,7 +3,6 @@ Description=Cyrus backup
 
 [Service]
 Type=oneshot
-Persistent=true
 User=cyrus
 Group=mail
 ExecStart=/var/lib/imap/backup.sh
