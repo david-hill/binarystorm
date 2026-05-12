@@ -13,6 +13,9 @@ storage:
         rootdirectory: /var/lib/registry
     tag:
       concurrencylimit: 5
+    maintenance:
+      readonly:
+        enabled: false
 http:
     addr: :5000
       #    debug:
