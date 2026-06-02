@@ -11,5 +11,6 @@ fi
 if [ ! -d /var/lib/registry ]; then
   mkdir /var/lib/registry
 fi
+echo "Starting registry in $permission mode"
 podman run -d --replace --name registry -p 5000:5000 -v /root/binarystorm/etc/distribution/config.yml:/etc/distribution/config.yml:ro -v /var/lib/registry:/var/lib/registry:$permission --restart=always localhost/registry:latest
 
