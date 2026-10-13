@@ -7,7 +7,7 @@ blacklist6=$(cat /var/log/secure | grep failure | grep sshd-session | awk '{ pri
 blacklist6=$(cat /var/log/secure | grep failure | grep sshd-session | awk '{ print $14 }' | sort | uniq -c | sort -k1,1n | tail -$history | grep ":" | grep -v tty=ssh | sed -e 's/.*=\(.*\)/\1/g' | awk -F: '{ if (!$4) print $1":"$2":"$3"::/48," }' | sort |uniq |  xargs echo -n)
 blacklist6=$blacklist6$(grep SASL /var/log/maillog | grep -v imap | grep failed | grep -v Password|  awk '{ print $7 }' | sort | uniq -c | sort -k1,1n | tail -$history | grep ":" | sed -e 's/.*\[\(.*\)\].*/\1/' | awk -F\. '{ print $1":"$2":"$3":"$4"::/64,"}' | grep -v -e "[a-z]" |  sort | uniq |  xargs echo -n)
 
-history=$(( $history * 2 ))
+history=$(( $history * 5 ))
 nft add set inet f2b-table blackhole { type ipv4_addr\; flags interval\; size $history \;}
 nft add element inet f2b-table blackhole { $blacklist }
 
