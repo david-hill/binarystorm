@@ -685,6 +685,7 @@ readme_directory = /usr/share/doc/postfix/README_FILES
 content_filter=smtp-amavis:[10.89.0.4]:10024
 
 smtpd_enforce_tls                = no
+smtp_tls_security_level          = may
 smtpd_tls_loglevel               = 1
 smtpd_use_tls                    = yes
 smtpd_tls_key_file               = /etc/postfix/keys/smtpd.key
