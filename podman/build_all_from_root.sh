@@ -1,4 +1,5 @@
 set -o pipefail
+changed=0
 echo "Building all container images" | tee /root/binarystorm/podman/build_all_from_root.log
 for dir in *; do
   if [ -d $dir ]; then
@@ -12,10 +13,12 @@ for dir in *; do
       if [ $? -eq 0 ]; then
          echo "Nothing changed" | tee -a /root/binarystorm/podman/build_all_from_root.log
       elif [ -e import.sh ]; then
-	 bash import.sh | tee -a /root/binarystorm/podman/build_all_from_root.log
+      	 bash import.sh | tee -a /root/binarystorm/podman/build_all_from_root.log
+         changed=1
       fi
     fi
     cd ..
   fi
 done
 echo "Task completed." | tee -a /root/binarystorm/podman/build_all_from_root.log
+exit $changed
