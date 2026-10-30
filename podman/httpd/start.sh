@@ -11,11 +11,17 @@ for directory in $directories; do
     mkdir -p $directory
   fi
 done
-podman  run -d --network ipv6 --ip6 fd00::6 --ip 10.89.0.6 -p 80:80/tcp -p 443:443/tcp -p [::]:80:80/tcp -p [::]:443:443/tcp \
+if [[ $(hostname) =~ dns01 ]]; then
+  volargs="-v $gitlocation/etc/roundcubemail/config.inc.php:/etc/roundcubemail/config.inc.php:ro" 
+else
+  volargs="-v $gitlocation/etc/roundcubemail/backup_mx/config.inc.php:/etc/roundcubemail/config.inc.php:ro" 
+fi
+
+podman run -d --network ipv6 --ip6 fd00::6 --ip 10.89.0.6 -p 80:80/tcp -p 443:443/tcp -p [::]:80:80/tcp -p [::]:443:443/tcp \
 -v $gitlocation/etc/httpd/conf/httpd.conf:/etc/httpd/conf/httpd.conf \
 -v $gitlocation/etc/httpd/conf.d:/etc/httpd/conf.d:ro \
 -v $gitlocation/var/www:/var/www:ro \
--v $gitlocation/etc/roundcubemail/config.inc.php:/etc/roundcubemail/config.inc.php:ro \
+$volargs \
 -v /var/lib/sql:/var/lib/sql \
 -v /run/php-fpm/www.sock:/run/php-fpm/www.sock \
 -v /var/lib/php:/var/lib/php:ro \

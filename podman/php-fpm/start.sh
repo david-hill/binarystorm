@@ -21,7 +21,13 @@ chown 48 /var/log/php-fpm
 mkdir -p /var/lib/sql
 chown -R 48:48 /var/lib/sql
 mkdir -p /run/saslauthd
-podman  run -d --network ipv6 --ip6 fd00::7 --ip 10.89.0.7 \
+if [[ $(hostname) =~ dns01 ]]; then
+  volargs="-v $gitlocation/etc/roundcubemail/config.inc.php:/etc/roundcubemail/config.inc.php:ro"
+else
+  volargs="-v $gitlocation/etc/roundcubemail/backup_mx/config.inc.php:/etc/roundcubemail/config.inc.php:ro"
+fi
+
+podman run -d --network ipv6 --ip6 fd00::7 --ip 10.89.0.7 \
 -v /run/php-fpm:/run/php-fpm \
 -v /run/saslauthd:/run/saslauthd \
 -v /var/lib/php:/var/lib/php \
@@ -29,7 +35,7 @@ podman  run -d --network ipv6 --ip6 fd00::7 --ip 10.89.0.7 \
 -v $gitlocation/etc/php-fpm.d:/etc/php-fpm.d \
 -v $gitlocation/etc/php-fpm.conf:/etc/php-fpm.conf \
 -v $gitlocation/etc/php.ini:/etc/php.ini \
--v $gitlocation/etc/roundcubemail/config.inc.php:/etc/roundcubemail/config.inc.php \
+$volargs \
 -v /var/lib/roundcubemail:/var/lib/roundcubemail \
 -v /var/lib/sql:/var/lib/sql \
 -v /var/log/php-fpm:/var/log/php-fpm \
