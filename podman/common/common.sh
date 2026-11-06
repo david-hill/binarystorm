@@ -7,6 +7,15 @@ gitlocation="/root/binarystorm"
 decompressargs='xf'
 compressargs='zcf'
 
+function myrelease {
+  version=$1
+  release=$(cat /etc/redhat-release)
+  if [[ $release =~ $version ]]; then
+    return 0
+  else
+    return 1;
+  fi
+}
 function cleanup_root {
   if [ ! -z $tmp ]; then
     for rmpath in $include; do
