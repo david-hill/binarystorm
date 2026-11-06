@@ -1,3 +1,5 @@
+yum update -y
+
 bash build_all_from_root.sh
 if [ $? -eq 1 ]; then
   cd registry
