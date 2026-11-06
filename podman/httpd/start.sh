@@ -17,7 +17,12 @@ else
   volargs="-v $gitlocation/etc/roundcubemail/backup_mx/config.inc.php:/etc/roundcubemail/config.inc.php:ro" 
 fi
 
-podman run -d --network ipv6 --ip6 fd00::6 --ip 10.89.0.6 -p 80:80/tcp -p 443:443/tcp -p [::]:80:80/tcp -p [::]:443:443/tcp \
+if myrelease 45; then
+portargs=''
+else
+portargs='-p [::]:80:80/tcp -p [::]:443:443/tcp'
+fi
+podman run -d --network ipv6 --ip6 fd00::6 --ip 10.89.0.6 -p 80:80/tcp -p 443:443/tcp $portargs \
 -v $gitlocation/etc/httpd/conf/httpd.conf:/etc/httpd/conf/httpd.conf \
 -v $gitlocation/etc/httpd/conf.d:/etc/httpd/conf.d:ro \
 -v $gitlocation/var/www:/var/www:ro \

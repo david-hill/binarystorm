@@ -15,7 +15,12 @@ chown 76 /var/spool/imap
 chmod 700 /var/spool/imap
 chown 76:12 /var/lib/imap
 chmod 750 /var/lib/imap
-podman  run -d --network ipv6 --ip6 fd00::5 --ip 10.89.0.5 -p 995:995/tcp -p 993:993/tcp -p 143:143/tcp -p 110:110/tcp -p [::]:995:995/tcp -p [::]:993:993/tcp -p [::]:143:143/tcp -p [::]:110:110/tcp -h $(hostname) \
+if myrelease 45; then
+portargs=''
+else
+portargs='-p [::]:110:110/tcp -p [::]:143:143/tcp -p [::]:993:993/tcp -p [::]:995:995/tcp'
+fi
+podman  run -d --network ipv6 --ip6 fd00::5 --ip 10.89.0.5 -p 995:995/tcp -p 993:993/tcp -p 143:143/tcp -p 110:110/tcp $portargs -h $(hostname) \
 -v $gitlocation/etc/imapd.conf:/etc/imapd.conf:ro \
 -v $gitlocation/etc/cyrus.conf:/etc/cyrus.conf:ro \
 -v $gitlocation/etc/sasl2:/etc/sasl2:ro \

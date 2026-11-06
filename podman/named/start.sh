@@ -21,7 +21,12 @@ done
 touch /var/log/named.log
 chown 25:25 /var/log/named.log
 chown -R 25:25 /var/named
-podman  run -d --network ipv6 --ip6 fd00::2 --ip 10.89.0.2 -p 53:53/udp -p 53:53/tcp -p [::]:53:53/udp -p [::]:53:53/tcp \
+if myrelease 45; then
+portargs=''
+else
+portargs='-p [::]:53:53/tcp -p [::]:53:53/udp'
+fi
+podman  run -d --network ipv6 --ip6 fd00::2 --ip 10.89.0.2 -p 53:53/udp -p 53:53/tcp \
 -v $gitlocation/etc/named:/etc/named:ro \
 -v $gitlocation/etc/named.conf:/etc/named.conf:ro \
 -v /var/named:/var/named \
