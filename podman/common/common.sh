@@ -3,6 +3,7 @@ tmp=$(mktemp -d)
 include="var/cache/dnf var/lib/dnf usr/share/man usr/share/doc usr/lib/.build-id var/log/dnf var/log/hawkey usr/share/licenses usr/share/X11 usr/lib/systemd usr/lib/rpm usr/lib/tmpfiles.d usr/share/dbus-1 etc/yum.repos.d etc/dnf etc/systemd etc/tpm2-tss run/systemd usr/lib/sysimage/rpm"
 registry=registry.davidchill.ca:5000
 scriptlocation=$(echo $0 | xargs dirname)
+datadir="/data"
 gitlocation="/config"
 decompressargs='xf'
 compressargs='zcf'
