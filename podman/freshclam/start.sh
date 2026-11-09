@@ -10,15 +10,15 @@ if [ $? -eq 0 ]; then
   podman rm freshclam
   podman pull $registry/freshclam-root:latest
 fi
-directories="/var/run/clamd.scan /var/spool/amavisd/tmp /var/lib/clamav /run/clamd.amavisd"
+directories="$datadir/run/clamd.scan $datadir/var/spool/amavisd/tmp $datadir/var/lib/clamav $datadir/run/clamd.amavisd"
 for directory in $directories; do
   mkdir -p $directory
 done
-chown 995 /run/clamd.scan
-chown 995 /var/lib/clamav
+chown 995 $datadir/run/clamd.scan
+chown 995 $datadir/var/lib/clamav
 podman run -d --network ipv6 --ip6 fd00::10 --ip 10.89.0.10 -h $(hostname) \
 -v $gitlocation/etc/freshclam.conf:/etc/freshclam.conf:ro \
--v /var/lib/clamav:/var/lib/clamav \
+-v $datadir/var/lib/clamav:/var/lib/clamav:z \
 --mount=type=bind,src=/dev/log,dst=/dev/log \
 --hosts-file $gitlocation/podman/common/hosts \
 --name=freshclam \
