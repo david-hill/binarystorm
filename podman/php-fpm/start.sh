@@ -1,4 +1,4 @@
-source /root/binarystorm/podman/common/common.sh
+source /config/podman/common/common.sh
 podman ps | grep -v container | grep -q php-fpm
 if [ $? -eq 0 ]; then
   podman stop php-fpm

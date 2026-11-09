@@ -1,4 +1,4 @@
-source /root/binarystorm/podman/common/common.sh
+source /config/podman/common/common.sh
 podman ps -a | grep -v container | grep -q cyrus-imapd
 if [ $? -eq 0 ]; then
   podman stop cyrus-imapd

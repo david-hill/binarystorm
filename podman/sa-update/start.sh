@@ -1,4 +1,4 @@
-source /root/binarystorm/podman/common/common.sh
+source /config/podman/common/common.sh
 systemctl | grep -v container | grep \ sa-update
 if [ $? -eq 0 ]; then
   systemctl disable sa-update

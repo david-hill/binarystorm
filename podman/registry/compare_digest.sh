@@ -1,4 +1,4 @@
-source /root/binarystorm/podman/common/common.sh
+source /config/podman/common/common.sh
 rpm -qi skopeo > /dev/null
 if [ $? -ne 0 ]; then
   yum install -y skopeo

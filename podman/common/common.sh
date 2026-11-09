@@ -3,9 +3,10 @@ tmp=$(mktemp -d)
 include="var/cache/dnf var/lib/dnf usr/share/man usr/share/doc usr/lib/.build-id var/log/dnf var/log/hawkey usr/share/licenses usr/share/X11 usr/lib/systemd usr/lib/rpm usr/lib/tmpfiles.d usr/share/dbus-1 etc/yum.repos.d etc/dnf etc/systemd etc/tpm2-tss run/systemd usr/lib/sysimage/rpm"
 registry=registry.davidchill.ca:5000
 scriptlocation=$(echo $0 | xargs dirname)
-gitlocation="/root/binarystorm"
+gitlocation="/config"
 decompressargs='xf'
 compressargs='zcf'
+procname=$(pwd | xargs basename)
 
 function myrelease {
   version=$1
@@ -89,7 +90,7 @@ function build_container {
     tar $decompressargs $scriptlocation/${service}-root-diff.tgz -C $tmp | tee $scriptlocation/install.out
     tar $decompressargs $scriptlocation/${service}-root.tgz -C $tmp | tee -a $scriptlocation/install.out
     prepare_chroot
-    cp /root/binarystorm/podman/common/etc/yum.repos.d/*.repo /etc/yum.repos.d
+    cp /config/podman/common/etc/yum.repos.d/*.repo /etc/yum.repos.d
     yum check-update -q --installroot=$tmp | tee -a $scriptlocation/install.out
     if [ $? -ne 0 ]; then
       yum update -y --installroot=$tmp --nogpgcheck | tee -a $scriptlocation/install.out
@@ -99,9 +100,9 @@ function build_container {
     fi
   else
     prepare_chroot
-    cp /root/binarystorm/podman/common/etc/yum.repos.d/*.repo /etc/yum.repos.d
+    cp /config/podman/common/etc/yum.repos.d/*.repo /etc/yum.repos.d
     yum install -y --installroot=$tmp --nogpgcheck setup util-linux | tee $scriptlocation/install.out
-    cp /root/binarystorm/podman/common/etc/yum.repos.d/*.repo $tmp/etc/yum.repos.d
+    cp /config/podman/common/etc/yum.repos.d/*.repo $tmp/etc/yum.repos.d
     yum install -y --installroot=$tmp --nogpgcheck $packages | tee -a $scriptlocation/install.out
     install=1
   fi

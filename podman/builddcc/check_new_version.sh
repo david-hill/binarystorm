@@ -1,4 +1,4 @@
-source /root/binarystorm/podman/common/common.sh
+source /config/podman/common/common.sh
 if [ ! -e $scriptlocation/current_version ]; then
 	current_version=''
 else
