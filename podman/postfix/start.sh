@@ -40,7 +40,7 @@ $postfixargs \
 -v /etc/postfix/keys:/etc/postfix/keys:ro \
 -v /var/spool/postfix:/var/spool/postfix \
 -v /var/lib/imap:/var/lib/imap \
--v /run/saslauthd:/run/saslauthd \
+-v $datadir/run/saslauthd:/run/saslauthd:z \
 --mount=type=bind,src=/dev/log,dst=/dev/log \
 --hosts-file $gitlocation/podman/common/hosts \
 --name=postfix \
