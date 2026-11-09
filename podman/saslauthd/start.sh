@@ -19,7 +19,6 @@ podman  run -d --network ipv6 --ip6 fd00::9 --ip 10.89.0.9 -h $(hostname) \
 -v /etc/shadow:/etc/shadow:ro \
 -v /etc/gshadow:/etc/gshadow:ro \
 -v $gitlocation/etc/sasl2:/etc/sasl2:ro \
--v $datadir/etc/sasldb2:/etc/sasldb2:ro \
 -v $datadir/run/saslauthd:/run/saslauthd:z \
 --mount=type=bind,src=/dev/log,dst=/dev/log \
 --name=saslauthd \
@@ -29,4 +28,3 @@ podman generate systemd --new --files --name saslauthd
 cp *.service /etc/systemd/system
 systemctl daemon-reload
 systemctl enable container-saslauthd
-
