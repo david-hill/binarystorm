@@ -16,7 +16,7 @@ podman  run -d --network ipv6 --ip6 fd00::12 --ip 10.89.0.12 -p 8891:8891/tcp -h
 -v $gitlocation/etc/opendkim/TrustedHosts:/etc/opendkim/TrustedHosts:ro \
 -v $gitlocation/etc/opendkim/SigningTable:/etc/opendkim/SigningTable:ro \
 -v $gitlocation/etc/opendkim/KeyTable:/etc/opendkim/KeyTable:ro \
--v /etc/opendkim/keys:/etc/opendkim/keys:ro \
+-v $datadir/etc/opendkim/keys:/etc/opendkim/keys:ro \
 --mount=type=bind,src=/dev/log,dst=/dev/log \
 --hosts-file $gitlocation/podman/common/hosts \
 --name=opendkim \
