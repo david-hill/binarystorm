@@ -37,7 +37,7 @@ $postfixargs \
 -v $gitlocation/etc/imapd.conf:/etc/imapd.conf:ro \
 -v $gitlocation/etc/aliases.lmdb:/etc/aliases.lmdb:ro \
 -v $gitlocation/etc/sasl2:/etc/sasl2:ro \
--v /etc/postfix/keys:/etc/postfix/keys:ro \
+-v $datadir/etc/postfix/keys:/etc/postfix/keys:ro \
 -v /var/spool/postfix:/var/spool/postfix \
 -v /var/lib/imap:/var/lib/imap \
 -v $datadir/run/saslauthd:/run/saslauthd:z \
