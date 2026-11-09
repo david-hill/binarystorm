@@ -14,13 +14,13 @@ if [ $? -eq 0 ]; then
   podman rm named
   podman pull $registry/named-root:latest
 fi
-directories="/var/named/dynamic /var/named/data /var/named"
+directories="$datadir/var/named/dynamic $datadir/var/named/data $datadir/var/named $datadir/var/log"
 for directory in $directories; do
   mkdir -p $directory
 done
-touch /var/log/named.log
-chown 25:25 /var/log/named.log
-chown -R 25:25 /var/named
+touch $datadir/var/log/named.log
+chown 25:25 $datadir/var/log/named.log
+chown -R 25:25 $datadir/var/named
 if myrelease 45; then
 portargs=''
 else
@@ -29,8 +29,8 @@ fi
 podman  run -d --network ipv6 --ip6 fd00::2 --ip 10.89.0.2 -p 53:53/udp -p 53:53/tcp \
 -v $gitlocation/etc/named:/etc/named:ro \
 -v $gitlocation/etc/named.conf:/etc/named.conf:ro \
--v /var/named:/var/named \
--v /var/log/named.log:/var/log/named.log \
+-v $datadir/var/named:/var/named:z \
+-v $datadir/var/log/named.log:/var/log/named.log:z \
 --mount=type=bind,src=/dev/log,dst=/dev/log \
 --name=named \
 $registry/named-root:latest
