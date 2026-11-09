@@ -12,11 +12,11 @@ if [ $? -eq 0 ]; then
 fi
 directories="db quarantine tmp"
 for directory in $directories; do
-  mkdir -p /var/spool/amavisd/$directory
+  mkdir -p $datadir/var/spool/amavisd/$directory
 done
-chown 995 /var/spool/amavisd -R
-chgrp 998 /var/lib/clamav -R
-chgrp -R 998 /run/clamd.scan
+chown 995 $datadir/var/spool/amavisd -R
+chgrp 998 $datadir/var/lib/clamav -R
+chgrp -R 998 $datadir/run/clamd.scan
 podman  run -d -h $(hostname) --network ipv6 --ip6 fd00::4 --ip 10.89.0.4 \
 -v $gitlocation/etc/mail/spamassassin/local.cf:/etc/mail/spamassassin/local.cf:ro \
 -v $gitlocation/etc/mail/spamassassin/v310.pre:/etc/mail/spamassassin/v310.pre:ro \
