@@ -26,7 +26,7 @@ podman  run -d --network ipv6 --ip6 fd00::5 --ip 10.89.0.5 -p 995:995/tcp -p 993
 -v $gitlocation/etc/sasl2:/etc/sasl2:ro \
 -v /var/lib/imap:/var/lib/imap \
 -v /var/spool/imap:/var/spool/imap \
--v /etc/pki/cyrus-imapd:/etc/pki/cyrus-imapd:ro \
+-v $datadir/etc/pki/cyrus-imapd:/etc/pki/cyrus-imapd:ro \
 -v /etc/pki/tls/certs:/etc/pki/tls/certs:ro \
 -v $datadir/run/saslauthd:/run/saslauthd:z \
 --mount=type=bind,src=/dev/log,dst=/dev/log \
