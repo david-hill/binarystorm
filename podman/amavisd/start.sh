@@ -22,10 +22,10 @@ podman  run -d -h $(hostname) --network ipv6 --ip6 fd00::4 --ip 10.89.0.4 \
 -v $gitlocation/etc/mail/spamassassin/v310.pre:/etc/mail/spamassassin/v310.pre:ro \
 -v $gitlocation/etc/amavisd:/etc/amavisd:ro \
 -v $gitlocation/podman/common/etc/resolv.conf:/etc/resolv.conf:ro \
--v /var/spool/amavisd:/var/spool/amavisd \
--v /var/lib/spamassassin:/var/lib/spamassassin:ro \
--v /var/run/clamd.scan:/var/run/clamd.scan \
--v /var/lib/clamav:/var/lib/clamav:ro \
+-v $datadir/var/spool/amavisd:/var/spool/amavisd:z \
+-v $datadir/var/lib/spamassassin:/var/lib/spamassassin:ro \
+-v $datadir/run/clamd.scan:/run/clamd.scan:z \
+-v $datadir/var/lib/clamav:/var/lib/clamav:ro \
 --mount=type=bind,src=/dev/log,dst=/dev/log \
 --hosts-file $gitlocation/podman/common/hosts \
 --name=amavisd \
