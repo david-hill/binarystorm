@@ -36,7 +36,6 @@ podman run -d --network ipv6 --ip6 fd00::7 --ip 10.89.0.7 \
 -v $gitlocation/etc/php-fpm.conf:/etc/php-fpm.conf \
 -v $gitlocation/etc/php.ini:/etc/php.ini \
 $volargs \
--v /var/lib/roundcubemail:/var/lib/roundcubemail \
 -v /var/lib/sql:/var/lib/sql \
 -v /var/log/php-fpm:/var/log/php-fpm \
 -v /etc/pki:/etc/pki:ro \
