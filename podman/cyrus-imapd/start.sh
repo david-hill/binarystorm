@@ -27,7 +27,6 @@ podman  run -d --network ipv6 --ip6 fd00::5 --ip 10.89.0.5 -p 995:995/tcp -p 993
 -v /var/lib/imap:/var/lib/imap \
 -v /var/spool/imap:/var/spool/imap \
 -v $datadir/etc/pki/cyrus-imapd:/etc/pki/cyrus-imapd:ro \
--v /etc/pki/tls/certs:/etc/pki/tls/certs:ro \
 -v $datadir/run/saslauthd:/run/saslauthd:z \
 --mount=type=bind,src=/dev/log,dst=/dev/log \
 --name=cyrus-imapd \
@@ -37,4 +36,3 @@ podman generate systemd --new --files --name cyrus-imapd
 cp *.service /etc/systemd/system
 systemctl daemon-reload
 systemctl enable container-cyrus-imapd
-
