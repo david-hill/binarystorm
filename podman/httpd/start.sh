@@ -30,8 +30,8 @@ $volargs \
 -v $datadir/var/lib/sql:/var/lib/sql:z \
 -v $datadir/run/php-fpm/www.sock:/run/php-fpm/www.sock:z \
 -v /etc/pki/tls/certs/localhost.crt:/etc/pki/tls/certs/localhost.crt:ro \
--v /etc/pki/tls/certs/wildcard.crt:/etc/httpd/keys/wildcard.crt:ro \
--v /etc/pki/tls/private/wildcard.key:/etc/httpd/keys/wildcard.key \
+-v /etc/pki/tls/certs/wildcard.crt:/etc/pki/tls/certs/wildcard.crt:ro \
+-v /etc/pki/tls/private/wildcard.key:/etc/pki/tls/private/wildcard.key:ro \
 -v /etc/pki/tls/private/localhost.key:/etc/pki/tls/private/localhost.key:ro \
 -v $datadir/var/log/httpd:/var/log/httpd:z \
 --mount=type=bind,src=/dev/log,dst=/dev/log \
