@@ -11,7 +11,7 @@ if [ $? -eq 0 ]; then
   podman pull $registry/saslauthd-root:latest
 fi
 if [ ! -d $datadir/run/saslauthd ]; then
-  mkdir-p  $datadir/run/saslauthd
+  mkdir -p  $datadir/run/saslauthd
 fi
 chmod 755 $datadir/run/saslauthd
 podman  run -d --network ipv6 --ip6 fd00::9 --ip 10.89.0.9 -h $(hostname) \
