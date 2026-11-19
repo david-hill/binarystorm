@@ -1,4 +1,4 @@
-keep=3
+keep=7
 
 for repo in $( bash show_catalog.sh | grep -E -v "\[|\]"); do
   echo "--------------"
