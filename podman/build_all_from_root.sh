@@ -3,9 +3,9 @@ args=''
 if [[ $SHELLOPTS =~ xtrace ]]; then
   args="-x"
 fi
-
 changed=0
-echo "Building all container images" | tee /config/podman/build_all_from_root.log
+logfile=/config/podman/build_all_from_root.log
+echo "Building all container images" | tee $logfile
 for dir in *; do
   if [ -d $dir ]; then
     if [[ $dir == "root" ]]; then
@@ -13,17 +13,17 @@ for dir in *; do
     fi
     cd $dir
     if [ -e buildroot.sh ]; then
-      echo $dir | tee -a /config/podman/build_all_from_root.log
-      bash $args /config/podman/root/buildroot.sh | tee -a /config/podman/build_all_from_root.log
+      echo $dir | tee -a $logfile
+      bash $args /config/podman/root/buildroot.sh | tee -a $logfile
       if [ $? -eq 0 ]; then
-         echo "Nothing changed" | tee -a /config/podman/build_all_from_root.log
+        echo "Nothing changed" | tee -a $logfile
       elif [ -e import.sh ]; then
-      	 bash $args import.sh | tee -a /config/podman/build_all_from_root.log
-         changed=1
+        bash $args import.sh | tee -a $logfile
+        changed=1
       fi
     fi
     cd ..
   fi
 done
-echo "Task completed.  Don't forget to push local images to registry." | tee -a /config/podman/build_all_from_root.log
+echo "Task completed.  Don't forget to push local images to registry." | tee -a $logfile
 exit $changed
