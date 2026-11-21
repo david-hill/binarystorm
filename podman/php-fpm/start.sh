@@ -22,6 +22,7 @@ else
 fi
 
 podman run -d --network ipv6 --ip6 fd00::7 --ip 10.89.0.7 \
+$label \
 -v $datadir/run/php-fpm:/run/php-fpm \
 -v $datadir/run/saslauthd:/run/saslauthd:z \
 -v $gitlocation/etc/php.d:/etc/php.d \

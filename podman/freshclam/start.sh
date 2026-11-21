@@ -17,6 +17,7 @@ done
 chown 995 $datadir/run/clamd.scan
 chown 995 $datadir/var/lib/clamav
 podman run -d --network ipv6 --ip6 fd00::10 --ip 10.89.0.10 -h $(hostname) \
+$label \
 -v $gitlocation/etc/freshclam.conf:/etc/freshclam.conf:ro \
 -v $datadir/var/lib/clamav:/var/lib/clamav:z \
 --mount=type=bind,src=/dev/log,dst=/dev/log \
