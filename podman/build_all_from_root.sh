@@ -11,9 +11,6 @@ for dir in *; do
     if [[ $dir == "root" ]]; then
       continue
     fi
-#    if [[ $dir != "amavisd" ]]; then
-#	    continue
-#    fi
     cd $dir
     if [ -e buildroot.sh ]; then
       echo $dir | tee -a /config/podman/build_all_from_root.log
