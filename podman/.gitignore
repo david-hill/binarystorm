@@ -2,4 +2,5 @@
 *-root-diff.tgz
 *-root.tgz
 install.out
+import.out
 build_all_from_root.log
