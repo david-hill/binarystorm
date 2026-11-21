@@ -160,5 +160,5 @@ function customize_builddcc {
 }
 function import_container {
   install_required_packages
-  podman import --change "$entrypoint" $scriptlocation/${service}-root.tgz ${service}-root:$creation_date | tee -a $scriptlocation/install.out
+  podman import --change "$entrypoint" $scriptlocation/${service}-root.tgz ${service}-root:$creation_date | tee -a $scriptlocation/import.out
 }
