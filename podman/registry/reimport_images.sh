@@ -4,7 +4,7 @@ for dir in ../*; do
   if [ -d $dir ]; then
     cd $dir
     if [ -e import.sh ]; then
-      bash import.sh | tee -a /root/binarystorm/podman/build_all_from_root.log
+      bash import.sh | tee -a /config/podman/import.out
     fi
   fi
 done
