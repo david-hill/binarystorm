@@ -25,5 +25,5 @@ for dir in *; do
     cd ..
   fi
 done
-echo "Task completed." | tee -a /config/podman/build_all_from_root.log
+echo "Task completed.  Don't forget to push local images to registry." | tee -a /config/podman/build_all_from_root.log
 exit $changed
