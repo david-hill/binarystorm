@@ -27,6 +27,7 @@ else
 portargs='-p [::]:53:53/tcp -p [::]:53:53/udp'
 fi
 podman  run -d --network ipv6 --ip6 fd00::2 --ip 10.89.0.2 -p 53:53/udp -p 53:53/tcp \
+$label \
 -v $gitlocation/etc/named:/etc/named:ro \
 -v $gitlocation/etc/named.conf:/etc/named.conf:ro \
 -v $datadir/var/named:/var/named:z \

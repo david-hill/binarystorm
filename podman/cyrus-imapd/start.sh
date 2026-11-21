@@ -21,6 +21,7 @@ else
 portargs='-p [::]:110:110/tcp -p [::]:143:143/tcp -p [::]:993:993/tcp -p [::]:995:995/tcp'
 fi
 podman  run -d --network ipv6 --ip6 fd00::5 --ip 10.89.0.5 -p 995:995/tcp -p 993:993/tcp -p 143:143/tcp -p 110:110/tcp $portargs -h $(hostname) \
+$label \
 -v $gitlocation/etc/imapd.conf:/etc/imapd.conf:ro \
 -v $gitlocation/etc/cyrus.conf:/etc/cyrus.conf:ro \
 -v $gitlocation/etc/sasl2:/etc/sasl2:ro \

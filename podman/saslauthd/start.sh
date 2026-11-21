@@ -15,6 +15,7 @@ if [ ! -d $datadir/run/saslauthd ]; then
 fi
 chmod 755 $datadir/run/saslauthd
 podman  run -d --network ipv6 --ip6 fd00::9 --ip 10.89.0.9 -h $(hostname) \
+$label \
 -v /etc/passwd:/etc/passwd:ro \
 -v /etc/shadow:/etc/shadow:ro \
 -v /etc/gshadow:/etc/gshadow:ro \

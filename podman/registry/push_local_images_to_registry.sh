@@ -11,6 +11,9 @@ for image in $( podman images | grep -v latest  | grep root  | awk '{ print $1 }
      if [ $? -eq 0 ]; then
        echo "Deleting local copy"
        podman rmi $image:$tag
+       if [ $? -ne  0 ]; then
+         rc=$?
+       fi
      else
        rc=1
      fi

@@ -14,6 +14,7 @@ if [ ! -d $datadir/var/lib/spamassassin ]; then
   mkdir -p $datadir/var/lib/spamassassin
 fi
 podman  run -d -h $(hostname) --network ipv6 --ip6 fd00::11 --ip 10.89.0.11 \
+$label \
 -v $gitlocation/etc/mail/spamassassin/local.cf:/etc/mail/spamassassin/local.cf:ro \
 -v $datadir/var/lib/spamassassin:/var/lib/spamassassin:z \
 -v /var/spool/postfix:/var/spool/postfix \

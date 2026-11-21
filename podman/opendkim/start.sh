@@ -12,6 +12,7 @@ if [ $? -eq 0 ]; then
 fi
 chgrp -R 998 /etc/opendkim/keys
 podman  run -d --network ipv6 --ip6 fd00::12 --ip 10.89.0.12 -p 8891:8891/tcp -h $(hostname) \
+$label \
 -v $gitlocation/etc/opendkim.conf:/etc/opendkim.conf:ro \
 -v $gitlocation/etc/opendkim/TrustedHosts:/etc/opendkim/TrustedHosts:ro \
 -v $gitlocation/etc/opendkim/SigningTable:/etc/opendkim/SigningTable:ro \

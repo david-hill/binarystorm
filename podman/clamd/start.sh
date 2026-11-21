@@ -16,6 +16,7 @@ for directory in $directories; do
 done
 chown 995 $datadir/run/clamd.scan
 podman  run -d --network ipv6 --ip6 fd00::8 --ip 10.89.0.8 -h $(hostname) \
+$label \
 -v $gitlocation/etc/clamd.d:/etc/clamd.d:ro \
 -v $datadir/run/clamd.scan/:/run/clamd.scan/:z \
 -v $datadir/var/spool/amavisd/tmp/:/var/spool/amavisd/tmp/:z \
