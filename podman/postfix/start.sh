@@ -1,5 +1,5 @@
-source /root/binarystorm/podman/common/common.sh
-systemctl | grep -q postfix
+source /config/podman/common/common.sh
+systemctl | grep -v container | grep -q postfix
 if [ $? -eq 0 ]; then
 	systemctl disable postfix
 	systemctl stop postfix
@@ -10,13 +10,41 @@ if [ $? -eq 0 ]; then
   podman rm postfix
   podman pull $registry/postfix-root:latest
 fi
-if [ ! -e /etc/imapd.conf ]; then
-  touch /etc/imapd.conf
+directories="active bounce corrupt defer deferred flush hold incoming maildrop pid private public saved trace"
+for directory in $directories; do
+  if [ ! -d  /var/spool/postfix/$directory ]; then
+    mkdir -p /var/spool/postfix/$directory
+  fi
+done
+chown -R 89:90 /var/spool/postfix
+if [[ $(hostname) =~ dns01 ]]; then
+  postfixargs="-v $gitlocation/etc/postfix/main.cf:/etc/postfix/main.cf:ro 
+-v $gitlocation/etc/postfix/master.cf:/etc/postfix/master.cf:ro \
+-v $gitlocation/etc/postfix/virtual.lmdb:/etc/postfix/virtual.lmdb:ro"
+else
+  postfixargs="-v $gitlocation/etc/postfix/backup_mx/main.cf:/etc/postfix/main.cf:ro 
+-v $gitlocation/etc/postfix/backup_mx/master.cf:/etc/postfix/master.cf:ro \
+-v $gitlocation/etc/postfix/backup_mx/transport.lmdb:/etc/postfix/transport.lmdb:ro"
 fi
-if [ ! -e /var/lib/imap/socket/lmtp ]; then
-  mkdir -p /var/lib/imap/socket/lmtp
+
+if myrelease 45; then
+portargs=''
+else
+portargs='-p [::]:25:25/tcp -p [::]:587:587/tcp'
 fi
-podman  run -d --network ipv6 --ip6 fd00::3 --ip 10.89.0.3 -p 25:25/tcp -p [::]:25:25/tcp -p 587:587/tcp -p [::]:587:587/tcp -h $(hostname) -v /etc/postfix:/etc/postfix:ro -v /var/spool/postfix:/var/spool/postfix -v /var/lib/imap/socket/lmtp:/var/lib/imap/socket/lmtp -v /etc/imapd.conf:/etc/imapd.conf:ro -v /var/lib/imap:/var/lib/imap -v /etc/aliases.lmdb:/etc/aliases.lmdb:ro -v /etc/sasl2:/etc/sasl2:ro -v /run/saslauthd:/run/saslauthd --mount=type=bind,src=/dev/log,dst=/dev/log --hosts-file ../common/hosts --name=postfix $registry/postfix-root:latest
+podman  run -d --network ipv6 --ip6 fd00::3 --ip 10.89.0.3 -p 25:25/tcp -p 587:587/tcp -h $(hostname) \
+$postfixargs \
+-v $gitlocation/etc/imapd.conf:/etc/imapd.conf:ro \
+-v $gitlocation/etc/aliases.lmdb:/etc/aliases.lmdb:ro \
+-v $gitlocation/etc/sasl2:/etc/sasl2:ro \
+-v $datadir/etc/postfix/keys:/etc/postfix/keys:ro \
+-v /var/spool/postfix:/var/spool/postfix \
+-v /var/lib/imap:/var/lib/imap \
+-v $datadir/run/saslauthd:/run/saslauthd:z \
+--mount=type=bind,src=/dev/log,dst=/dev/log \
+--hosts-file $gitlocation/podman/common/hosts \
+--name=postfix \
+$registry/postfix-root:latest
 sleep 3
 podman generate systemd --new --files --name postfix
 cp *.service /etc/systemd/system

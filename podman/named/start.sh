@@ -1,5 +1,5 @@
-source /root/binarystorm/podman/common/common.sh
-systemctl | grep named.service
+source /config/podman/common/common.sh
+systemctl | grep -v container | grep named.service
 if [ $? -eq 0 ]; then
   systemctl stop named
   systemctl disable named
@@ -14,10 +14,26 @@ if [ $? -eq 0 ]; then
   podman rm named
   podman pull $registry/named-root:latest
 fi
-touch /var/log/named.log
-chown named:named /var/log/named.log
-#podman  run -d --network ipv6 --ip6 fd00::2 --ip 10.89.0.2 -p 53:53/udp -p 53:53/tcp -p [::]:53:53/udp -p [::]:53:53/tcp -v /var/named:/var/named -v /etc/named:/etc/named:ro -v /etc/named.ca:/etc/named.ca:ro  -v /etc/named.conf:/etc/named.conf:ro -v /etc/named.rfc1912.zones:/etc/named.rfc1912.zones:ro -v /etc/named.root.key:/etc/named.root.key:ro -v /var/log/named.log:/var/log/named.log --mount=type=bind,src=/dev/log,dst=/dev/log --name=named named-root:latest
-podman  run -d --network ipv6 --ip6 fd00::2 --ip 10.89.0.2 -p 53:53/udp -p 53:53/tcp -p [::]:53:53/udp -p [::]:53:53/tcp -v /var/named:/var/named -v /etc/named:/etc/named:ro -v /etc/named.ca:/etc/named.ca:ro  -v /etc/named.conf:/etc/named.conf:ro -v /etc/named.rfc1912.zones:/etc/named.rfc1912.zones:ro -v /etc/named.root.key:/etc/named.root.key:ro -v /var/log/named.log:/var/log/named.log --mount=type=bind,src=/dev/log,dst=/dev/log --name=named $registry/named-root:latest
+directories="$datadir/var/named/dynamic $datadir/var/named/data $datadir/var/named $datadir/var/log"
+for directory in $directories; do
+  mkdir -p $directory
+done
+touch $datadir/var/log/named.log
+chown 25:25 $datadir/var/log/named.log
+chown -R 25:25 $datadir/var/named
+if myrelease 45; then
+portargs=''
+else
+portargs='-p [::]:53:53/tcp -p [::]:53:53/udp'
+fi
+podman  run -d --network ipv6 --ip6 fd00::2 --ip 10.89.0.2 -p 53:53/udp -p 53:53/tcp \
+-v $gitlocation/etc/named:/etc/named:ro \
+-v $gitlocation/etc/named.conf:/etc/named.conf:ro \
+-v $datadir/var/named:/var/named:z \
+-v $datadir/var/log/named.log:/var/log/named.log:z \
+--mount=type=bind,src=/dev/log,dst=/dev/log \
+--name=named \
+$registry/named-root:latest
 sleep 3
 podman generate systemd --new --files --name named
 cp *.service /etc/systemd/system

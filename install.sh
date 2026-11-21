@@ -1,0 +1,88 @@
+yum install -y vim git net-tools bind-utils fail2ban tcp_wrappers uptimed net-snmp certmonger rsyslog firewalld jq skopeo createrepo_c sysstat postfix fetchmail
+git config --global core.editor "vim"
+cp /root/binarystorm/etc/containers/* /etc/containers
+cp etc/systemd/system/fetchmail /etc/systemd/system
+
+if [[ $( hostname ) =~ dns01 ]]; then
+  systemctl enable fetchmail
+  systemctl start fetchmail
+fi
+
+systemctl disable systemd-resolved.service
+systemctl stop systemd-resolved.service
+
+rm -rf /etc/resolv.conf
+
+echo "nameserver 8.8.8.8" > /etc/resolv.conf
+
+cp root/.vimrc /root/
+cat ssh/authorized_keys /root/.ssh/authorized_keys
+chmod 600 /root/.ssh/authorized_keys
+
+git config --global user.name "David Hill"
+git config --global user.email hostmaster@davidchill.ca
+
+cp -pr etc/fail2ban/* /etc/fail2ban/
+mv /etc/fail2ban/jail.d/00-firewalld.conf /etc/fail2ban/jail.d/00-firewalld.conf.disabled
+
+touch /var/log/fail2ban.log
+systemctl enable fail2ban
+systemctl start fail2ban
+
+systemctl start rsyslog
+systemctl enable rsyslog
+
+systemctl start firewalld
+systemctl enable firewalld
+
+cp etc/pki/tls/certs/gen_localhost_crt.sh /etc/pki/tls/certs
+cp etc/pki/tls/openssl.cnf /etc/pki/tls/
+bash /etc/pki/tls/certs/gen_localhost_crt.sh
+
+cp etc/pki/ca-trust/source/anchors/* /etc/pki/ca-trust/source/anchors
+update-ca-trust
+
+cp etc/hosts.deny /etc
+cp -pr etc/systemd/system/sshd@.service.d /etc/systemd/system
+systemctl daemon-reload
+
+systemctl disable sshd
+systemctl stop sshd
+systemctl enable --now sshd.socket
+
+systemctl start uptimed
+systemctl enable uptimed
+
+cp etc/snmp/snmpd.conf /etc/snmp
+systemctl enable snmpd
+systemctl start snmpd
+
+systemctl enable certmonger
+systemctl start certmonger
+
+cp etc/selinux/config /etc/selinux
+setenforce 0
+
+systemctl enable sysstat-collect.timer
+systemctl start sysstat-collect.timer
+
+systemctl disable ssh-host-keys-migration.service
+systemctl mask ssh-host-keys-migration.service
+
+rpm -e cloud-init
+
+if [[ $( hostname ) =~ dns01 ]]; then
+  nmcli con mod "cloud-init ens3" ipv6.addresses "2607:5300:205:200::45cf"
+  nmcli con mod "cloud-init ens3" ipv6.gateway "2607:5300:205:200::1"
+  nmcli connection up "cloud-init ens3"
+  cp etc/systemd/system/cyrus-backup* /etc/systemd/system
+  cp var/lib/imap/backup.sh /var/lib/imap
+  systemctl enable cyrus-backup.timer
+  systemctl start cyrus-backup.timer
+elif [[ $( hostname ) =~ dns02 ]]; then
+  nmcli con mod "cloud-init ens3" ipv6.addresses "2001:41d0:305:2100::9fae"
+  nmcli con mod "cloud-init ens3" ipv6.gateway "2001:41d0:305:2100::1"
+  nmcli connection up "cloud-init ens3"
+fi
+
+useradd -u 76 -d /var/lib/imap cyrus

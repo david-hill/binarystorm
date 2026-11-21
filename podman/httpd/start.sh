@@ -1,27 +1,42 @@
-source /root/binarystorm/podman/common/common.sh
-# podman network create  --ipv6 ipv6 --gateway fd00::::1 --subnet fd00:0000:0000:0000:0000:0000:0000:0000/120 --gateway 10.89.0.1 --subnet 10.89.0.0/16 --disable-dns
-podman ps | grep -q httpd
+source /config/podman/common/common.sh
+podman ps -a | grep -v container | grep -q httpd
 if [ $? -eq 0 ]; then
   podman stop httpd
   podman rm httpd
   podman pull $registry/httpd-root:latest
 fi
-#podman --debug run  --net host -v /etc/named:/etc/named:ro -v /etc/named.ca:/etc/named.ca:ro  -v /etc/named.conf:/etc/named.conf:ro -v /etc/named.rfc1912.zones:/etc/named.rfc1912.zones:ro -v /etc/named.root.key:/etc/named.root.key:ro --name=bind bind  &
-if [ ! -d /var/lib/sql ]; then
-  mkdir /var/lib/sql
+directories="$datadir/var/lib/sql $datadir/var/log/httpd"
+for directory in $directories; do
+  if [ ! -d $directory ]; then
+    mkdir -p $directory
+  fi
+done
+if [[ $(hostname) =~ dns01 ]]; then
+  volargs="-v $gitlocation/etc/roundcubemail/config.inc.php:/etc/roundcubemail/config.inc.php:ro" 
+else
+  volargs="-v $gitlocation/etc/roundcubemail/backup_mx/config.inc.php:/etc/roundcubemail/config.inc.php:ro" 
 fi
-if [ ! -d /var/lib/php ]; then
-  mkdir /var/lib/php
+
+if myrelease 45; then
+portargs=''
+else
+portargs='-p [::]:80:80/tcp -p [::]:443:443/tcp'
 fi
-if [ ! -d /etc/roundcubemail ]; then
-  mkdir /etc/roundcubemail
-fi
-if [ ! -d /usr/share/roundcubemail ]; then
-  mkdir /usr/share/roundcubemail
-fi
-podman  run -d --network ipv6 --ip6 fd00::6 --ip 10.89.0.6 -p 80:80/tcp -p 443:443/tcp -p [::]:80:80/tcp -p [::]:443:443/tcp -v /etc/httpd:/etc/httpd:ro -v /var/www:/var/www:ro -v /etc/roundcubemail:/etc/roundcubemail:ro -v /usr/share/roundcubemail:/usr/share/roundcubemail:ro -v /var/lib/sql:/var/lib/sql -v /run/php-fpm/www.sock:/run/php-fpm/www.sock -v /var/lib/php:/var/lib/php:ro -v /etc/pki/tls/certs/localhost.crt:/etc/pki/tls/certs/localhost.crt:ro -v /etc/pki/tls/private/localhost.key:/etc/pki/tls/private/localhost.key:ro -v /var/log/httpd:/var/log/httpd --mount=type=bind,src=/dev/log,dst=/dev/log --name=httpd $registry/httpd-root:latest
-#-p 53:53/udp -p 53:53/tcp 
-#-v /var/named:/var/named -v /etc/named:/etc/named:ro -v /etc/named.ca:/etc/named.ca:ro  -v /etc/named.conf:/etc/named.conf:ro -v /etc/named.rfc1912.zones:/etc/named.rfc1912.zones:ro -v /etc/named.root.key:/etc/named.root.key:ro -v /var/log/bind.log:/var/log/bind.log --mount=type=bind,src=/dev/log,dst=/dev/log --name=bind bind 
+podman run -d --network ipv6 --ip6 fd00::6 --ip 10.89.0.6 -p 80:80/tcp -p 443:443/tcp $portargs \
+-v $gitlocation/etc/httpd/conf/httpd.conf:/etc/httpd/conf/httpd.conf \
+-v $gitlocation/etc/httpd/conf.d:/etc/httpd/conf.d:ro \
+-v $gitlocation/var/www:/var/www:ro \
+$volargs \
+-v $datadir/var/lib/sql:/var/lib/sql:z \
+-v $datadir/run/php-fpm/www.sock:/run/php-fpm/www.sock:z \
+-v /etc/pki/tls/certs/localhost.crt:/etc/pki/tls/certs/localhost.crt:ro \
+-v /etc/pki/tls/certs/wildcard.crt:/etc/pki/tls/certs/wildcard.crt:ro \
+-v /etc/pki/tls/private/wildcard.key:/etc/pki/tls/private/wildcard.key:ro \
+-v /etc/pki/tls/private/localhost.key:/etc/pki/tls/private/localhost.key:ro \
+-v $datadir/var/log/httpd:/var/log/httpd:z \
+--mount=type=bind,src=/dev/log,dst=/dev/log \
+--name=httpd \
+$registry/httpd-root:latest
 sleep 3
 podman generate systemd --new --files --name httpd
 cp *.service /etc/systemd/system

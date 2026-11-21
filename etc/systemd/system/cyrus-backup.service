@@ -1,0 +1,10 @@
+[Unit]
+Description=Cyrus backup
+
+[Service]
+Type=oneshot
+User=cyrus
+Group=mail
+ExecStart=/var/lib/imap/backup.sh
+ExecStart=-rsync -avgo --delete /var/lib/imap/ cyrus@dns02.davidchill.ca:/var/lib/imap/
+ExecStart=-rsync -avgo --delete /var/spool/imap/ cyrus@dns02.davidchill.ca:/var/spool/imap/

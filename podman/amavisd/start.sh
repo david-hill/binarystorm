@@ -1,5 +1,5 @@
-source /root/binarystorm/podman/common/common.sh
-systemctl | grep -q \ amavis
+source /config/podman/common/common.sh
+systemctl | grep -v container | grep -q \ amavis
 if [ $? -eq 0 ]; then
   systemctl disable amavisd
   systemctl stop amavisd
@@ -10,10 +10,26 @@ if [ $? -eq 0 ]; then
   podman rm amavisd
   podman pull $registry/amavisd-root:latest
 fi
-chown 995 /var/spool/amavisd -R
-chgrp 998 /var/lib/clamav -R
-chgrp -R 998 /run/clamd.scan
-podman  run -d -h $(hostname) --network ipv6 --ip6 fd00::4 --ip 10.89.0.4 -v /etc/mail:/etc/mail:ro -v /var/dcc:/var/dcc -v /etc/amavisd:/etc/amavisd:ro -v /var/spool/amavisd:/var/spool/amavisd -v /var/lib/spamassassin:/var/lib/spamassassin:ro -v /var/run/clamd.scan:/var/run/clamd.scan -v /var/lib/clamav:/var/lib/clamav:ro --mount=type=bind,src=/dev/log,dst=/dev/log --hosts-file ../common/hosts -v /root/binarystorm/podman/common/etc/resolv.conf:/etc/resolv.conf:ro --name=amavisd $registry/amavisd-root:latest
+directories="db quarantine tmp"
+for directory in $directories; do
+  mkdir -p $datadir/var/spool/amavisd/$directory
+done
+chown 995 $datadir/var/spool/amavisd -R
+chgrp 998 $datadir/var/lib/clamav -R
+chgrp -R 998 $datadir/run/clamd.scan
+podman  run -d -h $(hostname) --network ipv6 --ip6 fd00::4 --ip 10.89.0.4 \
+-v $gitlocation/etc/mail/spamassassin/local.cf:/etc/mail/spamassassin/local.cf:ro \
+-v $gitlocation/etc/mail/spamassassin/v310.pre:/etc/mail/spamassassin/v310.pre:ro \
+-v $gitlocation/etc/amavisd:/etc/amavisd:ro \
+-v $gitlocation/podman/common/etc/resolv.conf:/etc/resolv.conf:ro \
+-v $datadir/var/spool/amavisd:/var/spool/amavisd:z \
+-v $datadir/var/lib/spamassassin:/var/lib/spamassassin:ro \
+-v $datadir/run/clamd.scan:/run/clamd.scan:z \
+-v $datadir/var/lib/clamav:/var/lib/clamav:ro \
+--mount=type=bind,src=/dev/log,dst=/dev/log \
+--hosts-file $gitlocation/podman/common/hosts \
+--name=amavisd \
+$registry/amavisd-root:latest
 sleep 3
 podman generate systemd --new --files --name amavisd
 cp *.service /etc/systemd/system
