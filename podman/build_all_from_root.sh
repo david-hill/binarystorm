@@ -25,5 +25,8 @@ for dir in *; do
     cd ..
   fi
 done
-echo "Task completed.  Don't forget to push local images to registry." | tee -a $logfile
+if [ $changed -eq 1 ]; then
+  msg="Don't forget to push local images to registry."
+fi
+echo "Task completed.  $msg" | tee -a $logfile
 exit $changed
