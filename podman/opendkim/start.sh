@@ -1,15 +1,5 @@
 source /config/podman/common/common.sh
-systemctl | grep -v container | grep opendkim
-if [ $? -eq 0 ]; then
-	systemctl disable opendkim
-	systemctl stop opendkim
-fi
-podman ps -a | grep opendkim
-if [ $? -eq 0 ]; then
-  podman stop opendkim
-  podman rm opendkim
-  podman pull $registry/opendkim-root:latest
-fi
+stop_container opendkim
 chgrp -R 998 /etc/opendkim/keys
 podman  run -d --network ipv6 --ip6 fd00::12 --ip 10.89.0.12 -p 8891:8891/tcp -h $(hostname) \
 $label \
@@ -23,8 +13,4 @@ $label \
 --name=opendkim \
 $registry/opendkim-root:latest
 sleep 3
-podman generate systemd --new --files --name opendkim
-cp *.service /etc/systemd/system
-systemctl daemon-reload
-systemctl enable container-opendkim
-
+configure_systemd_service opendkim
