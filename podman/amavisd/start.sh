@@ -1,15 +1,5 @@
 source /config/podman/common/common.sh
-systemctl | grep -v container | grep -q \ amavis
-if [ $? -eq 0 ]; then
-  systemctl disable amavisd
-  systemctl stop amavisd
-fi
-podman ps -a | grep -q amavisd
-if [ $? -eq 0 ]; then
-  podman stop amavisd
-  podman rm amavisd
-  podman pull $registry/amavisd-root:latest
-fi
+stop_container amavisd
 directories="db quarantine tmp"
 for directory in $directories; do
   mkdir -p $datadir/var/spool/amavisd/$directory
@@ -35,8 +25,5 @@ $label \
 --name=amavisd \
 $registry/amavisd-root:latest
 sleep 3
-podman generate systemd --new --files --name amavisd
-cp *.service /etc/systemd/system
-systemctl daemon-reload
-systemctl enable container-amavisd
+configure_systemd_service amavisd
 
