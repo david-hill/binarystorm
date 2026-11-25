@@ -10,6 +10,24 @@ decompressargs='xf'
 compressargs='zcf'
 procname=$(pwd | xargs basename)
 
+function stop_container {
+  service=$1
+  if $( podman ps -f name=$service | grep -q $service); then
+    if $( systemctl is-active --quiet container-$service ); then
+      systemctl stop container-$service
+    else
+      podman stop $service > /dev/null
+      podman rm $service > /dev/null
+    fi
+  fi
+}
+function configure_systemd_service {
+  service=$1
+  podman generate systemd --new --files --name $service > /dev/null 2>&1
+  cp *.service /etc/systemd/system
+  systemctl daemon-reload
+  systemctl enable container-$service
+  }
 function myrelease {
   version=$1
   release=$(cat /etc/redhat-release)
