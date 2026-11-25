@@ -1,15 +1,5 @@
 source /config/podman/common/common.sh
-systemctl | grep -v container | grep freshclam
-if [ $? -eq 0 ]; then
-	systemctl disable freshclam
-	systemctl stop freshclam
-fi
-podman ps -a | grep freshclam
-if [ $? -eq 0 ]; then
-  podman stop freshclam
-  podman rm freshclam
-  podman pull $registry/freshclam-root:latest
-fi
+stop_container freshclam
 directories="$datadir/run/clamd.scan $datadir/var/spool/amavisd/tmp $datadir/var/lib/clamav $datadir/run/clamd.amavisd"
 for directory in $directories; do
   mkdir -p $directory
@@ -25,8 +15,5 @@ $label \
 --name=freshclam \
 $registry/freshclam-root:latest
 sleep 3
-podman generate systemd --new --files --name freshclam
-cp *.service /etc/systemd/system
-systemctl daemon-reload
-systemctl enable container-freshclam
+configure_systemd_service freshclam
 
