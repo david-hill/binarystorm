@@ -1,10 +1,5 @@
 source /config/podman/common/common.sh
-podman ps -a | grep -v container | grep -q cyrus-imapd
-if [ $? -eq 0 ]; then
-  podman stop cyrus-imapd
-  podman rm cyrus-imapd
-  podman pull $registry/cyrus-imapd-root:latest
-fi
+stop_container cyrus-imapd
 directories="/var/spool/imap /var/lib/imap"
 for directory in $directories; do
   if [ ! -d $directory ]; then
@@ -33,7 +28,4 @@ $label \
 --name=cyrus-imapd \
 $registry/cyrus-imapd-root:latest 
 sleep 3
-podman generate systemd --new --files --name cyrus-imapd
-cp *.service /etc/systemd/system
-systemctl daemon-reload
-systemctl enable container-cyrus-imapd
+configure_systemd_service cyrus-imapd
