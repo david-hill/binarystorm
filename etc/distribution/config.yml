@@ -5,24 +5,24 @@ log:
     service: registry
     environment: development
 storage:
-    delete:
-      enabled: true
-    cache:
-        blobdescriptor: inmemory
-    filesystem:
-        rootdirectory: /var/lib/registry
-    tag:
-      concurrencylimit: 5
-    maintenance:
-      readonly:
-        enabled: false
+  delete:
+    enabled: true
+  cache:
+      blobdescriptor: inmemory
+  filesystem:
+      rootdirectory: /var/lib/registry
+  tag:
+    concurrencylimit: 5
+  maintenance:
+    readonly:
+      enabled: false
 http:
-    addr: :5000
-      #    debug:
-      #        addr: :5001
-      #        prometheus:
-      #            enabled: false
-      #            path: /metrics
+  addr: :5000
+    #    debug:
+    #        addr: :5001
+    #        prometheus:
+    #            enabled: false
+    #            path: /metrics
 health:
   storagedriver:
     enabled: true
