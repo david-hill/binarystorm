@@ -1,10 +1,5 @@
 source /config/podman/common/common.sh
-podman ps -a | grep -v container | grep -q httpd
-if [ $? -eq 0 ]; then
-  podman stop httpd
-  podman rm httpd
-  podman pull $registry/httpd-root:latest
-fi
+stop_container httpd
 directories="$datadir/var/lib/sql $datadir/var/log/httpd"
 for directory in $directories; do
   if [ ! -d $directory ]; then
@@ -39,8 +34,4 @@ $volargs \
 --name=httpd \
 $registry/httpd-root:latest
 sleep 3
-podman generate systemd --new --files --name httpd
-cp *.service /etc/systemd/system
-systemctl daemon-reload
-systemctl enable container-httpd
-
+configure_systemd_service httpd
