@@ -1,15 +1,5 @@
 source /config/podman/common/common.sh
-systemctl | grep -v container | grep clamd
-if [ $? -eq 0 ]; then
-	systemctl disable clamd
-	systemctl stop clamd
-fi
-podman ps -a | grep clamd
-if [ $? -eq 0 ]; then
-  podman stop clamd
-  podman rm clamd
-  podman pull $registry/clamd-root:latest
-fi
+stop_container clamd
 directories="$datadir/run/clamd.scan $datadir/var/spool/amavisd/tmp $datadir/var/lib/clamav $datadir/run/clamd.amavisd"
 for directory in $directories; do
   mkdir -p $directory
@@ -27,8 +17,5 @@ $label \
 --name=clamd \
 $registry/clamd-root:latest
 sleep 3
-podman generate systemd --new --files --name clamd
-cp *.service /etc/systemd/system
-systemctl daemon-reload
-systemctl enable container-clamd
+configure_systemd_service clamd
 
